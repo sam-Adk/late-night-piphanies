@@ -1,0 +1,607 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Late Night piphanies — Art Shop</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg-1:#05030a;
+      --bg-2:#0c0a1a;
+      --card: rgba(255,255,255,0.06);
+      --card-strong: rgba(255,255,255,0.12);
+      --text:#e7e7f0;
+      --muted:#b8b7c7;
+      --accent:#8b5cf6;   /* neon violet */
+      --accent-2:#00e5ff; /* electric cyan */
+      --danger:#ff4d6d;
+      --success:#22c55e;
+      --shadow: 0 10px 30px rgba(0,0,0,.55);
+      --radius: 20px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(139,92,246,.25), transparent 70%),
+                  radial-gradient(1000px 600px at -10% 10%, rgba(0,229,255,.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      overflow-x:hidden;
+    }
+
+    /* Subtle starfield */
+    body::before{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background:
+        radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,.22), transparent 60%),
+        radial-gradient(1.5px 1.5px at 70% 60%, rgba(255,255,255,.18), transparent 60%),
+        radial-gradient(1.5px 1.5px at 40% 80%, rgba(255,255,255,.16), transparent 60%);
+      filter: drop-shadow(0 0 6px rgba(255,255,255,.15));
+    }
+
+    a{color:inherit; text-decoration:none}
+    button{font:inherit}
+
+    .container{max-width:1200px;margin-inline:auto;padding:20px}
+
+    /* NAVBAR */
+    .nav{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(10,8,25,0.8), rgba(10,8,25,0.35));
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:14px 20px}
+    .brand{display:flex;align-items:baseline;gap:10px}
+    .brand .logo{
+      font-family:'Playfair Display', serif; letter-spacing:.2px; font-weight:800;
+      font-size: clamp(22px, 4vw, 30px);
+      background: linear-gradient(90deg, #fff, var(--accent-2), var(--accent));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      text-shadow: 0 6px 40px rgba(0,229,255,.25);
+    }
+    .brand small{color:var(--muted);opacity:.9}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .glass-btn{
+      display:inline-flex;align-items:center;gap:10px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      padding:10px 14px;border-radius:14px;cursor:pointer;
+      transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+    .glass-btn:hover{transform: translateY(-2px); border-color: rgba(255,255,255,.2); box-shadow:0 8px 24px rgba(0,0,0,.35)}
+
+    /* HERO */
+    .hero{position:relative; padding: clamp(40px, 6vw, 80px) 0 10px}
+    .hero-content{display:grid; grid-template-columns: 1.1fr .9fr; align-items:center; gap:30px}
+    .hero h1{
+      margin:0; line-height:1.05; font-size: clamp(32px, 5vw, 64px);
+      font-weight:800; letter-spacing:.2px;
+    }
+    .hero h1 span{color:var(--accent-2)}
+    .hero p{color:var(--muted); font-size: clamp(14px, 1.9vw, 18px)}
+    .cta-row{display:flex; gap:12px; margin-top:18px; flex-wrap:wrap}
+    .btn{border:none; padding:12px 18px; border-radius:14px; cursor:pointer; box-shadow: var(--shadow);}
+    .btn-primary{background: linear-gradient(90deg, var(--accent-2), var(--accent)); color:#05030a; font-weight:700}
+    .btn-ghost{background:transparent; border:1px solid rgba(255,255,255,.14); color:var(--text)}
+
+    .hero-card{position:relative; aspect-ratio: 4/3; border-radius: var(--radius); overflow:hidden; box-shadow:var(--shadow);
+      border:1px solid rgba(255,255,255,.08);
+      background: radial-gradient(120% 100% at 80% 10%, rgba(139,92,246,.25), rgba(255,255,255,.02) 50%),
+                 linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      display:grid; place-items:center;
+    }
+    .hero-burst{position:absolute; inset:-40%; background:conic-gradient(from 180deg at 50% 50%, rgba(0,229,255,.16), rgba(139,92,246,.12), rgba(0,229,255,.16)); filter: blur(40px); opacity:.6}
+    .hero-art{
+      width:70%; max-width:380px; aspect-ratio: 1/1; border-radius: 24px; overflow:hidden; position:relative;
+      border:1px solid rgba(255,255,255,.12);
+      box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 6px rgba(139,92,246,.08);
+      transform: rotate(-4deg);
+    }
+    .hero-art img{width:100%; height:100%; object-fit:cover; display:block}
+
+    /* FILTER BAR */
+    .toolbar{
+      position:sticky; top:70px; z-index:40; margin-top:6px;
+      background: linear-gradient(180deg, rgba(10,8,25,.92), rgba(10,8,25,.6));
+      backdrop-filter: blur(10px);
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px; border-radius:16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    }
+    .chip{padding:8px 12px; border-radius: 999px; border:1px solid rgba(255,255,255,.12); cursor:pointer; user-select:none}
+    .chip.active{background: linear-gradient(90deg, rgba(0,229,255,.2), rgba(139,92,246,.2)); border-color: transparent}
+    .spacer{flex:1}
+    .field{display:flex; align-items:center; gap:10px; background:rgba(255,255,255,.05); padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.08)}
+    .field input{background:transparent; border:none; outline:none; color:var(--text); min-width:160px}
+    .select{appearance:none; background:rgba(255,255,255,.05); color:var(--text); border:1px solid rgba(255,255,255,.08); padding:10px 12px; border-radius:12px}
+
+    /* GALLERY */
+    .gallery{ column-count: 1; column-gap: 16px; margin-top:16px }
+    @media(min-width:700px){ .gallery{ column-count:2 } }
+    @media(min-width:1000px){ .gallery{ column-count:3 } }
+
+    .card{ break-inside: avoid; margin:0 0 16px; position:relative; border-radius:22px; overflow:hidden; box-shadow: var(--shadow);
+           background: var(--card); border:1px solid rgba(255,255,255,.1);}
+    .card .img-wrap{ position:relative; overflow:hidden; aspect-ratio: 4/5 }
+    .card img{ width:100%; height:100%; object-fit:cover; display:block; transition: transform .6s ease }
+    .card:hover img{ transform: scale(1.04) }
+    .tag-badge{position:absolute; top:12px; left:12px; background: rgba(0,229,255,.9); color:#021016; font-weight:700; padding:6px 10px; border-radius:999px; font-size:12px}
+    .card-body{ padding:14px 14px 16px }
+    .title{font-weight:700; letter-spacing:.2px}
+    .muted{color:var(--muted); font-size:14px}
+    .price{font-weight:800; margin-top:8px; background: linear-gradient(90deg, #fff, var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent}
+    .actions{display:flex; gap:10px; margin-top:12px}
+    .btn-small{ padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:var(--text); cursor:pointer }
+    .btn-small.primary{ background: linear-gradient(90deg, var(--accent-2), var(--accent)); color:#05030a; font-weight:700; border:none }
+
+    /* QUICK VIEW MODAL */
+    .overlay{ position:fixed; inset:0; background:rgba(5,3,10,.72); display:none; place-items:center; z-index:70; backdrop-filter: blur(6px) }
+    .modal{ width:min(100%, 980px); max-height:90vh; overflow:auto; background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border:1px solid rgba(255,255,255,.12); border-radius:22px; box-shadow: var(--shadow); }
+    .modal-head{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:14px 16px; border-bottom:1px solid rgba(255,255,255,.06)}
+    .x{ background:transparent; border:none; color:var(--text); font-size:22px; cursor:pointer }
+    .modal-body{ display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; padding:16px }
+    .modal-img{ border-radius:18px; overflow:hidden; border:1px solid rgba(255,255,255,.1)}
+    .modal-img img{ width:100%; height:100%; object-fit:cover; display:block }
+    .opt{ margin:14px 0 }
+    .opt label{ display:block; font-size:14px; color:var(--muted); margin-bottom:8px }
+    .opt .row{ display:flex; gap:8px; flex-wrap:wrap }
+    .radio{ padding:10px 12px; border-radius:12px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.04); cursor:pointer }
+    .radio.active{ outline:2px solid var(--accent-2); border-color:transparent }
+
+    /* CART DRAWER */
+    .drawer{ position:fixed; top:0; right:0; height:100vh; width:min(420px, 100%); transform: translateX(110%); transition: transform .3s ease; z-index:80;
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03)); border-left:1px solid rgba(255,255,255,.12); box-shadow: var(--shadow); display:flex; flex-direction:column }
+    .drawer.open{ transform: translateX(0) }
+    .drawer head{ display:flex }
+    .drawer .top{ display:flex; align-items:center; justify-content:space-between; padding:16px; border-bottom:1px solid rgba(255,255,255,.06) }
+    .cart-list{ flex:1; overflow:auto; padding:14px }
+    .cart-item{ display:grid; grid-template-columns:64px 1fr auto; gap:12px; align-items:center; padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.03); margin-bottom:10px }
+    .qty{ display:flex; gap:8px; align-items:center }
+    .qty button{ width:28px; height:28px; border-radius:8px; border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.06); color:var(--text); cursor:pointer }
+    .drawer .bottom{ border-top:1px solid rgba(255,255,255,.06); padding:14px; display:grid; gap:10px }
+
+    /* TOAST */
+    .toast{ position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(120%); background:#0b1220; border:1px solid rgba(255,255,255,.12); color:var(--text); padding:12px 16px; border-radius:12px; box-shadow: var(--shadow); z-index:90; transition: transform .35s ease }
+    .toast.show{ transform:translateX(-50%) translateY(0) }
+
+    /* FOOTER */
+    footer{ margin:40px 0 60px; color:var(--muted); text-align:center }
+
+    /* RESPONSIVE */
+    @media(max-width: 880px){
+      .hero-content{ grid-template-columns: 1fr; }
+      .modal-body{ grid-template-columns:1fr }
+    }
+  </style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <div class="nav-inner container">
+      <div class="brand">
+        <div class="logo">Late Night Epiphanies</div>
+        <small>midnight sketches & dreamy Art by sam</small>
+      </div>
+      <div class="nav-actions">
+        <button id="commissionBtn" class="glass-btn" title="Commission an artwork">
+          <!-- pen icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 7l4.5 4.5M3 21l3.9-1.1c.5-.1 1.0-.4 1.4-.8L20 7.5a2.1 2.1 0 000-3 2.1 2.1 0 00-3 0L5.3 16.1c-.4.4-.7.9-.8 1.4L3 21z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Commission
+        </button>
+        <button id="cartBtn" class="glass-btn" title="Open cart">
+          <!-- cart icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6h13l-1.3 8.4a2 2 0 01-2 1.6H9.1a2 2 0 01-2-1.6L6 6zm0 0L5 3H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.5" fill="currentColor"/><circle cx="17" cy="20" r="1.5" fill="currentColor"/></svg>
+          Cart <span id="cartCount" style="margin-left:6px;opacity:.8">0</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero container">
+    <div class="hero-content">
+      <div>
+        <h1>Art that feels like <span>3AM epiphanies</span>.</h1>
+        <p>Original pencil sketches and dreamy Art By samuel Adikah, crafted in late‑night quiet. Shop ready‑to‑hang pieces or request a custom portrait.</p>
+        <div class="cta-row">
+          <a href="#gallery" class="btn btn-primary">Shop Originals</a>
+          <button id="heroCommission" class="btn btn-ghost">Request a Commission</button>
+        </div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-burst"></div>
+        <div class="hero-art">
+          <img id="heroImage" alt="Featured midnight sketch"/>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TOOLBAR -->
+  <div class="container">
+    <div class="toolbar" role="region" aria-label="Filters">
+      <div class="chip active" data-filter="all">All</div>
+      <div class="chip" data-filter="Sketch">Sketch</div>
+      <div class="chip" data-filter="Portrait">Portrait</div>
+      <div class="chip" data-filter="Abstract">Abstract</div>
+
+      <div class="spacer"></div>
+      <div class="field" role="search">
+        <!-- search icon -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.6"/><path d="M20 20l-3.5-3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+        <input id="search" type="search" placeholder="Search titles, tags" />
+      </div>
+      <select id="sort" class="select" aria-label="Sort">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low → High</option>
+        <option value="price-desc">Price: High → Low</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <main id="gallery" class="gallery container" aria-live="polite"></main>
+
+  <!-- QUICK VIEW MODAL -->
+  <div id="overlay" class="overlay" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Artwork details">
+      <div class="modal-head">
+        <strong id="qvTitle">Artwork</strong>
+        <button class="x" id="qvClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-img"><img id="qvImg" alt="Artwork large view"/></div>
+        <div>
+          <div class="muted" id="qvCat"></div>
+          <div style="margin:8px 0 10px" id="qvDesc"></div>
+          <div class="opt">
+            <label>Size</label>
+            <div class="row" id="sizeRow"></div>
+          </div>
+          <div class="opt">
+            <label>Finish</label>
+            <div class="row" id="finishRow"></div>
+          </div>
+          <div class="price" id="qvPrice">KSh 0</div>
+          <div class="actions">
+            <button class="btn-small" id="saveFav">♡ Wishlist</button>
+            <button class="btn-small primary" id="qvAdd">Add to cart</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CART DRAWER -->
+  <aside id="drawer" class="drawer" aria-label="Shopping cart">
+    <div class="top">
+      <strong>Cart</strong>
+      <button class="x" id="cartClose" aria-label="Close">✕</button>
+    </div>
+    <div class="cart-list" id="cartList"></div>
+    <div class="bottom">
+      <div style="display:flex; justify-content:space-between; align-items:center">
+        <span class="muted">Subtotal</span>
+        <strong id="subtotal">KSh 0</strong>
+      </div>
+      <button class="btn btn-primary" id="checkoutBtn">Checkout</button>
+      <small class="muted">Secure checkout. We’ll confirm via WhatsApp/Email.
+      </small>
+    </div>
+  </aside>
+
+  <div id="toast" class="toast"></div>
+
+  <footer class="container">
+    © <span id="year"></span> Late Night piphanies — by Samuel Adikah. All rights reserved.
+  </footer>
+
+  <script>
+    /* ====== DATA & HELPERS ====== */
+const products = [
+  { id: 'p1', title: 'Love Dream I', category: 'Portrait', tags:['romance','bw'], priceBase: 4200,
+    img: 'assets/images/love5.jpg',
+    desc: 'Romantic midnight sketch in pencil.'
+  },
+  { id: 'p2', title: 'Love Dream II', category: 'Sketch', tags:['dreamy','soft'], priceBase: 2500,
+    img: 'assets/images/NATURE ART6.jpg',
+    desc: 'A dreamy late-night drawing, soft and textured.'
+  },
+  { id: 'p3', title: 'Love Dream III', category: 'Abstract', tags:['surreal','thoughts'], priceBase: 5200,
+    img: 'assets/images/NATURE ART4.jpg',
+    desc: 'Surreal abstraction inspired by late-night epiphanies.'
+  },
+  { id: 'p4', title: 'Love Dream IV', category: 'Sketch', tags:['raw','expressive'], priceBase: 3000,
+    img: 'assets/images/NATURE ART5.jpg',
+    desc: 'Expressive raw strokes, part of the Love series.'
+  },
+
+  { id: 'p1', title: 'Love Dream I', category: 'Portrait', tags:['romance','bw'], priceBase: 4200,
+    img: 'assets/images/NATURE ART2.jpg',
+    desc: 'Romantic midnight sketch in pencil.'
+  },
+  { id: 'p2', title: 'Love Dream II', category: 'Sketch', tags:['dreamy','soft'], priceBase: 2500,
+    img: 'assets/images/NATURE ART3.jpg',
+    desc: 'A dreamy late-night drawing, soft and textured.'
+  }
+  
+  
+
+];
+
+    // Build a pretty SVG placeholder so you can start before adding real images
+    function svgPlaceholder(title){
+      const grad1 = '#0aefff', grad2 = '#8b5cf6';
+      const svg = `<?xml version='1.0' encoding='UTF-8'?>
+        <svg xmlns='http://www.w3.org/2000/svg' width='900' height='1125'>
+          <defs>
+            <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+              <stop offset='0%' stop-color='${grad1}' stop-opacity='0.55'/>
+              <stop offset='100%' stop-color='${grad2}' stop-opacity='0.55'/>
+            </linearGradient>
+          </defs>
+          <rect width='100%' height='100%' fill='black'/>
+          <rect x='20' y='20' width='860' height='1085' rx='24' ry='24' fill='url(#g)' opacity='0.35'/>
+          <g font-family='Poppins' font-size='54' fill='white' opacity='0.9'>
+            <text x='50' y='150'>Late Night piphanies</text>
+          </g>
+          <g font-family='Poppins' font-size='64' fill='white' opacity='0.95'>
+            <text x='50' y='600'>${title.replace(/&/g,'&amp;')}</text>
+          </g>
+          <g fill='white' opacity='.22'>
+            <circle cx='750' cy='200' r='6'/>
+            <circle cx='820' cy='280' r='4'/>
+            <circle cx='820' cy='900' r='5'/>
+          </g>
+        </svg>`;
+      return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+    }
+
+    // currency
+    const KES = v => `KSh ${v.toLocaleString('en-KE')}`;
+
+    // cart state
+    const cart = JSON.parse(localStorage.getItem('lnp_cart')||'[]');
+    const saveCart = () => localStorage.setItem('lnp_cart', JSON.stringify(cart));
+
+    // wishlist state
+    const favs = new Set(JSON.parse(localStorage.getItem('lnp_favs')||'[]'));
+    const saveFavs = () => localStorage.setItem('lnp_favs', JSON.stringify(Array.from(favs)));
+
+    // selections for QV
+    let currentProduct = null;
+    let currentSize = 'A4';
+    let currentFinish = 'Unframed';
+
+    function sizePriceDelta(size){
+      return { A5: 0, A4: 0, A3: 1200, A2: 2900 }[size] || 0;
+    }
+    function finishPriceDelta(f){
+      return { Unframed: 0, Framed: 1800 }[f] || 0;
+    }
+    function computePrice(p){
+      return p.priceBase + sizePriceDelta(currentSize) + finishPriceDelta(currentFinish);
+    }
+
+    /* ====== RENDER ====== */
+    const gallery = document.getElementById('gallery');
+    const heroImage = document.getElementById('heroImage');
+
+    function renderProducts(list){
+      gallery.innerHTML = '';
+      list.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.innerHTML = `
+          <div class='img-wrap'>
+            <img alt='${p.title}' src='${p.img || svgPlaceholder(p.title)}'>
+            <div class='tag-badge'>${p.category}</div>
+          </div>
+          <div class='card-body'>
+            <div class='title'>${p.title}</div>
+            <div class='muted'>${p.tags.map(t=>`#${t}`).join(' ')}</div>
+            <div class='price'>${KES(p.priceBase)}</div>
+            <div class='actions'>
+              <button class='btn-small' data-action='view' data-id='${p.id}'>Quick view</button>
+              <button class='btn-small primary' data-action='add' data-id='${p.id}'>Add to cart</button>
+            </div>
+          </div>`;
+        gallery.appendChild(card);
+      });
+      // set hero image to first product
+      if(list[0]) heroImage.src = list[0].img || svgPlaceholder(list[0].title);
+    }
+
+    /* ====== FILTERS & SORT ====== */
+    const chips = document.querySelectorAll('.chip');
+    const search = document.getElementById('search');
+    const sort = document.getElementById('sort');
+
+    function applyFilters(){
+      const active = document.querySelector('.chip.active').dataset.filter;
+      const q = search.value.trim().toLowerCase();
+      let list = products.filter(p => active==='all' ? true : p.category===active);
+      if(q){ list = list.filter(p => (p.title + ' ' + p.tags.join(' ')).toLowerCase().includes(q)); }
+      if(sort.value==='price-asc') list.sort((a,b)=>a.priceBase-b.priceBase);
+      if(sort.value==='price-desc') list.sort((a,b)=>b.priceBase-a.priceBase);
+      renderProducts(list);
+    }
+
+    chips.forEach(c => c.addEventListener('click', () => {
+      chips.forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      applyFilters();
+    }));
+    search.addEventListener('input', applyFilters);
+    sort.addEventListener('change', applyFilters);
+
+    /* ====== QUICK VIEW MODAL ====== */
+    const overlay = document.getElementById('overlay');
+    const qvImg = document.getElementById('qvImg');
+    const qvTitle = document.getElementById('qvTitle');
+    const qvCat = document.getElementById('qvCat');
+    const qvDesc = document.getElementById('qvDesc');
+    const qvPrice = document.getElementById('qvPrice');
+    const qvClose = document.getElementById('qvClose');
+    const sizeRow = document.getElementById('sizeRow');
+    const finishRow = document.getElementById('finishRow');
+    const qvAdd = document.getElementById('qvAdd');
+    const saveFav = document.getElementById('saveFav');
+
+    function openQV(p){
+      currentProduct = p; currentSize='A4'; currentFinish='Unframed';
+      qvImg.src = p.img || svgPlaceholder(p.title);
+      qvTitle.textContent = p.title;
+      qvCat.textContent = p.category;
+      qvDesc.textContent = p.desc;
+      buildOptions();
+      qvPrice.textContent = KES(computePrice(p));
+      overlay.style.display='grid';
+      overlay.setAttribute('aria-hidden','false');
+    }
+    function closeQV(){ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); }
+    qvClose.addEventListener('click', closeQV);
+    overlay.addEventListener('click', e=>{ if(e.target===overlay) closeQV(); });
+
+    function optChip(val, group, isActive=false){
+      const el = document.createElement('button');
+      el.type='button'; el.className = 'radio' + (isActive?' active':'');
+      el.textContent = val; el.setAttribute('data-group', group);
+      el.addEventListener('click', ()=>{
+        document.querySelectorAll(`.radio[data-group='${group}']`).forEach(r=>r.classList.remove('active'));
+        el.classList.add('active');
+        if(group==='size') currentSize = val; else currentFinish = val;
+        qvPrice.textContent = KES(computePrice(currentProduct));
+      });
+      return el;
+    }
+    function buildOptions(){
+      sizeRow.innerHTML=''; finishRow.innerHTML='';
+      ['A5','A4','A3','A2'].forEach(s=> sizeRow.appendChild(optChip(s,'size', s==='A4')));
+      ['Unframed','Framed'].forEach(f=> finishRow.appendChild(optChip(f,'finish', f==='Unframed')));
+    }
+
+    // Gallery click delegation
+    gallery.addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      const id = btn.dataset.id; const p = products.find(x=>x.id===id);
+      if(btn.dataset.action==='view') openQV(p);
+      if(btn.dataset.action==='add') { addToCart(p, 'A4', 'Unframed'); toast('Added to cart'); }
+    });
+
+    qvAdd.addEventListener('click', ()=>{
+      if(currentProduct) { addToCart(currentProduct, currentSize, currentFinish); closeQV(); toast('Added to cart'); }
+    });
+
+    saveFav.addEventListener('click', ()=>{
+      if(!currentProduct) return;
+      if(favs.has(currentProduct.id)) favs.delete(currentProduct.id); else favs.add(currentProduct.id);
+      saveFavs();
+      toast(favs.has(currentProduct.id)?'Saved to wishlist':'Removed from wishlist');
+    });
+
+    /* ====== CART ====== */
+    const cartBtn = document.getElementById('cartBtn');
+    const drawer = document.getElementById('drawer');
+    const cartClose = document.getElementById('cartClose');
+    const cartList = document.getElementById('cartList');
+    const subtotalEl = document.getElementById('subtotal');
+    const cartCount = document.getElementById('cartCount');
+
+    function openCart(){ drawer.classList.add('open'); }
+    function closeCart(){ drawer.classList.remove('open'); }
+    cartBtn.addEventListener('click', openCart);
+    cartClose.addEventListener('click', closeCart);
+
+    function addToCart(p, size='A4', finish='Unframed'){
+      const key = `${p.id}-${size}-${finish}`;
+      const existing = cart.find(i=>i.key===key);
+      if(existing) existing.qty += 1; else cart.push({ key, id:p.id, title:p.title, size, finish, price: p.priceBase + sizePriceDelta(size) + finishPriceDelta(finish), img: p.img || svgPlaceholder(p.title), qty:1 });
+      saveCart();
+      renderCart();
+    }
+
+    function changeQty(key, delta){
+      const i = cart.find(x=>x.key===key); if(!i) return;
+      i.qty += delta; if(i.qty<=0) cart.splice(cart.indexOf(i),1);
+      saveCart(); renderCart();
+    }
+
+    function renderCart(){
+      cartList.innerHTML='';
+      let subtotal = 0, count=0;
+      cart.forEach(i=>{
+        subtotal += i.price * i.qty; count += i.qty;
+        const row = document.createElement('div');
+        row.className='cart-item';
+        row.innerHTML = `
+          <img src='${i.img}' alt='' style='width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.1)'>
+          <div>
+            <div style='font-weight:600'>${i.title}</div>
+            <div class='muted' style='font-size:12px'>${i.size} · ${i.finish}</div>
+            <div style='font-weight:700'>${KES(i.price)}</div>
+          </div>
+          <div class='qty'>
+            <button aria-label='Decrease' data-k='${i.key}' data-d='-1'>−</button>
+            <span>${i.qty}</span>
+            <button aria-label='Increase' data-k='${i.key}' data-d='1'>+</button>
+          </div>`;
+        cartList.appendChild(row);
+      });
+      subtotalEl.textContent = KES(subtotal);
+      cartCount.textContent = count;
+    }
+
+    cartList.addEventListener('click', e=>{
+      const btn = e.target.closest('button'); if(!btn) return;
+      const key = btn.dataset.k; const d = parseInt(btn.dataset.d,10);
+      changeQty(key, d);
+    });
+
+    /* ====== CHECKOUT (DEMO) ====== */
+    document.getElementById('checkoutBtn').addEventListener('click', ()=>{
+      if(cart.length===0){ toast('Your cart is empty'); return; }
+      const summary = cart.map(i=>`${i.qty}× ${i.title} (${i.size}, ${i.finish}) — ${KES(i.price*i.qty)}`).join('%0A');
+      const total = subtotalEl.textContent.replace(/\s/g,'');
+      const msg = `Hello Samuel,%0A%0AI would like to order:%0A${summary}%0A%0ASubtotal: ${total}%0A%0AMy contacts:%0AName:%0APhone (WhatsApp):%0AEmail:%0ADelivery location:`;
+      // open user email client
+      window.location.href = `mailto:samuel@example.com?subject=Order — Late Night piphanies&body=${msg}`;
+      toast('Opening your email app to place the order');
+    });
+
+    /* ====== COMMISSION FLOW (DEMO) ====== */
+    const commissionBtn = document.getElementById('commissionBtn');
+    const heroCommission = document.getElementById('heroCommission');
+    [commissionBtn, heroCommission].forEach(b=> b.addEventListener('click', ()=>{
+      const body = encodeURIComponent(`Hello Samuel,%0A%0AI'd like to commission a custom piece.%0A%0AIdea/Subject:%0ASize (A4/A3/A2):%0ADeadline:%0ABudget:%0AReferences: (links)`);
+      window.location.href = `mailto:samuel@example.com?subject=Commission Request — Late Night piphanies&body=${body}`;
+    }));
+
+    /* ====== TOAST ====== */
+    const toastEl = document.getElementById('toast');
+    function toast(text){
+      toastEl.textContent = text; toastEl.classList.add('show');
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(()=> toastEl.classList.remove('show'), 2100);
+    }
+
+    /* ====== INIT ====== */
+    document.getElementById('year').textContent = new Date().getFullYear();
+    renderProducts(products);
+    renderCart();
+    applyFilters();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
