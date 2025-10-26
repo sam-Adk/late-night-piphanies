@@ -181,6 +181,24 @@
     .btn-small{font-size:13px}
     footer{font-size:13px}
   }
+
+ /* === MOBILE OVERFLOW FIX === */
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
+* {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Prevent hero or cards from overflowing */
+.hero, .gallery, .modal, .drawer, .toolbar, .nav-inner, .container {
+  overflow-x: hidden;
+}
+
 </style>
 
 </head>
