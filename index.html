@@ -679,23 +679,10 @@
       min-height: 44px;
     }
     .hero-art {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) rotate(-4deg);
-      width: 80%;
-      max-width: 320px;
-      z-index: 10;
-    }
-    .hero-card {
-      position: relative;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      touch-action: none; /* Prevent movement on swipe */
     }
     .hero-burst {
-      display: none;
+      display: none; /* Prevent overflow */
     }
     .toolbar {
       flex-direction: column;
@@ -762,7 +749,7 @@
           Commission
         </button>
         <button id="cartBtn" class="glass-btn" title="Open cart">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6h13 springl-1.3 8.4a2 2 0 01-2 1.6H9.1a2 2 0 01-2-1.6L6 6zm0 0L5 3H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.5" fill="currentColor"/><circle cx="17" cy="20" r="1.5" fill="currentColor"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6h13l-1.3 8.4a2 2 0 01-2 1.6H9.1a2 2 0 01-2-1.6L6 6zm0 0L5 3H3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.5" fill="currentColor"/><circle cx="17" cy="20" r="1.5" fill="currentColor"/></svg>
           Cart <span id="cartCount" style="margin-left:6px;opacity:.8">0</span>
         </button>
       </div>
