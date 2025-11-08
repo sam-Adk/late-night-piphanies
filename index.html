@@ -1,4 +1,25 @@
-<!DOCTYPE html>
+[7:53 PM, 11/8/2025] Sam: <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Late Night Epiphanies — Art Shop</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon-16x16.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* CART DRAWER STYLING */
+  .cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 360px;
+    height: 100vh;
+    background: #12101a;
+    color: #fff;
+    box-shadow: -2px 0 10px rgba(0, …
+[9:39 PM, 11/8/2025] Sam: <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -88,6 +109,7 @@
   .close-cart:hover {
     background: #ff6a4d;
   }
+
   :root {
     --bg-1: #05030a;
     --bg-2: #0c0a1a;
@@ -102,6 +124,7 @@
     --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
     --radius: 20px;
   }
+
   * {
     box-sizing: border-box;
   }
@@ -143,6 +166,7 @@
     padding: 20px;
     overflow-x: hidden;
   }
+
   /* NAVBAR */
   .nav {
     position: sticky;
@@ -215,6 +239,7 @@
     border-color: rgba(255, 255, 255, 0.2);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
   }
+
   /* HERO */
   .hero {
     position: relative;
@@ -289,7 +314,7 @@
     inset: -40%;
     background: conic-gradient(
       from 180deg at 50% 50%,
-      rgba(0 , 229, 255, 0.16),
+      rgba(0                                                                             , 229, 255, 0.16),
       rgba(139, 92, 246, 0.12),
       rgba(0, 229, 255, 0.16)
     );
@@ -314,6 +339,7 @@
     object-fit: cover;
     display: block;
   }
+
   /* TOOLBAR */
   .toolbar {
     position: sticky;
@@ -375,6 +401,7 @@
     flex: 1;
     min-width: 150px;
   }
+
   /* GALLERY */
   .gallery {
     column-count: 1;
@@ -468,6 +495,7 @@
     font-weight: 700;
     border: none;
   }
+
   /* MODAL & DRAWER */
   .overlay {
     position: fixed;
@@ -522,7 +550,6 @@
   }
   .modal-img img {
     width: 100%;
-uerra
     height: 100%;
     object-fit: cover;
     display: block;
@@ -616,6 +643,7 @@ uerra
     gap: 10px;
     background: rgba(18, 16, 26, 0.95);
   }
+
   /* TOAST */
   .toast {
     position: fixed;
@@ -634,6 +662,7 @@ uerra
   .toast.show {
     transform: translateX(-50%) translateY(0);
   }
+
   /* FOOTER */
   footer {
     margin: 40px 0 60px;
@@ -642,6 +671,7 @@ uerra
     font-size: 14px;
     line-height: 1.6;
   }
+
   /* MOBILE OPTIMIZATIONS */
   @media (max-width: 480px) {
     .nav-inner {
@@ -725,6 +755,7 @@ uerra
       width: 100%;
     }
   }
+
   /* M-PESA BUTTON */
   .btn-success {
     background: linear-gradient(90deg, #00B140, #009933);
@@ -759,6 +790,7 @@ uerra
       </div>
     </div>
   </nav>
+
   <!-- HERO -->
   <header class="hero container">
     <div class="hero-content">
@@ -778,6 +810,7 @@ uerra
       </div>
     </div>
   </header>
+
   <!-- TOOLBAR -->
   <div class="container">
     <div class="toolbar" role="region" aria-label="Filters">
@@ -797,8 +830,10 @@ uerra
       </select>
     </div>
   </div>
+
   <!-- GALLERY -->
   <main id="gallery" class="gallery container" aria-live="polite"></main>
+
   <!-- QUICK VIEW MODAL -->
   <div id="overlay" class="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Artwork details">
@@ -828,6 +863,7 @@ uerra
       </div>
     </div>
   </div>
+
   <!-- CART DRAWER -->
   <aside id="drawer" class="drawer" aria-label="Shopping cart">
     <div class="top">
@@ -840,8 +876,10 @@ uerra
         <span class="muted">Subtotal</span>
         <strong id="subtotal">KSh 0</strong>
       </div>
+
       <!-- EMAIL CHECKOUT -->
       <button class="btn btn-primary" id="checkoutBtn">Checkout via Email</button>
+
       <!-- M-PESA BUTTON -->
       <button class="btn btn-success" id="mpesaPayBtn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
@@ -849,9 +887,11 @@ uerra
         </svg>
         Pay with M-Pesa (Sandbox)
       </button>
+
       <small class="muted">Secure checkout. We’ll confirm via WhatsApp/Email.</small>
     </div>
   </aside>
+
   <!-- M-PESA PHONE MODAL -->
   <div id="mpesaModal" class="overlay" style="display:none; place-items:center; z-index:999">
     <div class="modal" style="width:90%; max-width:360px; padding:20px">
@@ -860,11 +900,11 @@ uerra
         <button class="x" id="mpesaModalClose">X</button>
       </div>
       <form id="mpesaForm">
-        <input
-          type="tel"
-          id="mpesaPhone"
-          placeholder="254712345678"
-          required
+        <input 
+          type="tel" 
+          id="mpesaPhone" 
+          placeholder="254712345678" 
+          required 
           pattern="254[7-9][0-9]{8}"
           style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.05); color:var(--text); font-size:16px"
         />
@@ -877,16 +917,19 @@ uerra
       </form>
     </div>
   </div>
+
   <div id="toast" class="toast"></div>
+
   <footer class="container">
     © <span id="year"></span> Late Night Epiphanies — by Samuel Adikah. All rights reserved.
   </footer>
+
   <script>
   // === PRODUCTS WITH SOLD STATUS ===
   const products = [
     { id: 'p1', title: 'Love Dream I', category: 'Portrait', tags: ['romance', 'bw'], priceBase: 42000, img: 'assets/images/love5.jpg', desc: 'Romantic midnight sketch in pencil.'},
     { id: 'p2', title: 'Dark Forest', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 25000, img: 'assets/images/NATURE ART6.jpg', desc: 'A dreamy late-night drawing, soft and textured.', sold: true },
-    { id: 'p3', title: 'Ocean Wave', category: 'Abstract', tags: ['surreal', 'thoughts'], priceBase: 52000, Flores: 'assets/images/NATURE ART4.jpg', desc: 'Surreal abstraction inspired by late-night epiphanies.' },
+    { id: 'p3', title: 'Ocean Wave', category: 'Abstract', tags: ['surreal', 'thoughts'], priceBase: 52000, img: 'assets/images/NATURE ART4.jpg', desc: 'Surreal abstraction inspired by late-night epiphanies.' },
     { id: 'p4', title: 'Floating girl ', category: 'Sketch', tags: ['raw', 'expressive'], priceBase: 50000, img: 'assets/images/NATURE ART5.jpg', desc: 'Expressive raw strokes, part of the Love series.', sold: true },
     { id: 'p5', title: 'The Bridge', category: 'Portrait', tags: ['romance', 'bw'], priceBase: 42000, img: 'assets/images/NATURE ART2.jpg', desc: 'Romantic midnight sketch in pencil.' },
     { id: 'p6', title: 'Birds on the ocean', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 50000, img: 'assets/images/NATURE ART3.jpg', desc: 'A dreamy late-night drawing, soft and textured.',sold: true },
@@ -925,7 +968,7 @@ uerra
     return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
   }
 
-  const KES = v => `KSh ${v.toLocaleString('en-KE')}`;
+  const KES = v => KSh ${v.toLocaleString('en-KE')};
   const cart = JSON.parse(localStorage.getItem('lnp_cart') || '[]');
   const saveCart = () => localStorage.setItem('lnp_cart', JSON.stringify(cart));
   const favs = new Set(JSON.parse(localStorage.getItem('lnp_favs') || '[]'));
@@ -956,6 +999,7 @@ uerra
         card.style.opacity = '0.6';
         card.style.pointerEvents = 'none';
       }
+
       card.innerHTML = `
         <div class='img-wrap' style='position:relative'>
           <img alt='${p.title}' src='${p.img || svgPlaceholder(p.title)}' loading='lazy'>
@@ -977,7 +1021,7 @@ uerra
         </div>
         <div class='card-body'>
           <div class='title'>${p.title}</div>
-          <div class='muted'>${p.tags.map(t => `#${t}`).join(' ')}</div>
+          <div class='muted'>${p.tags.map(t => #${t}).join(' ')}</div>
           <div class='price'>${KES(p.priceBase)}</div>
           <div class='actions'>
             <button class='btn-small' data-action='view' data-id='${p.id}' ${p.sold ? 'disabled' : ''}>Quick view</button>
@@ -991,7 +1035,7 @@ uerra
     if (list[0]) heroImage.src = list[0].img || svgPlaceholder(list[0].title);
   }
 
-  // === YOUR FULL ORIGINAL JS BELOW (100% UNCHANGED) ===
+  // === REST OF YOUR CODE (UNCHANGED BELOW) ===
   const chips = document.querySelectorAll('.chip');
   const search = document.getElementById('search');
   const sort = document.getElementById('sort');
@@ -1016,29 +1060,244 @@ uerra
 
   const overlay = document.getElementById('overlay');
   const qvImg = document.getElementById('qvImg');
-  const qvTitle =}^{\
+  const qvTitle = document.getElementById('qvTitle');
+  const qvCat = document.getElementById('qvCat');
+  const qvDesc = document.getElementById('qvDesc');
+  const qvPrice = document.getElementById('qvPrice');
+  const qvClose = document.getElementById('qvClose');
+  const sizeRow = document.getElementById('sizeRow');
+  const finishRow = document.getElementById('finishRow');
+  const qvAdd = document.getElementById('qvAdd');
+  const saveFav = document.getElementById('saveFav');
 
-  // ... [THE ENTIRE REST OF YOUR ORIGINAL SCRIPT IS BELOW — 100% PRESERVED] ...
-
-  // === QUICK FIX: LAZY LOAD + FALLBACK PLACEHOLDER ===
-  document.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll("img").forEach(img => {
-      if (!img.src || img.src.includes("data:image")) return;
-      const fallback = img.src;
-      img.onerror = () => {
-        img.src = svgPlaceholder(img.alt || "Art");
-      };
-      img.onload = () => img.style.opacity = 1;
-      img.style.opacity = 0;
-      img.style.transition = "opacity 0.4s ease";
-    });
+  function openQV(p) {
+    if (p.sold) {
+      toast('This artwork has been sold');
+      return;
+    }
+    currentProduct = p;
+    currentSize = 'A4';
+    currentFinish = 'Unframed';
+    qvImg.src = p.img || svgPlaceholder(p.title);
+    qvTitle.textContent = p.title;
+    qvCat.textContent = p.category;
+    qvDesc.textContent = p.desc;
+    buildOptions();
+    qvPrice.textContent = KES(computePrice(p));
+    overlay.style.display = 'grid';
+    overlay.setAttribute('aria-hidden', 'false');
+  }
+  function closeQV() {
+    overlay.style.display = 'none';
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+  qvClose.addEventListener('click', closeQV);
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) closeQV();
   });
 
+  function optChip(val, group, isActive = false) {
+    const el = document.createElement('button');
+    el.type = 'button';
+    el.className = 'radio' + (isActive ? ' active' : '');
+    el.textContent = val;
+    el.setAttribute('data-group', group);
+    el.addEventListener('click', () => {
+      document.querySelectorAll(.radio[data-group='${group}']).forEach(r => r.classList.remove('active'));
+      el.classList.add('active');
+      if (group === 'size') currentSize = val; else currentFinish = val;
+      qvPrice.textContent = KES(computePrice(currentProduct));
+    });
+    return el;
+  }
+  function buildOptions() {
+    sizeRow.innerHTML = '';
+    finishRow.innerHTML = '';
+    ['A5', 'A4', 'A3', 'A2'].forEach(s => sizeRow.appendChild(optChip(s, 'size', s === 'A4')));
+    ['Unframed', 'Framed'].forEach(f => finishRow.appendChild(optChip(f, 'finish', f === 'Unframed')));
+  }
+
+  gallery.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const id = btn.dataset.id;
+    const p = products.find(x => x.id === id);
+    if (btn.dataset.action === 'view') openQV(p);
+    if (btn.dataset.action === 'add' && !p.sold) {
+      addToCart(p, 'A4', 'Unframed');
+      toast('Added to cart');
+    }
+  });
+
+  qvAdd.addEventListener('click', () => {
+    if (currentProduct && !currentProduct.sold) {
+      addToCart(currentProduct, currentSize, currentFinish);
+      closeQV();
+      toast('Added to cart');
+    }
+  });
+
+  saveFav.addEventListener('click', () => {
+    if (!currentProduct) return;
+    if (favs.has(currentProduct.id)) favs.delete(currentProduct.id); else favs.add(currentProduct.id);
+    saveFavs();
+    toast(favs.has(currentProduct.id) ? 'Saved to wishlist' : 'Removed from wishlist');
+  });
+
+  const cartBtn = document.getElementById('cartBtn');
+  const drawer = document.getElementById('drawer');
+  const cartClose = document.getElementById('cartClose');
+  const cartList = document.getElementById('cartList');
+  const subtotalEl = document.getElementById('subtotal');
+  const cartCount = document.getElementById('cartCount');
+
+  function openCart() {
+    drawer.classList.add('open');
+  }
+  function closeCart() {
+    drawer.classList.remove('open');
+  }
+  cartBtn.addEventListener('click', openCart);
+  cartClose.addEventListener('click', closeCart);
+
+  function addToCart(p, size = 'A4', finish = 'Unframed') {
+    const key = ${p.id}-${size}-${finish};
+    const existing = cart.find(i => i.key === key);
+    if (existing) existing.qty += 1;
+    else cart.push({ key, id: p.id, title: p.title, size, finish, price: p.priceBase + sizePriceDelta(size) + finishPriceDelta(finish), img: p.img || svgPlaceholder(p.title), qty: 1 });
+    saveCart();
+    renderCart();
+  }
+
+  function changeQty(key, delta) {
+    const i = cart.find(x => x.key === key);
+    if (!i) return;
+    i.qty += delta;
+    if (i.qty <= 0) cart.splice(cart.indexOf(i), 1);
+    saveCart();
+    renderCart();
+  }
+
+  function renderCart() {
+    cartList.innerHTML = '';
+    let subtotal = 0, count = 0;
+    cart.forEach(i => {
+      subtotal += i.price * i.qty;
+      count += i.qty;
+      const row = document.createElement('div');
+      row.className = 'cart-item';
+      row.innerHTML = `
+        <img src='${i.img}' alt='' style='width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.1)'>
+        <div>
+          <div style='font-weight:600'>${i.title}</div>
+          <div class='muted' style='font-size:12px'>${i.size} · ${i.finish}</div>
+          <div style='font-weight:700'>${KES(i.price)}</div>
+        </div>
+        <div class='qty'>
+          <button aria-label='Decrease' data-k='${i.key}' data-d='-1'>−</button>
+          <span>${i.qty}</span>
+          <button aria-label='Increase' data-k='${i.key}' data-d='1'>+</button>
+        </div>`;
+      cartList.appendChild(row);
+    });
+    subtotalEl.textContent = KES(subtotal);
+    cartCount.textContent = count;
+  }
+
+  cartList.addEventListener('click', e => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    const key = btn.dataset.k;
+    const d = parseInt(btn.dataset.d, 10);
+    changeQty(key, d);
+  });
+
+  document.getElementById('checkoutBtn').addEventListener('click', () => {
+    if (cart.length === 0) {
+      toast('Your cart is empty');
+      return;
+    }
+    const summary = cart.map(i => ${i.qty}× ${i.title} (${i.size}, ${i.finish}) — ${KES(i.price * i.qty)}).join('%0A');
+    const total = subtotalEl.textContent.replace(/\s/g, '');
+    const msg = Hello Samuel,%0A%0AI would like to order:%0A${summary}%0A%0ASubtotal: ${total}%0A%0AMy contacts:%0AName:%0APhone (WhatsApp):%0AEmail:%0ADelivery location:;
+    window.location.href = mailto:samuel@example.com?subject=Order — Late Night Epiphanies&body=${msg};
+    toast('Opening your email app to place the order');
+  });
+
+  const commissionBtn = document.getElementById('commissionBtn');
+  const heroCommission = document.getElementById('heroCommission');
+  [commissionBtn, heroCommission].forEach(b => b.addEventListener('click', () => {
+    const body = encodeURIComponent(Hello Samuel,%0A%0AI'd like to commission a custom piece.%0A%0AIdea/Subject:%0ASize (A4/A3/A2):%0ADeadline:%0ABudget:%0AReferences: (links));
+    window.location.href = mailto:samuel@example.com?subject=Commission Request — Late Night Epiphanies&body=${body};
+  }));
+
+  const toastEl = document.getElementById('toast');
+  function toast(text) {
+    toastEl.textContent = text;
+    toastEl.classList.add('show');
+    clearTimeout(toastEl._t);
+    toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2100);
+  }
+
+  document.getElementById('year').textContent = new Date().getFullYear();
   renderProducts(products);
   renderCart();
   applyFilters();
-  document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
+
+  // === M-PESA SANDBOX (UNCHANGED) ===
+  const mpesaPayBtn = document.getElementById('mpesaPayBtn');
+  const mpesaModal = document.getElementById('mpesaModal');
+  const mpesaModalClose = document.getElementById('mpesaModalClose');
+  const mpesaForm = document.getElementById('mpesaForm');
+  const mpesaPhone = document.getElementById('mpesaPhone');
+  mpesaPayBtn.addEventListener('click', () => {
+    const total = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
+    if (total === 0) {
+      toast('Your cart is empty');
+      return;
+    }
+    mpesaModal.style.display = 'grid';
+  });
+  mpesaModalClose.addEventListener('click', () => mpesaModal.style.display = 'none');
+  mpesaModal.addEventListener('click', (e) => {
+    if (e.target === mpesaModal) mpesaModal.style.display = 'none';
+  });
+  mpesaForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const phone = mpesaPhone.value.trim();
+    const amount = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
+    if (!/^254[7-9][0-9]{8}$/.test(phone)) {
+      toast('Invalid phone. Use 2547XXXXXXXX');
+      return;
+    }
+    mpesaPayBtn.disabled = true;
+    mpesaPayBtn.textContent = 'Sending...';
+    try {
+      const res = await fetch('https://art-mpesa-backend.onrender.com/api/pay', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, amount })
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast('STK Push sent! Check your phone.');
+        mpesaModal.style.display = 'none';
+      } else {
+        toast(data.error || 'Payment failed');
+      }
+    } catch (err) {
+      toast('Network error. Try again.');
+    } finally {
+      mpesaPayBtn.disabled = false;
+      mpesaPayBtn.innerHTML = `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
+          <path d="M12 2L2 7v10c0 5.55 4.48 8.78 10 12 5.52-3.22 10-6.45 10-12V7l-10-5z" fill="#00B140"/>
+        </svg>
+        Pay with M-Pesa (Sandbox)
+      `;
+    }
+  });
+</script>
 </body>
 </html>
 
