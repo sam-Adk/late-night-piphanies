@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About – Late Night Epiphanies</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon-16x16.png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg-1:#05030a;--bg-2:#0c0a1a;--text:#e7e7f0;--muted:#b8b7c7;--accent:#8b5cf6;--accent-2:#00e5ff;--shadow:0 10px 30px rgba(0,0,0,.55);}
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{font-family:'Poppins',sans-serif;color:var(--text);background:radial-gradient(1200px 800px at 80% -10%,rgba(139,92,246,.25),transparent 70%),radial-gradient(1000px 600px at -10% 10%,rgba(0,229,255,.18),transparent 60%),linear-gradient(180deg,var(--bg-1),var(--bg-2));min-height:100vh;display:flex;flex-direction:column;}
+    .container{max-width:1200px;margin:auto;padding:20px;}
+    .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);background:linear-gradient(180deg,rgba(10,8,25,.8),rgba(10,8,25,.35));border-bottom:1px solid rgba(255,255,255,.08);}
+    .nav-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;padding:14px 20px;}
+    .brand .logo{font-family:'Playfair Display',serif;font-weight:800;font-size:clamp(20px,5vw,30px);background:linear-gradient(90deg,#fff,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .glass-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.12);background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));padding:10px 14px;border-radius:14px;cursor:pointer;transition:.2s;font-size:14px;}
+    .glass-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2);box-shadow:0 8px 24px rgba(0,0,0,.35);}
+    .content{max-width:800px;margin:auto;padding:40px 20px;}
+    .content h1{font-family:'Playfair Display',serif;font-size:clamp(36px,6vw,56px);margin-bottom:16px;background:linear-gradient(90deg,var(--accent-2),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;}
+    .content p{line-height:1.7;margin-bottom:20px;color:var(--muted);}
+    .content .card{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;margin:24px 0;box-shadow:var(--shadow);}
+    footer{margin-top:auto;padding:40px 0;color:var(--muted);text-align:center;font-size:14px;}
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner container">
+      <div class="brand">
+        <div class="logo">Late Night Epiphanies</div>
+        <small>midnight sketches & dreamy Art by sam</small>
+      </div>
+      <div>
+        <a href="index.html" class="glass-btn">Back to Shop</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="content container">
+    <h1>About Late Night Epiphanies</h1>
+    <p>Late Night Epiphanies is a collection of midnight-born pencil sketches and dreamy art by <strong>Samuel Adikah</strong>. Each piece is hand-drawn in the quiet of 3 AM, capturing raw emotions, surreal thoughts, and poetic stillness.</p>
+
+    <div class="card">
+      <h2 style="margin-bottom:12px;color:var(--accent-2);">The Process</h2>
+      <p>I work only with graphite pencils on high-quality archival paper. No digital editing – just the honest texture of lead on paper. The late-night silence lets ideas flow freely, often turning a fleeting thought into a finished drawing before sunrise.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:12px;color:var(--accent-2);">Limited Editions</h2>
+      <p>Every artwork is produced in a maximum run of <strong>10 signed prints</strong>. Once sold out, the piece is retired forever. This keeps each work rare and personal.</p>
+    </div>
+
+    <div class="card">
+      <h2 style="margin-bottom:12px;color:var(--accent-2);">Commissions</h2>
+      <p>Want something uniquely yours? I accept custom portrait and concept commissions. Use the “Commission” button in the navbar to start the conversation.</p>
+    </div>
+
+    <p style="margin-top:32px;">Thank you for stepping into my nocturnal world. I hope one of these pieces sparks a 3 AM epiphany for you.</p>
+  </section>
+
+  <footer class="container">
+    © <span id="year"></span> Late Night Epiphanies — by Samuel Adikah. All rights reserved.
+  </footer>
+
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+</body>
+</html>
