@@ -449,7 +449,7 @@
     }
     .actions {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       margin-top: 12px;
       flex-wrap: wrap;
     }
@@ -468,6 +468,19 @@
       font-weight: 700;
       border: none;
     }
+    /* BID BUTTON */
+    .btn-bid {
+      background: linear-gradient(90deg, #ff6b6b, #ff4757);
+      color:#fff;
+      font-weight:700;
+      border:none;
+      padding:8px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:14px;
+    }
+    .btn-bid:disabled { opacity:0.5; cursor:not-allowed; }
+
     /* MODAL & DRAWER */
     .overlay {
       position: fixed;
@@ -708,9 +721,10 @@
       .card-body {
         padding: 12px;
       }
-      .btn-small {
+      .btn-small, .btn-bid {
         font-size: 13px;
         min-height: 44px;
+        flex: 1;
       }
       .radio {
         min-height: 44px;
@@ -736,6 +750,24 @@
     .btn-success:hover {
       background: linear-gradient(90deg, #00C150, #00A033);
     }
+
+    /* BID MODAL */
+    .bid-overlay { 
+      position:fixed; inset:0; background:rgba(0,0,0,.7);
+      display:none; place-items:center; z-index:999;
+    }
+    .bid-modal {
+      background:#12101a; color:#fff; padding:20px; border-radius:20px;
+      width:90%; max-width:340px; box-shadow:var(--shadow);
+    }
+    .bid-modal h3 { margin:0 0 12px; }
+    .bid-modal .current { margin-bottom:12px; font-weight:600; }
+    .bid-modal input {
+      width:100%; padding:10px; border-radius:12px;
+      border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.05);
+      color:#fff; margin-bottom:12px; font-size:16px;
+    }
+    .bid-modal .actions { display:flex; gap:8px; }
   </style>
 </head>
 <body>
@@ -758,7 +790,6 @@
       </div>
     </div>
   </nav>
-
   <!-- HERO -->
   <header class="hero container">
     <div class="hero-content">
@@ -778,7 +809,6 @@
       </div>
     </div>
   </header>
-
   <!-- TOOLBAR -->
   <div class="container">
     <div class="toolbar" role="region" aria-label="Filters">
@@ -798,10 +828,8 @@
       </select>
     </div>
   </div>
-
   <!-- GALLERY -->
   <main id="gallery" class="gallery container" aria-live="polite"></main>
-
   <!-- QUICK VIEW MODAL -->
   <div id="overlay" class="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Artwork details">
@@ -831,7 +859,6 @@
       </div>
     </div>
   </div>
-
   <!-- CART DRAWER -->
   <aside id="drawer" class="drawer" aria-label="Shopping cart">
     <div class="top">
@@ -856,7 +883,6 @@
       <small class="muted">Secure checkout. We’ll confirm via WhatsApp/Email.</small>
     </div>
   </aside>
-
   <!-- M-PESA PHONE MODAL -->
   <div id="mpesaModal" class="overlay" style="display:none; place-items:center; z-index:999">
     <div class="modal" style="width:90%; max-width:360px; padding:20px">
@@ -883,12 +909,23 @@
     </div>
   </div>
 
-  <div id="toast" class="toast"></div>
+  <!-- BID MODAL -->
+  <div id="bidOverlay" class="bid-overlay">
+    <div class="bid-modal">
+      <h3 id="bidTitle">Bid on …</h3>
+      <div class="current" id="bidCurrent"></div>
+      <input type="number" id="bidAmount" placeholder="Your bid (KSh)" min="0" step="100">
+      <div class="actions">
+        <button class="btn-small" id="bidCancel">Cancel</button>
+        <button class="btn-small primary" id="bidSubmit">Place Bid</button>
+      </div>
+    </div>
+  </div>
 
+  <div id="toast" class="toast"></div>
   <footer class="container">
     © <span id="year"></span> Late Night Epiphanies — by Samuel Adikah. All rights reserved.
   </footer>
-
   <script>
     // === PRODUCTS WITH SOLD STATUS ===
     const products = [
@@ -903,8 +940,16 @@
       { id: 'p9', title: 'Starry Night', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 50000, img: 'assets/images/new3.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' },
       { id: 'p10', title: 'The Woods', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 50000, img: 'assets/images/new4.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' },
       { id: 'p11', title: 'Two kittens', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 60000, img: 'assets/images/new6.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' },
-      { id: 'p12', title: 'Star Gaze', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 70000, img: 'assets/images/new7.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' }
+      { id: 'p12', title: 'Star Gaze', category: 'Sketch', tags: ['dreamy', 'soft'],Customize: 70000, img: 'assets/images/new7.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' }
     ];
+
+    // AUCTION DATA (in-memory, survives refresh)
+    const auctions = JSON.parse(localStorage.getItem('lnp_auctions') || '{}');
+    function saveAuctions() { localStorage.setItem('lnp_auctions', JSON.stringify(auctions)); }
+    products.forEach(p => {
+      if (!auctions[p.id]) auctions[p.id] = { highest: p.priceBase, bidder: null };
+    });
+    saveAuctions();
 
     function svgPlaceholder(title) {
       const grad1 = '#0aefff', grad2 = '#8b5cf6';
@@ -932,17 +977,14 @@
         </svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
-
     const KES = v => `KSh ${v.toLocaleString('en-KE')}`;
     const cart = JSON.parse(localStorage.getItem('lnp_cart') || '[]');
     const saveCart = () => localStorage.setItem('lnp_cart', JSON.stringify(cart));
     const favs = new Set(JSON.parse(localStorage.getItem('lnp_favs') || '[]'));
     const saveFavs = () => localStorage.setItem('lnp_favs', JSON.stringify(Array.from(favs)));
-
     let currentProduct = null;
     let currentSize = 'A4';
     let currentFinish = 'Unframed';
-
     function sizePriceDelta(size) {
       return { A5: 0, A4: 0, A3: 1200, A2: 2900 }[size] || 0;
     }
@@ -952,10 +994,8 @@
     function computePrice(p) {
       return p.priceBase + sizePriceDelta(currentSize) + finishPriceDelta(currentFinish);
     }
-
     const gallery = document.getElementById('gallery');
     const heroImage = document.getElementById('heroImage');
-
     function renderProducts(list) {
       gallery.innerHTML = '';
       list.forEach(p => {
@@ -990,21 +1030,24 @@
             <div class='price'>${KES(p.priceBase)}</div>
             <div class='actions'>
               <button class='btn-small' data-action='view' data-id='${p.id}' ${p.sold ? 'disabled' : ''}>Quick view</button>
-              <button class='btn-small primary' data-action='add' data-id='${p.id}' ${p.sold ? 'disabled' : ''}>
-                ${p.sold ? 'Sold Out' : 'Add to cart'}
-              </button>
+              ${p.sold ? `
+                <button class='btn-small primary' disabled>Sold Out</button>
+              ` : `
+                <button class='btn-small primary' data-action='add' data-id='${p.id}'>Add to cart</button>
+                <button class='btn-bid' data-action='bid' data-id='${p.id}'>
+                  Bid now <span class='current-bid'>${KES(auctions[p.id].highest)}</span>
+                </button>
+              `}
             </div>
           </div>`;
         gallery.appendChild(card);
       });
       if (list[0]) heroImage.src = list[0].img || svgPlaceholder(list[0].title);
     }
-
     // Filters & Search
     const chips = document.querySelectorAll('.chip');
     const search = document.getElementById('search');
     const sort = document.getElementById('sort');
-
     function applyFilters() {
       const active = document.querySelector('.chip.active').dataset.filter;
       const q = search.value.trim().toLowerCase();
@@ -1016,7 +1059,6 @@
       if (sort.value === 'price-desc') list.sort((a, b) => b.priceBase - a.priceBase);
       renderProducts(list);
     }
-
     chips.forEach(c => c.addEventListener('click', () => {
       chips.forEach(x => x.classList.remove('active'));
       c.classList.add('active');
@@ -1024,7 +1066,6 @@
     }));
     search.addEventListener('input', applyFilters);
     sort.addEventListener('change', applyFilters);
-
     // Quick View Modal
     const overlay = document.getElementById('overlay');
     const qvImg = document.getElementById('qvImg');
@@ -1037,7 +1078,6 @@
     const finishRow = document.getElementById('finishRow');
     const qvAdd = document.getElementById('qvAdd');
     const saveFav = document.getElementById('saveFav');
-
     function openQV(p) {
       if (p.sold) {
         toast('This artwork has been sold');
@@ -1055,17 +1095,14 @@
       overlay.style.display = 'grid';
       overlay.setAttribute('aria-hidden', 'false');
     }
-
     function closeQV() {
       overlay.style.display = 'none';
       overlay.setAttribute('aria-hidden', 'true');
     }
-
     qvClose.addEventListener('click', closeQV);
     overlay.addEventListener('click', e => {
       if (e.target === overlay) closeQV();
     });
-
     function optChip(val, group, isActive = false) {
       const el = document.createElement('button');
       el.type = 'button';
@@ -1081,27 +1118,29 @@
       });
       return el;
     }
-
     function buildOptions() {
       sizeRow.innerHTML = '';
       finishRow.innerHTML = '';
       ['A5', 'A4', 'A3', 'A2'].forEach(s => sizeRow.appendChild(optChip(s, 'size', s === 'A4')));
       ['Unframed', 'Framed'].forEach(f => finishRow.appendChild(optChip(f, 'finish', f === 'Unframed')));
     }
-
     // Gallery Click Handler
     gallery.addEventListener('click', e => {
       const btn = e.target.closest('button');
       if (!btn) return;
       const id = btn.dataset.id;
       const p = products.find(x => x.id === id);
-      if (btn.dataset.action === 'view') openQV(p);
-      if (btn.dataset.action === 'add' && !p.sold) {
+      if (!p) return;
+
+      if (btn.dataset.action === 'view') {
+        openQV(p);
+      } else if (btn.dataset.action === 'add' && !p.sold) {
         addToCart(p, 'A4', 'Unframed');
         toast('Added to cart');
+      } else if (btn.dataset.action === 'bid') {
+        openBid(p);
       }
     });
-
     qvAdd.addEventListener('click', () => {
       if (currentProduct && !currentProduct.sold) {
         addToCart(currentProduct, currentSize, currentFinish);
@@ -1109,7 +1148,6 @@
         toast('Added to cart');
       }
     });
-
     saveFav.addEventListener('click', () => {
       if (!currentProduct) return;
       if (favs.has(currentProduct.id)) favs.delete(currentProduct.id);
@@ -1117,7 +1155,6 @@
       saveFavs();
       toast(favs.has(currentProduct.id) ? 'Saved to wishlist' : 'Removed from wishlist');
     });
-
     // Cart Drawer
     const cartBtn = document.getElementById('cartBtn');
     const drawer = document.getElementById('drawer');
@@ -1125,17 +1162,14 @@
     const cartList = document.getElementById('cartList');
     const subtotalEl = document.getElementById('subtotal');
     const cartCount = document.getElementById('cartCount');
-
     function openCart() {
       drawer.classList.add('open');
     }
     function closeCart() {
       drawer.classList.remove('open');
     }
-
     cartBtn.addEventListener('click', openCart);
     cartClose.addEventListener('click', closeCart);
-
     function addToCart(p, size = 'A4', finish = 'Unframed') {
       const key = `${p.id}-${size}-${finish}`;
       const existing = cart.find(i => i.key === key);
@@ -1153,7 +1187,6 @@
       saveCart();
       renderCart();
     }
-
     function changeQty(key, delta) {
       const i = cart.find(x => x.key === key);
       if (!i) return;
@@ -1162,7 +1195,6 @@
       saveCart();
       renderCart();
     }
-
     function renderCart() {
       cartList.innerHTML = '';
       let subtotal = 0, count = 0;
@@ -1188,7 +1220,6 @@
       subtotalEl.textContent = KES(subtotal);
       cartCount.textContent = count;
     }
-
     cartList.addEventListener('click', e => {
       const btn = e.target.closest('button');
       if (!btn) return;
@@ -1196,7 +1227,6 @@
       const d = parseInt(btn.dataset.d, 10);
       changeQty(key, d);
     });
-
     // Checkout via Email
     document.getElementById('checkoutBtn').addEventListener('click', () => {
       if (cart.length === 0) {
@@ -1209,7 +1239,6 @@
       window.location.href = `mailto:samuel@example.com?subject=Order — Late Night Epiphanies&body=${msg}`;
       toast('Opening your email app to place the order');
     });
-
     // Commission Buttons
     const commissionBtn = document.getElementById('commissionBtn');
     const heroCommission = document.getElementById('heroCommission');
@@ -1217,7 +1246,6 @@
       const body = encodeURIComponent(`Hello Samuel,%0A%0AI'd like to commission a custom piece.%0A%0AIdea/Subject:%0ASize (A4/A3/A2):%0ADeadline:%0ABudget:%0AReferences: (links)`);
       window.location.href = `mailto:samuel@example.com?subject=Commission Request — Late Night Epiphanies&body=${body}`;
     }));
-
     // Toast
     const toastEl = document.getElementById('toast');
     function toast(text) {
@@ -1226,14 +1254,53 @@
       clearTimeout(toastEl._t);
       toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2100);
     }
-
     // Year
     document.getElementById('year').textContent = new Date().getFullYear();
-
     // Initialize
     renderProducts(products);
     renderCart();
     applyFilters();
+
+    // BID HANDLING
+    const bidOverlay = document.getElementById('bidOverlay');
+    const bidTitle   = document.getElementById('bidTitle');
+    const bidCurrent = document.getElementById('bidCurrent');
+    const bidAmount  = document.getElementById('bidAmount');
+    const bidCancel  = document.getElementById('bidCancel');
+    const bidSubmit  = document.getElementById('bidSubmit');
+    let bidProduct = null;
+
+    function openBid(p) {
+      if (p.sold) return;
+      bidProduct = p;
+      const a = auctions[p.id];
+      bidTitle.textContent   = `Bid on “${p.title}”`;
+      bidCurrent.textContent = `Current highest: ${KES(a.highest)}`;
+      bidAmount.value = '';
+      bidAmount.min = a.highest + 100;
+      bidOverlay.style.display = 'grid';
+    }
+    function closeBid() {
+      bidOverlay.style.display = 'none';
+      bidProduct = null;
+    }
+    bidCancel.addEventListener('click', closeBid);
+    bidOverlay.addEventListener('click', e => { if (e.target===bidOverlay) closeBid(); });
+
+    bidSubmit.addEventListener('click', () => {
+      const amount = Number(bidAmount.value);
+      const a = auctions[bidProduct.id];
+      if (isNaN(amount) || amount <= a.highest) {
+        toast('Bid must be higher than the current highest');
+        return;
+      }
+      a.highest = amount;
+      a.bidder   = 'You';
+      saveAuctions();
+      toast(`Bid of ${KES(amount)} placed!`);
+      closeBid();
+      renderProducts(products);
+    });
 
     // M-Pesa Sandbox
     const mpesaPayBtn = document.getElementById('mpesaPayBtn');
@@ -1241,7 +1308,6 @@
     const mpesaModalClose = document.getElementById('mpesaModalClose');
     const mpesaForm = document.getElementById('mpesaForm');
     const mpesaPhone = document.getElementById('mpesaPhone');
-
     mpesaPayBtn.addEventListener('click', () => {
       const total = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
       if (total === 0) {
@@ -1250,13 +1316,11 @@
       }
       mpesaModal.style.display = 'grid';
     });
-
     mpesaModalClose.addEventListener('click', () => mpesaModal.style.display = 'none');
     mpesaModal.addEventListener('click', (e) => {
       if (e.target === mpesaModal) mpesaModal.style.display = 'none';
     });
-
-    mpeaForm.addEventListener('submit', async (e) => {
+    mpesaForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const phone = mpesaPhone.value.trim();
       const amount = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
@@ -1294,5 +1358,4 @@
   </script>
 </body>
 </html>
-
 
