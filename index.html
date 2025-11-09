@@ -9,232 +9,763 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ──────────────────────────────────────
-       CART DRAWER (original)
-       ────────────────────────────────────── */
-    .cart-drawer{position:fixed;top:0;right:0;width:360px;height:100vh;background:#12101a;color:#fff;
-      box-shadow:-2px 0 10px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .4s ease;
-      z-index:999;display:flex;flex-direction:column;padding:20px;overflow-y:auto}
-    .cart-drawer.open{transform:translateX(0)}
-    .cart-drawer h2{font-size:1.5rem;margin-bottom:20px;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:10px}
-    .cart-item{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;
-      border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:10px}
-    .cart-item img{width:60px;height:60px;border-radius:8px;object-fit:cover}
-    .cart-item-details{flex:1;margin-left:10px}
-    .cart-item-details h4{margin:0;font-size:1rem;color:#fff}
-    .cart-item-details p{margin:5px 0 0;font-size:.9rem;color:#ccc}
-    .cart-total{margin-top:auto;padding-top:15px;border-top:1px solid rgba(255,255,255,.1);font-size:1.2rem;color:#fff}
-    .close-cart{position:absolute;top:15px;right:20px;background:#ff4b2b;border:none;color:#fff;
-      font-size:1rem;padding:6px 12px;border-radius:6px;cursor:pointer;transition:.3s}
-    .close-cart:hover{background:#ff6a4d}
-
-    :root{
-      --bg-1:#05030a;--bg-2:#0c0a1a;--card:rgba(255,255,255,.06);--card-strong:rgba(255,255,255,.12);
-      --text:#e7e7f0;--muted:#b8b7c7;--accent:#8b5cf6;--accent-2:#00e5ff;--danger:#ff4d6d;
-      --success:#22c55e;--shadow:0 10px 30px rgba(0,0,0,.55);--radius:20px
+    /* CART DRAWER STYLING */
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 360px;
+      height: 100vh;
+      background: #12101a;
+      color: #fff;
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.5);
+      transform: translateX(100%);
+      transition: transform 0.4s ease;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;width:100%;max-width:100%;overflow-x:hidden!important}
-    body{margin:0;font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
-      color:var(--text);
-      background:radial-gradient(1200px 800px at 80% -10%,rgba(139,92,246,.25),transparent 70%),
-                 radial-gradient(1000px 600px at -10% 10%,rgba(0,229,255,.18),transparent 60%),
-                 linear-gradient(180deg,var(--bg-1),var(--bg-2))}
-    body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
-      background:radial-gradient(2px 2px at 20% 30%,rgba(255,255,255,.22),transparent 60%),
-                 radial-gradient(1.5px 1.5px at 70% 60%,rgba(255,255,255,.18),transparent 60%),
-                 radial-gradient(1.5px 1.5px at 40% 80%,rgba(255,255,255,.16),transparent 60%);
-      filter:drop-shadow(0 0 6px rgba(255,255,255,.15))}
-    a{color:inherit;text-decoration:none}
-    button{font:inherit}
-    .container{max-width:1200px;margin-inline:auto;padding:20px;overflow-x:hidden}
-
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+    .cart-drawer h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+    .cart-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 10px;
+    }
+    .cart-item img {
+      width: 60px;
+      height: 60px;
+      border
+      border-radius: 8px;
+      object-fit: cover;
+    }
+    .cart-item-details {
+      flex: 1;
+      margin-left: 10px;
+    }
+    .cart-item-details h4 {
+      margin: 0;
+      font-size: 1rem;
+      color: #fff;
+    }
+    .cart-item-details p {
+      margin: 5px 0 0;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .cart-total {
+      margin-top: auto;
+      padding-top: 15px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 1.2rem;
+      color: #fff;
+    }
+    .close-cart {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      background: #ff4b2b;
+      border: none;
+      color: #fff;
+      font-size: 1rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .close-cart:hover {
+      background: #ff6a4d;
+    }
+    :root {
+      --bg-1: #05030a;
+      --bg-2: #0c0a1a;
+      --card: rgba(255, 255, 255, 0.06);
+      --card-strong: rgba(255, 255, 255, 0.12);
+      --text: #e7e7f0;
+      --muted: #b8b7c7;
+      --accent: #8b5cf6;
+      --accent-2: #00e5ff;
+      --danger: #ff4d6d;
+      --success: #22c55e;
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.55);
+      --radius: 20px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      max-width: 100%;
+      overflow-x: hidden !important;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 80% -10%, rgba(139, 92, 246, 0.25), transparent 70%),
+                  radial-gradient(1000px 600px at -10% 10%, rgba(0, 229, 255, 0.18), transparent 60%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      background: radial-gradient(2px 2px at 20% 30%, rgba(255, 255, 255, 0.22), transparent 60%),
+                  radial-gradient(1.5px 1.5px at 70% 60%, rgba(255, 255, 255, 0.18), transparent 60%),
+                  radial-gradient(1.5px 1.5px at 40% 80%, rgba(255, 255, 255, 0.16), transparent 60%);
+      filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button {
+      font: inherit;
+    }
+    .container {
+      max-width: 1200px;
+      margin-inline: auto;
+      padding: 20px;
+      overflow-x: hidden;
+    }
     /* NAVBAR */
-    .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
-      background:linear-gradient(180deg,rgba(10,8,25,.8),rgba(10,8,25,.35));
-      border-bottom:1px solid rgba(255,255,255,.08)}
-    .nav-inner{display:flex;align-items:center;gap:14px;justify-content:space-between;
-      padding:14px 20px;flex-wrap:wrap;overflow-x:hidden}
-    .brand{display:flex;flex-direction:column;gap:4px;max-width:100%}
-    .brand .logo{font-family:'Playfair Display',serif;letter-spacing:.2px;font-weight:800;
-      font-size:clamp(20px,5vw,30px);background:linear-gradient(90deg,#fff,var(--accent-2),var(--accent));
-      -webkit-background-clip:text;background-clip:text;color:transparent;
-      text-shadow:0 6px 40px rgba(0,229,255,.25)}
-    .brand small{color:var(--muted);opacity:.9;font-size:13px}
-    .nav-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end;
-      width:100%;margin-top:10px}
-    @media (min-width:600px){.nav-actions{width:auto;margin-top:0}}
-    .glass-btn{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
-      padding:10px 14px;border-radius:14px;cursor:pointer;transition:transform .2s ease,
-      border-color .2s ease,box-shadow .2s ease;font-size:14px}
-    .glass-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2);
-      box-shadow:0 8px 24px rgba(0,0,0,.35)}
-
-    /* HERO */
-    .hero{position:relative;padding:clamp(30px,6vw,80px) 0 10px;overflow-x:hidden}
-    .hero-content{display:grid;grid-template-columns:1fr;align-items:center;gap:30px}
-    @media (min-width:880px){.hero-content{grid-template-columns:1.1fr .9fr}}
-    .hero h1{margin:0;line-height:1.05;font-size:clamp(28px,6vw,60px);font-weight:800;letter-spacing:.2px}
-    .hero h1 span{color:var(--accent-2)}
-    .hero p{color:var(--muted);font-size:clamp(14px,2vw,18px)}
-    .cta-row{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
-    .btn{border:none;padding:12px 18px;border-radius:14px;cursor:pointer;box-shadow:var(--shadow)}
-    .btn-primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));color:#05030a;font-weight:700}
-    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.14);color:var(--text)}
-    .hero-card{aspect-ratio:4/3;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
-      border:1px solid rgba(255,255,255,.08);
-      background:radial-gradient(120% 100% at 80% 10%,rgba(139,92,246,.25),rgba(255,255,255,.02) 50%),
-                 linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-      display:grid;place-items:center}
-    .hero-burst{position:absolute;inset:-40%;background:conic-gradient(from 180deg at 50% 50%,
-      rgba(0,229,255,.16),rgba(139,92,246,.12),rgba(0,229,255,.16));filter:blur(40px);opacity:.6}
-    .hero-art{width:80%;max-width:320px;aspect-ratio:1/1;border-radius:24px;overflow:hidden;
-      position:relative;margin:auto;border:1px solid rgba(255,255,255,.12);
-      box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 6px rgba(139,92,246,.08);transform:rotate(-4deg)}
-    .hero-art img{width:100%;height:100%;object-fit:cover;display:block}
-
-    /* TOOLBAR */
-    .toolbar{position:sticky;top:70px;z-index:40;margin-top:6px;
-      background:linear-gradient(180deg,rgba(10,8,25,.92),rgba(10,8,25,.6));
-      backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);
-      padding:10px;border-radius:16px;display:flex;gap:10px;align-items:center}
-    .chip{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);
-      cursor:pointer;user-select:none;font-size:14px}
-    .chip.active{background:linear-gradient(90deg,rgba(0,229,255,.2),rgba(139,92,246,.2));
-      border-color:transparent}
-    .spacer{flex:1;min-width:20px}
-    .field{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.05);
-      padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.08);
-      flex:1;min-width:180px}
-    .field input{background:transparent;border:none;outline:none;color:var(--text);width:100%;font-size:14px}
-    .select{appearance:none;background:rgba(255,255,255,.05);color:var(--text);
-      border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:12px;
-      font-size:14px;flex:1;min-width:150px}
-
-    /* GALLERY */
-    .gallery{column-count:1;column-gap:16px;margin-top:16px;overflow-x:hidden}
-    @media (min-width:700px){.gallery{column-count:2}}
-    @media (min-width:1000px){.gallery{column-count:3}}
-    .card{break-inside:avoid;margin:0 0 16px;position:relative;border-radius:22px;
-      overflow:hidden;box-shadow:var(--shadow);background:var(--card);
-      border:1px solid rgba(255,255,255,.1)}
-    .card .img-wrap{position:relative;overflow:hidden;aspect-ratio:4/5}
-    .card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .6s ease}
-    .card:hover img{transform:scale(1.04)}
-    .tag-badge{position:absolute;top:12px;left:12px;background:rgba(0,229,255,.9);
-      color:#021016;font-weight:700;padding:6px 10px;border-radius:999px;font-size:12px}
-    .card-body{padding:14px 14px 16px}
-    .title{font-weight:700;letter-spacing:.2px}
-    .muted{color:var(--muted);font-size:14px}
-    .price{font-weight:800;margin-top:8px;background:linear-gradient(90deg,#fff,var(--accent));
-      -webkit-background-clip:text;background-clip:text;color:transparent}
-    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
-    .btn-small{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;font-size:14px}
-    .btn-small.primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));
-      color:#05030a;font-weight:700;border:none}
-
-    /* BID BUTTON – SAME GLASS STYLE */
-    .btn-bid{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;font-size:14px;
-      display:inline-flex;align-items:center;gap:4px}
-    .btn-bid .current-bid{font-weight:600;color:var(--accent-2);font-size:13px}
-    .btn-bid:disabled{opacity:.5;cursor:not-allowed}
-
-    /* MODALS */
-    .overlay{position:fixed;inset:0;background:rgba(5,3,10,.72);display:none;
-      place-items:center;z-index:70;backdrop-filter:blur(6px);overflow-x:hidden}
-    .modal{width:min(100%,980px);max-height:90vh;overflow:auto;
-      background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
-      border:1px solid rgba(255,255,255,.12);border-radius:22px;box-shadow:var(--shadow);
-      overflow-x:hidden}
-    .modal-head{display:flex;align-items:center;justify-content:space-between;
-      gap:10px;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.06)}
-    .x{background:transparent;border:none;color:var(--text);font-size:22px;cursor:pointer}
-    .modal-body{display:grid;grid-template-columns:1fr;gap:18px;padding:16px}
-    @media (min-width:880px){.modal-body{grid-template-columns:1.1fr .9fr}}
-    .modal-img{border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
-    .modal-img img{width:100%;height:100%;object-fit:cover;display:block}
-    .opt{margin:14px 0}
-    .opt label{display:block;font-size:14px;color:var(--muted);margin-bottom:8px}
-    .opt .row{display:flex;gap:8px;flex-wrap:wrap}
-    .radio{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.04);cursor:pointer}
-    .radio.active{outline:2px solid var(--accent-2);border-color:transparent}
-    .drawer{position:fixed;top:0;right:0;height:100vh;width:min(420px,100%);
-      transform:translateX(110%);transition:transform .3s ease;z-index:80;
-      background:linear-gradient(180deg,rgba(18,16,26,.95),rgba(18,16,26,.85));
-      border-left:1px solid rgba(255,255,255,.12);box-shadow:var(--shadow);
-      display:flex;flex-direction:column;overflow-x:hidden}
-    .drawer.open{transform:translateX(0)}
-    .drawer .top{display:flex;align-items:center;justify-content:space-between;
-      padding:16px;border-bottom:1px solid rgba(255,255,255,.15);
-      background:rgba(18,16,26,.95)}
-    .cart-list{flex:1;overflow:auto;padding:14px}
-    .cart-item{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;
-      padding:10px;border-radius:12px;border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.08);margin-bottom:10px}
-    .qty{display:flex;gap:8px;align-items:center}
-    .qty button{width:28px;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.1);color:var(--text);cursor:pointer}
-    .drawer .bottom{border-top:1px solid rgba(255,255,255,.15);padding:14px;
-      display:grid;gap:10px;background:rgba(18,16,26,.95)}
-
-    /* TOAST */
-    .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120%);
-      background:#0b1220;border:1px solid rgba(255,255,255,.12);color:var(--text);
-      padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:90;
-      transition:transform .35s ease}
-    .toast.show{transform:translateX(-50%) translateY(0)}
-
-    /* FOOTER */
-    footer{margin:40px 0 60px;color:var(--muted);text-align:center;font-size:14px;line-height:1.6}
-
-    /* MOBILE */
-    @media (max-width:480px){
-      .nav-inner{padding:12px}
-      .glass-btn{padding:8px 12px;font-size:13px;min-height:44px}
-      .hero{padding:20px 0}
-      .hero h1{font-size:clamp(24px,5vw,32px)}
-      .hero p{font-size:clamp(12px,3vw,14px)}
-      .cta-row{flex-direction:column;align-items:stretch}
-      .btn{width:100%;text-align:center;min-height:44px}
-      .toolbar{flex-direction:column;align-items:stretch;gap:8px}
-      .field,.select{width:100%;min-width:unset}
-      .field input::placeholder{font-size:13px}
-      .select{font-size:13px}
-      .chip{width:100%;text-align:center;min-height:44px}
-      .spacer{display:none}
-      .gallery{column-count:1;column-gap:0}
-      .card{margin-bottom:12px}
-      .card-body{padding:12px}
-      .btn-small,.btn-bid{font-size:13px;min-height:44px;flex:1}
-      .radio{min-height:44px}
-      footer{font-size:13px}
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(10, 8, 25, 0.8), rgba(10, 8, 25, 0.35));
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    @media (max-width:400px){.cart-drawer{width:100%}}
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: space-between;
+      padding: 14px 20px;
+      flex-wrap: wrap;
+      overflow-x: hidden;
+    }
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-width: 100%;
+    }
+    .brand .logo {
+      font-family: 'Playfair Display', serif;
+      letter-spacing: 0.2px;
+      font-weight: 800;
+      font-size: clamp(20px, 5vw, 30px);
+      background: linear-gradient(90deg, #fff, var(--accent-2), var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 6px 40px rgba(0, 229, 255, 0.25);
+    }
+    .brand small {
+      color: var(--muted);
+      opacity: 0.9;
+      font-size: 13px;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      width: 100%;
+      margin-top: 10px;
+    }
+    @media (min-width: 600px) {
+      .nav-actions {
+        width: auto;
+        margin-top: 0;
+      }
+    }
+    .glass-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      font-size: 14px;
+    }
+    .glass-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    }
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: clamp(30px, 6vw, 80px) 0 10px;
+      overflow-x: hidden;
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr;
+      align-items: center;
+      gap: 30px;
+    }
+    @media (min-width: 880px) {
+      .hero-content {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+    .hero h1 {
+      margin: 0;
+      line-height: 1.05;
+      font-size: clamp(28px, 6vw, 60px);
+      font-weight: 800;
+      letter-spacing: 0.2px;
+    }
+    .hero h1 span {
+      color: var(--accent-2);
+    }
+    .hero p {
+      color304: var(--muted);
+      font-size: clamp(14px, 2vw, 18px);
+    }
+    .cta-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      border: none;
+      padding: 12px 18px;
+      border-radius: 14px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+    }
+    .btn-primary {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      color: #05030a;
+      font-weight: 700;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text);
+    }
+    .hero-card {
+      aspect-ratio: 4/3;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: radial-gradient(
+          120% 100% at 80% 10%,
+          rgba(139, 92, 246, 0.25),
+          rgba(255, 255, 255, 0.02) 50%
+        ),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+      display: grid;
+      place-items: center;
+    }
+    .hero-burst {
+      position: absolute;
+      inset: -40%;
+      background: conic-gradient(
+        from 180deg at 50% 50%,
+        rgba(0 , 229, 255, 0.16),
+        rgba(139, 92, 246, 0.12),
+        rgba(0, 229, 255, 0.16)
+      );
+      filter: blur(40px);
+      opacity: 0.6;
+    }
+    .hero-art {
+      width: 80%;
+      max-width: 320px;
+      aspect-ratio: 1/1;
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      margin: auto;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.55), 0 0 0 6px rgba(139, 92, 246, 0.08);
+      transform: rotate(-4deg);
+    }
+    .hero-art img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    /* TOOLBAR */
+    .toolbar {
+      position: sticky;
+      top: 70px;
+      z-index: 40;
+      margin-top: 6px;
+      background: linear-gradient(180deg, rgba(10, 8, 25, 0.92), rgba(10, 8, 25, 0.6));
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px;
+      border-radius: 16px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .chip {
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      cursor: pointer;
+      user-select: none;
+      font-size: 14px;
+    }
+    .chip.active {
+      background: linear-gradient(90deg, rgba(0, 229, 255, 0.2), rgba(139, 92, 246, 0.2));
+      border-color: transparent;
+    }
+    .spacer {
+      flex: 1;
+      min-width: 20px;
+    }
+    .field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex: 1;
+      min-width: 180px;
+    }
+    .field input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      width: 100%;
+      font-size: 14px;
+    }
+    .select {
+      appearance: none;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 10px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      flex: 1;
+      min-width: 150px;
+    }
+    /* GALLERY */
+    .gallery {
+      column-count: 1;
+      column-gap: 16px;
+      margin-top: 16px;
+      overflow-x: hidden;
+    }
+    @media (min-width: 700px) {
+      .gallery {
+        column-count: 2;
+      }
+    }
+    @media (min-width: 1000px) {
+      .gallery {
+        column-count: 3;
+      }
+    }
+    .card {
+      break-inside: avoid;
+      margin: 0 0 16px;
+      position: relative;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .card .img-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 4/5;
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+    .card:hover img {
+      transform: scale(1.04);
+    }
+    .tag-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0, 229, 255, 0.9);
+      color: #021016;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+    }
+    .card-body {
+      padding: 14px 14px 16px;
+    }
+    .title {
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .muted {
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .price {
+      font-weight: 800;
+      margin-top: 8px;
+      background: linear-gradient(90deg, #fff, var(--accent));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .actions {
+      display: flex;
+      gap:: 10px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .btn-small {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--text);
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-small.primary {
+      background: linear-gradient(90deg, var(--accent-2), var(--accent));
+      color: #05030a;
+      font-weight: 700;
+      border: none;
+    }
+    .btn-small.bid {
+      background: linear-gradient(90deg, #ff6b6b, #feca57);
+      color: #05030a;
+      font-weight: 700;
+      border: none;
+    }
+    /* MODAL & DRAWER */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 3, 10, 0.72);
+      display: none;
+      place-items: center;
+      z-index: 70;
+      backdrop-filter: blur(6px);
+      overflow-x: hidden;
+    }
+    .modal {
+      width: min(100%, 980px);
+      max-height: 90vh;
+      overflow: auto;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow-x: hidden;
+    }
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .x {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 22px;
+      cursor: pointer;
+    }
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      padding: 16px;
+    }
+    @media (min-width: 880px) {
+      .modal-body {
+        grid-template-columns: 1.1fr 0.9fr;
+      }
+    }
+    .modal-img {
+      border-radius: 18px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .modal-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .opt {
+      margin: 14px 0;
+    }
+    .opt label {
+      display: block;
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .opt .row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .radio {
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.04);
+      cursor: pointer;
+    }
+    .radio.active {
+      outline: 2px solid var(--accent-2);
+      border-color: transparent;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100vh;
+      width: min(420px, 100%);
+      transform: translateX(110%);
+      transition: transform 0.3s ease;
+      z-index: 80;
+      background: linear-gradient(180deg, rgba(18, 16, 26, 0.95), rgba(18, 16, 26, 0.85));
+      border-left: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(18, 16, 26, 0.95);
+    }
+    .cart-list {
+      flex: 1;
+      overflow: auto;
+      padding: 14px;
+    }
+    .cart-item {
+      display: grid;
+      grid-template-columns: 64px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.08);
+      margin-bottom: 10px;
+    }
+    .qty {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .qty button {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .drawer .bottom {
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 14px;
+      display: grid;
+      gap: 10px;
+      background: rgba(18, 16, 26, 0.95);
+    }
+    /* TOAST */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      background: #0b1220;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text);
+      padding: 12px 16px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      z-index: 90;
+      transition: transform 0.35s ease;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+    /* FOOTER */
+    footer {
+      margin: 40px 0 60px;
+      color: var(--muted);
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    /* MOBILE OPTIMIZATIONS */
+    @media (max-width: 480px) {
+      .nav-inner {
+        padding: 12px;
+      }
+      .glass-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 44px;
+      }
+      .hero {
+        padding: 20px 0;
+      }
+      .hero h1 {
+        font-size: clamp(24px, 5vw, 32px);
+      }
+      .hero p {
+        font-size: clamp(12px, 3vw, 14px);
+      }
+      .cta-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .btn {
+        width: 100%;
+        text-align: center;
+        min-height: 44px;
+      }
+      .hero-art {
+        touch-action: none;
+      }
+      .hero-burst {
+        display: none;
+      }
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+      }
+      .field, .select {
+        width: 100%;
+        min-width: unset;
+      }
+      .field input::placeholder {
+        font-size: 13px;
+      }
+      .select {
+        font-size: 13px;
+      }
+      .chip {
+        width: 100%;
+        text-align: center;
+        min-height: 44px;
+      }
+      .spacer {
+        display: none;
+      }
+      .gallery {
+        column-count: 1;
+        column-gap: 0;
+      }
+      .card {
+        margin-bottom: 12px;
+      }
+      .card-body {
+        padding: 12px;
+      }
+      .btn-small {
+        font-size: 13px;
+        min-height: 44px;
+      }
+      .radio {
+        min-height: 44px;
+      }
+      footer {
+        font-size: 13px;
+      }
+    }
+    @media (max-width: 400px) {
+      .cart-drawer {
+        width: 100%;
+      }
+    }
+    /* M-PESA BUTTON */
+    .btn-success {
+      background: linear-gradient(90deg, #00B140, #009933);
+      color: white;
+      font-weight: 700;
+      border: none;
+      margin-top: 8px;
+      width: 100%;
+    }
+    .btn-success:hover {
+      background: linear-gradient(90deg, #00C150, #00A033);
+    }
 
-    /* M-PESA */
-    .btn-success{background:linear-gradient(90deg,#00B140,#009933);color:white;font-weight:700;
-      border:none;margin-top:8px;width:100%}
-    .btn-success:hover{background:linear-gradient(90deg,#00C150,#00A033)}
-
-    /* BID MODALS */
-    .bid-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
-      place-items:center;z-index:999}
-    .bid-modal{background:#12101a;color:#fff;padding:20px;border-radius:20px;
-      width:90%;max-width:340px;box-shadow:var(--shadow)}
-    .bid-modal h3{margin:0 0 12px}
-    .bid-modal .current{margin-bottom:12px;font-weight:600}
-    .bid-modal input{width:100%;padding:10px;border-radius:12px;
-      border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);
-      color:#fff;margin-bottom:12px;font-size:16px}
-    .bid-modal .actions{display:flex;gap:8px}
-    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
-      place-items:center;z-index:999}
-    .confirm-modal{background:#12101a;color:#fff;padding:20px;border-radius:20px;
-      width:90%;max-width:340px;box-shadow:var(--shadow);text-align:center}
+    /* BID MODAL */
+    #bidOverlay {
+      z-index: 999;
+    }
+    #bidModal .modal {
+      max-width: 400px;
+      padding: 20px;
+    }
+    #bidModal input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      font-size: 16px;
+      margin: 12px 0;
+    }
+    #bidModal .btn-primary {
+      width: 100%;
+      margin-top: 8px;
+    }
   </style>
 </head>
 <body>
@@ -246,6 +777,10 @@
         <small>midnight sketches & dreamy Art by sam</small>
       </div>
       <div class="nav-actions">
+        <button id="aboutBtn" class="glass-btn" title="About Late Night Epiphanies">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2a10 10 0 100 20 10 10 0 000-20zm0 18a8 8 0 110-16 8 8 0 010 16zm-.5-9h1v6h-1v-6zm0-2h1v1h-1v-1z" fill="currentColor"/></svg>
+          About Us
+        </button>
         <button id="commissionBtn" class="glass-btn" title="Commission an artwork">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 7l4.5 4.5M3 21l3.9-1.1c.5-.1 1.0-.4 1.4-.8L20 7.5a2.1 2.1 0 000-3 2.1 2.1 0 00-3 0L5.3 16.1c-.4.4-.7.9-.8 1.4L3 21z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           Commission
@@ -257,7 +792,6 @@
       </div>
     </div>
   </nav>
-
   <!-- HERO -->
   <header class="hero container">
     <div class="hero-content">
@@ -277,7 +811,6 @@
       </div>
     </div>
   </header>
-
   <!-- TOOLBAR -->
   <div class="container">
     <div class="toolbar" role="region" aria-label="Filters">
@@ -297,10 +830,8 @@
       </select>
     </div>
   </div>
-
   <!-- GALLERY -->
   <main id="gallery" class="gallery container" aria-live="polite"></main>
-
   <!-- QUICK VIEW MODAL -->
   <div id="overlay" class="overlay" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-label="Artwork details">
@@ -330,7 +861,20 @@
       </div>
     </div>
   </div>
-
+  <!-- BID MODAL -->
+  <div id="bidOverlay" class="overlay" style="display:none">
+    <div class="modal" id="bidModal">
+      <div class="modal-head">
+        <strong>Place Your Bid</strong>
+        <button class="x" id="bidClose">X</button>
+      </div>
+      <div style="padding:16px">
+        <p style="margin:0 0 12px; color:var(--muted)">Enter your bid amount (KSh):</p>
+        <input type="number" id="bidAmount" placeholder="e.g. 55000" min="1000" />
+        <button class="btn btn-primary" id="submitBid">Place Bid</button>
+      </div>
+    </div>
+  </div>
   <!-- CART DRAWER -->
   <aside id="drawer" class="drawer" aria-label="Shopping cart">
     <div class="top">
@@ -339,11 +883,13 @@
     </div>
     <div class="cart-list" id="cartList"></div>
     <div class="bottom">
-      <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex; justify-content:space-between; align-items:center">
         <span class="muted">Subtotal</span>
         <strong id="subtotal">KSh 0</strong>
       </div>
+      <!-- EMAIL CHECKOUT -->
       <button class="btn btn-primary" id="checkoutBtn">Checkout via Email</button>
+      <!-- M-PESA BUTTON -->
       <button class="btn btn-success" id="mpesaPayBtn">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
           <path d="M12 2L2 7v10c0 5.55 4.48 8.78 10 12 5.52-3.22 10-6.45 10-12V7l-10-5z" fill="#00B140"/>
@@ -353,58 +899,37 @@
       <small class="muted">Secure checkout. We’ll confirm via WhatsApp/Email.</small>
     </div>
   </aside>
-
   <!-- M-PESA PHONE MODAL -->
-  <div id="mpesaModal" class="overlay" style="display:none;place-items:center;z-index:999">
-    <div class="modal" style="width:90%;max-width:360px;padding:20px">
-      <div class="modal-head" style="margin-bottom:16px;border:none">
+  <div id="mpesaModal" class="overlay" style="display:none; place-items:center; z-index:999">
+    <div class="modal" style="width:90%; max-width:360px; padding:20px">
+      <div class="modal-head" style="margin-bottom:16px; border:none">
         <strong>Enter Phone Number</strong>
         <button class="x" id="mpesaModalClose">X</button>
       </div>
       <form id="mpesaForm">
-        <input type="tel" id="mpesaPhone" placeholder="254712345678" required pattern="254[7-9][0-9]{8}"
-               style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--text);font-size:16px"/>
-        <small style="display:block;margin:8px 0;color:var(--muted)">Use 2547XXXXXXXX (e.g. 254708374149)</small>
-        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px">Send STK Push</button>
+        <input
+          type="tel"
+          id="mpesaPhone"
+          placeholder="254712345678"
+          required
+          pattern="254[7-9][0-9]{8}"
+          style="width:100%; padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.05); color:var(--text); font-size:16px"
+        />
+        <small style="display:block; margin:8px 0; color:var(--muted)">
+          Use 2547XXXXXXXX (e.g. 254708374149)
+        </small>
+        <button type="submit" class="btn btn-primary" style="width:100%; margin-top:8px">
+          Send STK Push
+        </button>
       </form>
     </div>
   </div>
-
-  <!-- BID INPUT MODAL -->
-  <div id="bidOverlay" class="bid-overlay">
-    <div class="bid-modal">
-      <h3 id="bidTitle">Bid on …</h3>
-      <div class="current" id="bidCurrent"></div>
-      <input type="number" id="bidAmount" placeholder="Your bid (KSh)" min="0" step="100">
-      <div class="actions">
-        <button class="btn-small" id="bidCancel">Cancel</button>
-        <button class="btn-small primary" id="bidNext">Next</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- BID CONFIRM MODAL -->
-  <div id="confirmOverlay" class="confirm-overlay">
-    <div class="confirm-modal">
-      <h3>Confirm Your Bid</h3>
-      <p id="confirmText"></p>
-      <div class="actions">
-        <button class="btn-small" id="confirmCancel">Cancel</button>
-        <button class="btn-small primary" id="confirmSubmit">Place Bid</button>
-      </div>
-    </div>
-  </div>
-
   <div id="toast" class="toast"></div>
-
   <footer class="container">
     © <span id="year"></span> Late Night Epiphanies — by Samuel Adikah. All rights reserved.
   </footer>
-
   <script>
-    // ──────────────────────────────────────
-    // PRODUCTS
-    // ──────────────────────────────────────
+    // === PRODUCTS WITH SOLD STATUS ===
     const products = [
       { id: 'p1', title: 'Love Dream I', category: 'Portrait', tags: ['romance', 'bw'], priceBase: 42000, img: 'assets/images/love5.jpg', desc: 'Romantic midnight sketch in pencil.'},
       { id: 'p2', title: 'Dark Forest', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 25000, img: 'assets/images/NATURE ART6.jpg', desc: 'A dreamy late-night drawing, soft and textured.', sold: true },
@@ -419,212 +944,261 @@
       { id: 'p11', title: 'Two kittens', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 60000, img: 'assets/images/new6.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' },
       { id: 'p12', title: 'Star Gaze', category: 'Sketch', tags: ['dreamy', 'soft'], priceBase: 70000, img: 'assets/images/new7.jpeg', desc: 'A dreamy late-night drawing, soft and textured.' }
     ];
-
-    // ──────────────────────────────────────
-    // AUCTION STATE (localStorage)
-    // ──────────────────────────────────────
-    const auctions = JSON.parse(localStorage.getItem('lnp_auctions') || '{}');
-    const saveAuctions = () => localStorage.setItem('lnp_auctions', JSON.stringify(auctions));
-    products.forEach(p => {
-      if (!auctions[p.id]) auctions[p.id] = { highest: p.priceBase, bidder: null };
-    });
-    saveAuctions();
-
-    // ──────────────────────────────────────
-    // HELPERS
-    // ──────────────────────────────────────
     function svgPlaceholder(title) {
       const grad1 = '#0aefff', grad2 = '#8b5cf6';
       const svg = `<?xml version='1.0' encoding='UTF-8'?>
         <svg xmlns='http://www.w3.org/2000/svg' width='900' height='1125'>
-          <defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
-            <stop offset='0%' stop-color='${grad1}' stop-opacity='0.55'/>
-            <stop offset='100%' stop-color='${grad2}' stop-opacity='0.55'/>
-          </linearGradient></defs>
+          <defs>
+            <linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>
+              <stop offset='0%' stop-color='${grad1}' stop-opacity='0.55'/>
+              <stop offset='100%' stop-color='${grad2}' stop-opacity='0.55'/>
+            </linearGradient>
+          </defs>
           <rect width='100%' height='100%' fill='black'/>
           <rect x='20' y='20' width='860' height='1085' rx='24' ry='24' fill='url(#g)' opacity='0.35'/>
-          <g font-family='Poppins' font-size='54' fill='white' opacity='0.9'><text x='50' y='150'>Late Night Epiphanies</text></g>
-          <g font-family='Poppins' font-size='64' fill='white' opacity='0.95'><text x='50' y='600'>${title.replace(/&/g, '&amp;')}</text></g>
+          <g font-family='Poppins' font-size='54' fill='white' opacity='0.9'>
+            <text x='50' y='150'>Late Night Epiphanies</text>
+          </g>
+          <g font-family='Poppins' font-size='64' fill='white' opacity='0.95'>
+            <text x='50' y='600'>${title.replace(/&/g, '&amp;')}</text>
+          </g>
           <g fill='white' opacity='.22'>
-            <circle cx='750' cy='200' r='6'/><circle cx='820' cy='280' r='4'/><circle cx='820' cy='900' r='5'/>
+            <circle cx='750' cy='200' r='6'/>
+            <circle cx='820' cy='280' r='4'/>
+            <circle cx='820' cy='900' r='5'/>
           </g>
         </svg>`;
       return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
     }
     const KES = v => `KSh ${v.toLocaleString('en-KE')}`;
-
-    // ──────────────────────────────────────
-    // CART & FAVS
-    // ──────────────────────────────────────
     const cart = JSON.parse(localStorage.getItem('lnp_cart') || '[]');
     const saveCart = () => localStorage.setItem('lnp_cart', JSON.stringify(cart));
     const favs = new Set(JSON.parse(localStorage.getItem('lnp_favs') || '[]'));
     const saveFavs = () => localStorage.setItem('lnp_favs', JSON.stringify(Array.from(favs)));
-
-    // ──────────────────────────────────────
-    // PRICE CALC
-    // ──────────────────────────────────────
-    let currentProduct = null, currentSize = 'A4', currentFinish = 'Unframed';
-    const sizePriceDelta = s => ({ A5:0, A4:0, A3:1200, A2:2900 })[s] || 0;
-    const finishPriceDelta = f => ({ Unframed:0, Framed:1800 })[f] || 0;
-    const computePrice = p => p.priceBase + sizePriceDelta(currentSize) + finishPriceDelta(currentFinish);
-
-    // ──────────────────────────────────────
-    // GALLERY RENDER
-    // ──────────────────────────────────────
+    let currentProduct = null;
+    let currentSize = 'A4';
+    let currentFinish = 'Unframed';
+    function sizePriceDelta(size) {
+      return { A5: 0, A4: 0, A3: 1200, A2: 2900 }[size] || 0;
+    }
+    function finishPriceDelta(f) {
+      return { Unframed: 0, Framed: 1800 }[f] || 0;
+    }
+    function computePrice(p) {
+      return p.priceBase + sizePriceDelta(currentSize) + finishPriceDelta(currentFinish);
+    }
     const gallery = document.getElementById('gallery');
     const heroImage = document.getElementById('heroImage');
-
     function renderProducts(list) {
       gallery.innerHTML = '';
       list.forEach(p => {
         const card = document.createElement('article');
         card.className = 'card';
-        if (p.sold) { card.style.opacity = '.6'; card.style.pointerEvents = 'none'; }
-
-        const a = auctions[p.id];
+        if (p.sold) {
+          card.style.opacity = '0.6';
+          card.style.pointerEvents = 'none';
+        }
         card.innerHTML = `
           <div class='img-wrap' style='position:relative'>
             <img alt='${p.title}' src='${p.img || svgPlaceholder(p.title)}' loading='lazy'>
             <div class='tag-badge'>${p.category}</div>
-            ${p.sold ? `<div style="position:absolute;top:12px;right:12px;background:#ff0040;color:white;
-                font-weight:800;font-size:12px;padding:6px 12px;border-radius:999px;
-                transform:rotate(12deg);box-shadow:0 2px 8px rgba(255,0,64,.4)">SOLD</div>` : ''}
+            ${p.sold ? `
+              <div style="
+                position: absolute;
+                top: 12px; right: 12px;
+                background: #ff0040;
+                color: white;
+                font-weight: 800;
+                font-size: 12px;
+                padding: 6px 12px;
+                border-radius: 999px;
+                transform: rotate(12deg);
+                box-shadow: 0 2px 8px rgba(255,0,64,0.4);
+              ">SOLD</div>
+            ` : ''}
           </div>
           <div class='card-body'>
             <div class='title'>${p.title}</div>
-            <div class='muted'>${p.tags.map(t=>`#${t}`).join(' ')}</div>
+            <div class='muted'>${p.tags.map(t => `#${t}`).join(' ')}</div>
             <div class='price'>${KES(p.priceBase)}</div>
             <div class='actions'>
-              <button class='btn-small' data-action='view' data-id='${p.id}' ${p.sold?'disabled':''}>Quick view</button>
-              ${p.sold ? `<button class='btn-small primary' disabled>Sold Out</button>` : `
-                <button class='btn-small primary' data-action='add' data-id='${p.id}'>Add to cart</button>
-                <button class='btn-bid' data-action='bid' data-id='${p.id}'>
-                  Bid <span class='current-bid'>${KES(a.highest)}</span>
-                </button>
-              `}
+              <button class='btn-small' data-action='view' data-id='${p.id}' ${p.sold ? 'disabled' : ''}>Quick view</button>
+              <button class='btn-small primary' data-action='add' data-id='${p.id}' ${p.sold ? 'disabled' : ''}>
+                ${p.sold ? 'Sold Out' : 'Add to cart'}
+              </button>
+              ${!p.sold ? `<button class='btn-small bid' data-action='bid' data-id='${p.id}'>Place Bid</button>` : ''}
             </div>
           </div>`;
         gallery.appendChild(card);
       });
-      if (list[0]) heroImage.src = list[0].img || svgPlaceholder(list[0].title);
+      // Fix hero image: use first non-sold item or first in list
+      const featured = list.find(p => !p.sold) || list[0];
+      if (featured) heroImage.src = featured.img || svgPlaceholder(featured.title);
     }
-
-    // ──────────────────────────────────────
-    // FILTERS / SEARCH / SORT
-    // ──────────────────────────────────────
+    // Filters & Search
     const chips = document.querySelectorAll('.chip');
     const search = document.getElementById('search');
     const sort = document.getElementById('sort');
-
     function applyFilters() {
       const active = document.querySelector('.chip.active').dataset.filter;
       const q = search.value.trim().toLowerCase();
-      let list = products.filter(p => active === 'all' || p.category === active);
-      if (q) list = list.filter(p => (p.title + ' ' + p.tags.join(' ')).toLowerCase().includes(q));
-      if (sort.value === 'price-asc') list.sort((a,b)=>a.priceBase-b.priceBase);
-      if (sort.value === 'price-desc') list.sort((a,b)=>b.priceBase-a.priceBase);
+      let list = products.filter(p => active === 'all' ? true : p.category === active);
+      if (q) {
+        list = list.filter(p => (p.title + ' ' + p.tags.join(' ')).toLowerCase().includes(q));
+      }
+      if (sort.value === 'price-asc') list.sort((a, b) => a.priceBase - b.priceBase);
+      if (sort.value === 'price-desc') list.sort((a, b) => b.priceBase - a.priceBase);
       renderProducts(list);
     }
-    chips.forEach(c=>c.addEventListener('click',()=>{chips.forEach(x=>x.classList.remove('active'));c.classList.add('active');applyFilters();}));
-    search.addEventListener('input',applyFilters);
-    sort.addEventListener('change',applyFilters);
-
-    // ──────────────────────────────────────
-    // QUICK-VIEW MODAL
-    // ──────────────────────────────────────
+    chips.forEach(c => c.addEventListener('click', () => {
+      chips.forEach(x => x.classList.remove('active'));
+      c.classList.add('active');
+      applyFilters();
+    }));
+    search.addEventListener('input', applyFilters);
+    sort.addEventListener('change', applyFilters);
+    // Quick View Modal
     const overlay = document.getElementById('overlay');
-    const qvImg = document.getElementById('qvImg'), qvTitle = document.getElementById('qvTitle');
-    const qvCat = document.getElementById('qvCat'), qvDesc = document.getElementById('qvDesc');
-    const qvPrice = document.getElementById('qvPrice'), qvClose = document.getElementById('qvClose');
-    const sizeRow = document.getElementById('sizeRow'), finishRow = document.getElementById('finishRow');
-    const qvAdd = document.getElementById('qvAdd'), saveFav = document.getElementById('saveFav');
-
-    function openQV(p){
-      if(p.sold){toast('This artwork has been sold');return;}
-      currentProduct=p; currentSize='A4'; currentFinish='Unframed';
+    const qvImg = document.getElementById('qvImg');
+    const qvTitle = document.getElementById('qvTitle');
+    const qvCat = document.getElementById('qvCat');
+    const qvDesc = document.getElementById('qvDesc');
+    const qvPrice = document.getElementById('qvPrice');
+    const qvClose = document.getElementById('qvClose');
+    const sizeRow = document.getElementById('sizeRow');
+    const finishRow = document.getElementById('finishRow');
+    const qvAdd = document.getElementById('qvAdd');
+    const saveFav = document.getElementById('saveFav');
+    function openQV(p) {
+      if (p.sold) {
+        toast('This artwork has been sold');
+        return;
+      }
+      currentProduct = p;
+      currentSize = 'A4';
+      currentFinish = 'Unframed';
       qvImg.src = p.img || svgPlaceholder(p.title);
-      qvTitle.textContent = p.title; qvCat.textContent = p.category; qvDesc.textContent = p.desc;
-      buildOptions(); qvPrice.textContent = KES(computePrice(p));
-      overlay.style.display='grid'; overlay.setAttribute('aria-hidden','false');
+      qvTitle.textContent = p.title;
+      qvCat.textContent = p.category;
+      qvDesc.textContent = p.desc;
+      buildOptions();
+      qvPrice.textContent = KES(computePrice(p));
+      overlay.style.display = 'grid';
+      overlay.setAttribute('aria-hidden', 'false');
     }
-    function closeQV(){overlay.style.display='none';overlay.setAttribute('aria-hidden','true');}
-    qvClose.addEventListener('click',closeQV);
-    overlay.addEventListener('click',e=>{if(e.target===overlay)closeQV();});
-
-    function optChip(val,group,isActive=false){
-      const el=document.createElement('button'); el.type='button';
-      el.className='radio'+(isActive?' active':'');
-      el.textContent=val; el.dataset.group=group;
-      el.addEventListener('click',()=>{document.querySelectorAll(`.radio[data-group="${group}"]`).forEach(r=>r.classList.remove('active'));
+    function closeQV() {
+      overlay.style.display = 'none';
+      overlay.setAttribute('aria-hidden', 'true');
+    }
+    qvClose.addEventListener('click', closeQV);
+    overlay.addEventListener('click', e => {
+      if (e.target === overlay) closeQV();
+    });
+    function optChip(val, group, isActive = false) {
+      const el = document.createElement('button');
+      el.type = 'button';
+      el.className = 'radio' + (isActive ? ' active' : '');
+      el.textContent = val;
+      el.setAttribute('data-group', group);
+      el.addEventListener('click', () => {
+        document.querySelectorAll(`.radio[data-group="${group}"]`).forEach(r => r.classList.remove('active'));
         el.classList.add('active');
-        if(group==='size') currentSize=val; else currentFinish=val;
-        qvPrice.textContent=KES(computePrice(currentProduct));
+        if (group === 'size') currentSize = val;
+        else currentFinish = val;
+        qvPrice.textContent = KES(computePrice(currentProduct));
       });
       return el;
     }
-    function buildOptions(){
-      sizeRow.innerHTML=''; finishRow.innerHTML='';
-      ['A5','A4','A3','A2'].forEach(s=>sizeRow.appendChild(optChip(s,'size',s==='A4')));
-      ['Unframed','Framed'].forEach(f=>finishRow.appendChild(optChip(f,'finish',f==='Unframed')));
+    function buildOptions() {
+      sizeRow.innerHTML = '';
+      finishRow.innerHTML = '';
+      ['A5', 'A4', 'A3', 'A2'].forEach(s => sizeRow.appendChild(optChip(s, 'size', s === 'A4')));
+      ['Unframed', 'Framed'].forEach(f => finishRow.appendChild(optChip(f, 'finish', f === 'Unframed')));
     }
-
-    // ──────────────────────────────────────
-    // GALLERY CLICK HANDLER
-    // ──────────────────────────────────────
+    // Gallery Click Handler
     gallery.addEventListener('click', e => {
       const btn = e.target.closest('button');
       if (!btn) return;
       const id = btn.dataset.id;
       const p = products.find(x => x.id === id);
-      if (!p) return;
-
       if (btn.dataset.action === 'view') openQV(p);
-      else if (btn.dataset.action === 'add' && !p.sold) { addToCart(p,'A4','Unframed'); toast('Added to cart'); }
-      else if (btn.dataset.action === 'bid') openBid(p);
+      if (btn.dataset.action === 'add' && !p.sold) {
+        addToCart(p, 'A4', 'Unframed');
+        toast('Added to cart');
+      }
+      if (btn.dataset.action === 'bid' && !p.sold) {
+        openBidModal(p);
+      }
     });
-
-    qvAdd.addEventListener('click',()=>{if(currentProduct && !currentProduct.sold){addToCart(currentProduct,currentSize,currentFinish);closeQV();toast('Added to cart');}});
-    saveFav.addEventListener('click',()=>{if(!currentProduct)return;
-      favs.has(currentProduct.id)?favs.delete(currentProduct.id):favs.add(currentProduct.id);
-      saveFavs(); toast(favs.has(currentProduct.id)?'Saved to wishlist':'Removed from wishlist');
+    qvAdd.addEventListener('click', () => {
+      if (currentProduct && !currentProduct.sold) {
+        addToCart(currentProduct, currentSize, currentFinish);
+        closeQV();
+        toast('Added to cart');
+      }
     });
-
-    // ──────────────────────────────────────
-    // CART DRAWER
-    // ──────────────────────────────────────
-    const cartBtn=document.getElementById('cartBtn'), drawer=document.getElementById('drawer');
-    const cartClose=document.getElementById('cartClose'), cartList=document.getElementById('cartList');
-    const subtotalEl=document.getElementById('subtotal'), cartCount=document.getElementById('cartCount');
-
-    function openCart(){drawer.classList.add('open');}
-    function closeCart(){drawer.classList.remove('open');}
-    cartBtn.addEventListener('click',openCart); cartClose.addEventListener('click',closeCart);
-
-    function addToCart(p,size='A4',finish='Unframed'){
-      const key=`${p.id}-${size}-${finish}`;
-      const existing=cart.find(i=>i.key===key);
-      if(existing) existing.qty+=1;
-      else cart.push({key,id:p.id,title:p.title,size,finish,
-        price:p.priceBase+sizePriceDelta(size)+finishPriceDelta(finish),
-        img:p.img||svgPlaceholder(p.title),qty:1});
-      saveCart(); renderCart();
+    saveFav.addEventListener('click', () => {
+      if (!currentProduct) return;
+      if (favs.has(currentProduct.id)) favs.delete(currentProduct.id);
+      else favs.add(currentProduct.id);
+      saveFavs();
+      toast(favs.has(currentProduct.id) ? 'Saved to wishlist' : 'Removed from wishlist');
+    });
+    // Cart Drawer
+    const cartBtn = document.getElementById('cartBtn');
+    const drawer = document.getElementById('drawer');
+    const cartClose = document.getElementById('cartClose');
+    const cartList = document.getElementById('cartList');
+    const subtotalEl = document.getElementById('subtotal');
+    const cartCount = document.getElementById('cartCount');
+    function openCart() {
+      drawer.classList.add('open');
     }
-    function changeQty(key,delta){
-      const i=cart.find(x=>x.key===key); if(!i)return;
-      i.qty+=delta; if(i.qty<=0)cart.splice(cart.indexOf(i),1);
-      saveCart(); renderCart();
+    function closeCart() {
+      drawer.classList.remove('open');
     }
-    function renderCart(){
-      cartList.innerHTML=''; let subtotal=0,count=0;
-      cart.forEach(i=>{
-        subtotal+=i.price*i.qty; count+=i.qty;
-        const row=document.createElement('div'); row.className='cart-item';
-        row.innerHTML=`
+    cartBtn.addEventListener('click', openCart);
+    cartClose.addEventListener('click', closeCart);
+    function addToCart(p, size = 'A4', finish = 'Unframed') {
+      const key = `${p.id}-${size}-${finish}`;
+      const existing = cart.find(i => i.key === key);
+      if (existing) existing.qty += 1;
+      else cart.push({
+        key,
+        id: p.id,
+        title: p.title,
+        size,
+        finish,
+        price: p.priceBase + sizePriceDelta(size) + finishPriceDelta(finish),
+        img: p.img || svgPlaceholder(p.title),
+        qty: 1
+      });
+      saveCart();
+      renderCart();
+    }
+    function changeQty(key, delta) {
+      const i = cart.find(x => x.key === key);
+      if (!i) return;
+      i.qty += delta;
+      if (i.qty <= 0) cart.splice(cart.indexOf(i), 1);
+      saveCart();
+      renderCart();
+    }
+    function renderCart() {
+      cartList.innerHTML = '';
+      let subtotal = 0, count = 0;
+      cart.forEach(i => {
+        subtotal += i.price * i.qty;
+        count += i.qty;
+        const row = document.createElement('div');
+        row.className = 'cart-item';
+        row.innerHTML = `
           <img src='${i.img}' alt='' style='width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid rgba(255,255,255,.1)'>
-          <div><div style='font-weight:600'>${i.title}</div>
+          <div>
+            <div style='font-weight:600'>${i.title}</div>
             <div class='muted' style='font-size:12px'>${i.size} · ${i.finish}</div>
-            <div style='font-weight:700'>${KES(i.price)}</div></div>
+            <div style='font-weight:700'>${KES(i.price)}</div>
+          </div>
           <div class='qty'>
             <button aria-label='Decrease' data-k='${i.key}' data-d='-1'>−</button>
             <span>${i.qty}</span>
@@ -632,143 +1206,141 @@
           </div>`;
         cartList.appendChild(row);
       });
-      subtotalEl.textContent=KES(subtotal); cartCount.textContent=count;
+      subtotalEl.textContent = KES(subtotal);
+      cartCount.textContent = count;
     }
-    cartList.addEventListener('click',e=>{
-      const btn=e.target.closest('button'); if(!btn)return;
-      const key=btn.dataset.k; const d=parseInt(btn.dataset.d,10);
-      changeQty(key,d);
+    cartList.addEventListener('click', e => {
+      const btn = e.target.closest('button');
+      if (!btn) return;
+      const key = btn.dataset.k;
+      const d = parseInt(btn.dataset.d, 10);
+      changeQty(key, d);
     });
-
-    // ──────────────────────────────────────
-    // CHECKOUT / COMMISSION
-    // ──────────────────────────────────────
-    document.getElementById('checkoutBtn').addEventListener('click',()=>{if(cart.length===0){toast('Your cart is empty');return;}
-      const summary=cart.map(i=>`${i.qty}× ${i.title} (${i.size}, ${i.finish}) — ${KES(i.price*i.qty)}`).join('%0A');
-      const total=subtotalEl.textContent.replace(/\s/g,'');
-      const msg=`Hello Samuel,%0A%0AI would like to order:%0A${summary}%0A%0ASubtotal: ${total}%0A%0AMy contacts:%0AName:%0APhone (WhatsApp):%0AEmail:%0ADelivery location:`;
-      window.location.href=`mailto:samuel@example.com?subject=Order — Late Night Epiphanies&body=${msg}`;
-      toast('Opening your email app to place the order');
-    });
-    [document.getElementById('commissionBtn'),document.getElementById('heroCommission')].forEach(b=>b.addEventListener('click',()=>{const body=encodeURIComponent(`Hello Samuel,%0A%0AI'd like to commission a custom piece.%0A%0AIdea/Subject:%0ASize (A4/A3/A2):%0ADeadline:%0ABudget:%0AReferences: (links)`);
-      window.location.href=`mailto:samuel@example.com?subject=Commission Request — Late Night Epiphanies&body=${body}`;}));
-
-    // ──────────────────────────────────────
-    // TOAST
-    // ──────────────────────────────────────
-    const toastEl=document.getElementById('toast');
-    function toast(text){toastEl.textContent=text;toastEl.classList.add('show');
-      clearTimeout(toastEl._t); toastEl._t=setTimeout(()=>toastEl.classList.remove('show'),2100);}
-
-    // ──────────────────────────────────────
-    // YEAR
-    // ──────────────────────────────────────
-    document.getElementById('year').textContent=new Date().getFullYear();
-
-    // ──────────────────────────────────────
-    // BID FLOW
-    // ──────────────────────────────────────
-    const bidOverlay = document.getElementById('bidOverlay');
-    const bidTitle   = document.getElementById('bidTitle');
-    const bidCurrent = document.getElementById('bidCurrent');
-    const bidAmount  = document.getElementById('bidAmount');
-    const bidCancel  = document.getElementById('bidCancel');
-    const bidNext    = document.getElementById('bidNext');
-
-    const confirmOverlay = document.getElementById('confirmOverlay');
-    const confirmText    = document.getElementById('confirmText');
-    const confirmCancel  = document.getElementById('confirmCancel');
-    const confirmSubmit  = document.getElementById('confirmSubmit');
-
-    let bidProduct = null, pendingBid = 0;
-
-    function openBid(p){
-      if(p.sold) return;
-      bidProduct = p;
-      const a = auctions[p.id];
-      bidTitle.textContent = `Bid on “${p.title}”`;
-      bidCurrent.textContent = `Current highest: ${KES(a.highest)}`;
-      bidAmount.value = '';
-      bidAmount.min = a.highest + 2000;
-      bidOverlay.style.display = 'grid';
-    }
-    function closeBid(){bidOverlay.style.display='none';bidProduct=null;}
-    bidCancel.addEventListener('click',closeBid);
-    bidOverlay.addEventListener('click',e=>{if(e.target===bidOverlay)closeBid();});
-
-    bidNext.addEventListener('click',()=>{
-      const amount = Number(bidAmount.value);
-      const a = auctions[bidProduct.id];
-      if(isNaN(amount) || amount < a.highest + 2000){
-        toast('Bid must be at least KSh 2,000 higher than current highest');
+    // Checkout via Email
+    document.getElementById('checkoutBtn').addEventListener('click', () => {
+      if (cart.length === 0) {
+        toast('Your cart is empty');
         return;
       }
-      pendingBid = amount;
-      confirmText.textContent = `You’re bidding ${KES(amount)} on “${bidProduct.title}” — are you sure?`;
-      closeBid();
-      confirmOverlay.style.display = 'grid';
+      const summary = cart.map(i => `${i.qty}× ${i.title} (${i.size}, ${i.finish}) — ${KES(i.price * i.qty)}`).join('%0A');
+      const total = subtotalEl.textContent.replace(/\s/g, '');
+      const msg = `Hello Samuel,%0A%0AI would like to order:%0A${summary}%0A%0ASubtotal: ${total}%0A%0AMy contacts:%0AName:%0APhone (WhatsApp):%0AEmail:%0ADelivery location:`;
+      window.location.href = `mailto:samuel@example.com?subject=Order — Late Night Epiphanies&body=${msg}`;
+      toast('Opening your email app to place the order');
     });
+    // Commission Buttons
+    const commissionBtn = document.getElementById('commissionBtn');
+    const heroCommission = document.getElementById('heroCommission');
+    [commissionBtn, heroCommission].forEach(b => b.addEventListener('click', () => {
+      const body = encodeURIComponent(`Hello Samuel,%0A%0AI'd like to commission a custom piece.%0A%0AIdea/Subject:%0ASize (A4/A3/A2):%0ADeadline:%0ABudget:%0AReferences: (links)`);
+      window.location.href = `mailto:samuel@example.com?subject=Commission Request — Late Night Epiphanies&body=${body}`;
+    }));
+    // About Us Button
+    document.getElementById('aboutBtn').addEventListener('click', () => {
+      alert(`Late Night Epiphanies is a collection of midnight-born pencil sketches and dreamy art by Samuel Adikah.\n\nEach piece is hand-drawn in the quiet of 3AM, capturing raw emotions, surreal thoughts, and poetic stillness.\n\nWe believe art should feel personal — like a secret whispered in the dark.\n\nAll pieces are original, signed, and available in limited runs.`);
+    });
+    // Bid Modal
+    const bidOverlay = document.getElementById('bidOverlay');
+    const bidClose = document.getElementById('bidClose');
+    const bidAmount = document.getElementById('bidAmount');
+    const submitBid = document.getElementById('submitBid');
+    let currentBidProduct = null;
 
-    function closeConfirm(){confirmOverlay.style.display='none';}
-    confirmCancel.addEventListener('click',closeConfirm);
-    confirmOverlay.addEventListener('click',e=>{if(e.target===confirmOverlay)closeConfirm();});
-
-    confirmSubmit.addEventListener('click',()=>{
-      const a = auctions[bidProduct.id];
-      if(pendingBid > a.highest){
-        a.highest = pendingBid;
-        a.bidder = 'You';
-        saveAuctions();
-        toast(`Bid of ${KES(pendingBid)} placed! You are the highest bidder.`);
-      } else {
-        toast('You’ve been outbid. Try a higher amount.');
+    function openBidModal(p) {
+      currentBidProduct = p;
+      bidAmount.value = '';
+      bidOverlay.style.display = 'grid';
+    }
+    function closeBidModal() {
+      bidOverlay.style.display = 'none';
+    }
+    bidClose.addEventListener('click', closeBidModal);
+    bidOverlay.addEventListener('click', e => {
+      if (e.target === bidOverlay) closeBidModal();
+    });
+    submitBid.addEventListener('click', () => {
+      const amount = parseInt(bidAmount.value);
+      if (!amount || amount < 1000) {
+        toast('Please enter a valid bid (min KSh 1,000)');
+        return;
       }
-      closeConfirm();
-      renderProducts(products);
+      if (amount <= currentBidProduct.priceBase) {
+        toast(`Bid must be higher than current price: ${KES(currentBidProduct.priceBase)}`);
+        return;
+      }
+      // Simulate successful bid
+      closeBidModal();
+      toast('Bid placed successfully!');
+      alert('Bid placed successfully!');
     });
 
-    // ──────────────────────────────────────
-    // M-PESA SANDBOX
-    // ──────────────────────────────────────
+    // Toast
+    const toastEl = document.getElementById('toast');
+    function toast(text) {
+      toastEl.textContent = text;
+      toastEl.classList.add('show');
+      clearTimeout(toastEl._t);
+      toastEl._t = setTimeout(() => toastEl.classList.remove('show'), 2100);
+    }
+    // Year
+    document.getElementById('year').textContent = new Date().getFullYear();
+    // Initialize
+    renderProducts(products);
+    renderCart();
+    applyFilters();
+    // M-Pesa Sandbox
     const mpesaPayBtn = document.getElementById('mpesaPayBtn');
     const mpesaModal = document.getElementById('mpesaModal');
     const mpesaModalClose = document.getElementById('mpesaModalClose');
     const mpesaForm = document.getElementById('mpesaForm');
     const mpesaPhone = document.getElementById('mpesaPhone');
-
-    mpesaPayBtn.addEventListener('click',()=>{const total=parseInt(subtotalEl.textContent.replace(/[^\d]/g,''),10);
-      if(total===0){toast('Your cart is empty');return;}
-      mpesaModal.style.display='grid';
+    mpesaPayBtn.addEventListener('click', () => {
+      const total = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
+      if (total === 0) {
+        toast('Your cart is empty');
+        return;
+      }
+      mpesaModal.style.display = 'grid';
     });
-    mpesaModalClose.addEventListener('click',()=>mpesaModal.style.display='none');
-    mpesaModal.addEventListener('click',e=>{if(e.target===mpesaModal)mpesaModal.style.display='none';});
-    mpesaForm.addEventListener('submit',async e=>{
+    mpesaModalClose.addEventListener('click', () => mpesaModal.style.display = 'none');
+    mpesaModal.addEventListener('click', (e) => {
+      if (e.target === mpesaModal) mpesaModal.style.display = 'none';
+    });
+    mpesaForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const phone=mpesaPhone.value.trim();
-      const amount=parseInt(subtotalEl.textContent.replace(/[^\d]/g,''),10);
-      if(!/^254[7-9][0-9]{8}$/.test(phone)){toast('Invalid phone. Use 2547XXXXXXXX');return;}
-      mpesaPayBtn.disabled=true; mpesaPayBtn.textContent='Sending...';
-      try{
-        const res=await fetch('https://art-mpesa-backend.onrender.com/api/pay',{
-          method:'POST',headers:{'Content-Type':'application/json'},
-          body:JSON.stringify({phone,amount})
+      const phone = mpesaPhone.value.trim();
+      const amount = parseInt(subtotalEl.textContent.replace(/[^\d]/g, ''), 10);
+      if (!/^254[7-9][0-9]{8}$/.test(phone)) {
+        toast('Invalid phone. Use 2547XXXXXXXX');
+        return;
+      }
+      mpesaPayBtn.disabled = true;
+      mpesaPayBtn.textContent = 'Sending...';
+      try {
+        const res = await fetch('https://art-mpesa-backend.onrender.com/api/pay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone, amount })
         });
-        const data=await res.json();
-        if(data.success){toast('STK Push sent! Check your phone.');mpesaModal.style.display='none';}
-        else toast(data.error||'Payment failed');
-      }catch{toast('Network error. Try again.');}
-      finally{
-        mpesaPayBtn.disabled=false;
-        mpesaPayBtn.innerHTML=`<svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
-          <path d="M12 2L2 7v10c0 5.55 4.48 8.78 10 12 5.52-3.22 10-6.45 10-12V7l-10-5z" fill="#00B140"/>
-        </svg> Pay with M-Pesa (Sandbox)`;
+        const data = await res.json();
+        if (data.success) {
+          toast('STK Push sent! Check your phone.');
+          mpesaModal.style.display = 'none';
+        } else {
+          toast(data.error || 'Payment failed');
+        }
+      } catch (err) {
+        toast('Network error. Try again.');
+      } finally {
+        mpesaPayBtn.disabled = false;
+        mpesaPayBtn.innerHTML = `
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-right:6px">
+            <path d="M12 2L2 7v10c0 5.55 4.48 8.78 10 12 5.52-3.22 10-6.45 10-12V7l-10-5z" fill="#00B140"/>
+          </svg>
+          Pay with M-Pesa (Sandbox)
+        `;
       }
     });
-
-    // ──────────────────────────────────────
-    // INITIALISE
-    // ──────────────────────────────────────
-    renderProducts(products); renderCart(); applyFilters();
   </script>
 </body>
 </html>
