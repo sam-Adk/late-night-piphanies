@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600..900&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ──────────────────────────────────────
-       CART DRAWER (unchanged)
+       CART DRAWER (original)
        ────────────────────────────────────── */
     .cart-drawer{position:fixed;top:0;right:0;width:360px;height:100vh;background:#12101a;color:#fff;
       box-shadow:-2px 0 10px rgba(0,0,0,.5);transform:translateX(100%);transition:transform .4s ease;
@@ -49,9 +49,7 @@
     button{font:inherit}
     .container{max-width:1200px;margin-inline:auto;padding:20px;overflow-x:hidden}
 
-    /* ──────────────────────────────────────
-       NAVBAR
-       ────────────────────────────────────── */
+    /* NAVBAR */
     .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
       background:linear-gradient(180deg,rgba(10,8,25,.8),rgba(10,8,25,.35));
       border-bottom:1px solid rgba(255,255,255,.08)}
@@ -73,9 +71,7 @@
     .glass-btn:hover{transform:translateY(-2px);border-color:rgba(255,255,255,.2);
       box-shadow:0 8px 24px rgba(0,0,0,.35)}
 
-    /* ──────────────────────────────────────
-       HERO
-       ────────────────────────────────────── */
+    /* HERO */
     .hero{position:relative;padding:clamp(30px,6vw,80px) 0 10px;overflow-x:hidden}
     .hero-content{display:grid;grid-template-columns:1fr;align-items:center;gap:30px}
     @media (min-width:880px){.hero-content{grid-template-columns:1.1fr .9fr}}
@@ -98,9 +94,7 @@
       box-shadow:0 20px 60px rgba(0,0,0,.55),0 0 0 6px rgba(139,92,246,.08);transform:rotate(-4deg)}
     .hero-art img{width:100%;height:100%;object-fit:cover;display:block}
 
-    /* ──────────────────────────────────────
-       TOOLBAR
-       ────────────────────────────────────── */
+    /* TOOLBAR */
     .toolbar{position:sticky;top:70px;z-index:40;margin-top:6px;
       background:linear-gradient(180deg,rgba(10,8,25,.92),rgba(10,8,25,.6));
       backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.08);
@@ -118,9 +112,7 @@
       border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:12px;
       font-size:14px;flex:1;min-width:150px}
 
-    /* ──────────────────────────────────────
-       GALLERY
-       ────────────────────────────────────── */
+    /* GALLERY */
     .gallery{column-count:1;column-gap:16px;margin-top:16px;overflow-x:hidden}
     @media (min-width:700px){.gallery{column-count:2}}
     @media (min-width:1000px){.gallery{column-count:3}}
@@ -137,24 +129,20 @@
     .muted{color:var(--muted);font-size:14px}
     .price{font-weight:800;margin-top:8px;background:linear-gradient(90deg,#fff,var(--accent));
       -webkit-background-clip:text;background-clip:text;color:transparent}
-    .actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+    .actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
     .btn-small{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;font-size:14px}
     .btn-small.primary{background:linear-gradient(90deg,var(--accent-2),var(--accent));
       color:#05030a;font-weight:700;border:none}
 
-    /* ──────────────────────────────────────
-       BID BUTTON – SAME STYLE AS “Add to cart”
-       ────────────────────────────────────── */
+    /* BID BUTTON – SAME GLASS STYLE */
     .btn-bid{padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.14);
       background:rgba(255,255,255,.06);color:var(--text);cursor:pointer;font-size:14px;
       display:inline-flex;align-items:center;gap:4px}
     .btn-bid .current-bid{font-weight:600;color:var(--accent-2);font-size:13px}
     .btn-bid:disabled{opacity:.5;cursor:not-allowed}
 
-    /* ──────────────────────────────────────
-       MODALS / DRAWER
-       ────────────────────────────────────── */
+    /* MODALS */
     .overlay{position:fixed;inset:0;background:rgba(5,3,10,.72);display:none;
       place-items:center;z-index:70;backdrop-filter:blur(6px);overflow-x:hidden}
     .modal{width:min(100%,980px);max-height:90vh;overflow:auto;
@@ -193,23 +181,17 @@
     .drawer .bottom{border-top:1px solid rgba(255,255,255,.15);padding:14px;
       display:grid;gap:10px;background:rgba(18,16,26,.95)}
 
-    /* ──────────────────────────────────────
-       TOAST
-       ────────────────────────────────────── */
+    /* TOAST */
     .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(120%);
       background:#0b1220;border:1px solid rgba(255,255,255,.12);color:var(--text);
       padding:12px 16px;border-radius:12px;box-shadow:var(--shadow);z-index:90;
       transition:transform .35s ease}
     .toast.show{transform:translateX(-50%) translateY(0)}
 
-    /* ──────────────────────────────────────
-       FOOTER
-       ────────────────────────────────────── */
+    /* FOOTER */
     footer{margin:40px 0 60px;color:var(--muted);text-align:center;font-size:14px;line-height:1.6}
 
-    /* ──────────────────────────────────────
-       MOBILE OPTIMISATIONS
-       ────────────────────────────────────── */
+    /* MOBILE */
     @media (max-width:480px){
       .nav-inner{padding:12px}
       .glass-btn{padding:8px 12px;font-size:13px;min-height:44px}
@@ -233,16 +215,12 @@
     }
     @media (max-width:400px){.cart-drawer{width:100%}}
 
-    /* ──────────────────────────────────────
-       M-PESA BUTTON
-       ────────────────────────────────────── */
+    /* M-PESA */
     .btn-success{background:linear-gradient(90deg,#00B140,#009933);color:white;font-weight:700;
       border:none;margin-top:8px;width:100%}
     .btn-success:hover{background:linear-gradient(90deg,#00C150,#00A033)}
 
-    /* ──────────────────────────────────────
-       BID MODAL
-       ────────────────────────────────────── */
+    /* BID MODALS */
     .bid-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
       place-items:center;z-index:999}
     .bid-modal{background:#12101a;color:#fff;padding:20px;border-radius:20px;
@@ -253,6 +231,10 @@
       border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);
       color:#fff;margin-bottom:12px;font-size:16px}
     .bid-modal .actions{display:flex;gap:8px}
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;
+      place-items:center;z-index:999}
+    .confirm-modal{background:#12101a;color:#fff;padding:20px;border-radius:20px;
+      width:90%;max-width:340px;box-shadow:var(--shadow);text-align:center}
   </style>
 </head>
 <body>
@@ -388,7 +370,7 @@
     </div>
   </div>
 
-  <!-- BID MODAL -->
+  <!-- BID INPUT MODAL -->
   <div id="bidOverlay" class="bid-overlay">
     <div class="bid-modal">
       <h3 id="bidTitle">Bid on …</h3>
@@ -396,7 +378,19 @@
       <input type="number" id="bidAmount" placeholder="Your bid (KSh)" min="0" step="100">
       <div class="actions">
         <button class="btn-small" id="bidCancel">Cancel</button>
-        <button class="btn-small primary" id="bidSubmit">Place Bid</button>
+        <button class="btn-small primary" id="bidNext">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BID CONFIRM MODAL -->
+  <div id="confirmOverlay" class="confirm-overlay">
+    <div class="confirm-modal">
+      <h3>Confirm Your Bid</h3>
+      <p id="confirmText"></p>
+      <div class="actions">
+        <button class="btn-small" id="confirmCancel">Cancel</button>
+        <button class="btn-small primary" id="confirmSubmit">Place Bid</button>
       </div>
     </div>
   </div>
@@ -409,7 +403,7 @@
 
   <script>
     // ──────────────────────────────────────
-    // PRODUCTS (all images now have valid paths)
+    // PRODUCTS
     // ──────────────────────────────────────
     const products = [
       { id: 'p1', title: 'Love Dream I', category: 'Portrait', tags: ['romance', 'bw'], priceBase: 42000, img: 'assets/images/love5.jpg', desc: 'Romantic midnight sketch in pencil.'},
@@ -427,7 +421,7 @@
     ];
 
     // ──────────────────────────────────────
-    // AUCTION DATA (persisted in localStorage)
+    // AUCTION STATE (localStorage)
     // ──────────────────────────────────────
     const auctions = JSON.parse(localStorage.getItem('lnp_auctions') || '{}');
     const saveAuctions = () => localStorage.setItem('lnp_auctions', JSON.stringify(auctions));
@@ -468,7 +462,7 @@
     const saveFavs = () => localStorage.setItem('lnp_favs', JSON.stringify(Array.from(favs)));
 
     // ──────────────────────────────────────
-    // PRICE CALCULATION
+    // PRICE CALC
     // ──────────────────────────────────────
     let currentProduct = null, currentSize = 'A4', currentFinish = 'Unframed';
     const sizePriceDelta = s => ({ A5:0, A4:0, A3:1200, A2:2900 })[s] || 0;
@@ -488,6 +482,7 @@
         card.className = 'card';
         if (p.sold) { card.style.opacity = '.6'; card.style.pointerEvents = 'none'; }
 
+        const a = auctions[p.id];
         card.innerHTML = `
           <div class='img-wrap' style='position:relative'>
             <img alt='${p.title}' src='${p.img || svgPlaceholder(p.title)}' loading='lazy'>
@@ -505,7 +500,7 @@
               ${p.sold ? `<button class='btn-small primary' disabled>Sold Out</button>` : `
                 <button class='btn-small primary' data-action='add' data-id='${p.id}'>Add to cart</button>
                 <button class='btn-bid' data-action='bid' data-id='${p.id}'>
-                  Bid <span class='current-bid'>${KES(auctions[p.id].highest)}</span>
+                  Bid <span class='current-bid'>${KES(a.highest)}</span>
                 </button>
               `}
             </div>
@@ -575,7 +570,7 @@
     }
 
     // ──────────────────────────────────────
-    // GALLERY CLICK HANDLER (view / add / bid)
+    // GALLERY CLICK HANDLER
     // ──────────────────────────────────────
     gallery.addEventListener('click', e => {
       const btn = e.target.closest('button');
@@ -671,20 +666,21 @@
     document.getElementById('year').textContent=new Date().getFullYear();
 
     // ──────────────────────────────────────
-    // INITIALISE
-    // ──────────────────────────────────────
-    renderProducts(products); renderCart(); applyFilters();
-
-    // ──────────────────────────────────────
-    // BID MODAL LOGIC
+    // BID FLOW
     // ──────────────────────────────────────
     const bidOverlay = document.getElementById('bidOverlay');
     const bidTitle   = document.getElementById('bidTitle');
     const bidCurrent = document.getElementById('bidCurrent');
     const bidAmount  = document.getElementById('bidAmount');
     const bidCancel  = document.getElementById('bidCancel');
-    const bidSubmit  = document.getElementById('bidSubmit');
-    let bidProduct = null;
+    const bidNext    = document.getElementById('bidNext');
+
+    const confirmOverlay = document.getElementById('confirmOverlay');
+    const confirmText    = document.getElementById('confirmText');
+    const confirmCancel  = document.getElementById('confirmCancel');
+    const confirmSubmit  = document.getElementById('confirmSubmit');
+
+    let bidProduct = null, pendingBid = 0;
 
     function openBid(p){
       if(p.sold) return;
@@ -693,29 +689,46 @@
       bidTitle.textContent = `Bid on “${p.title}”`;
       bidCurrent.textContent = `Current highest: ${KES(a.highest)}`;
       bidAmount.value = '';
-      bidAmount.min = a.highest + 100;
+      bidAmount.min = a.highest + 2000;
       bidOverlay.style.display = 'grid';
     }
     function closeBid(){bidOverlay.style.display='none';bidProduct=null;}
     bidCancel.addEventListener('click',closeBid);
     bidOverlay.addEventListener('click',e=>{if(e.target===bidOverlay)closeBid();});
 
-    bidSubmit.addEventListener('click',()=>{
+    bidNext.addEventListener('click',()=>{
       const amount = Number(bidAmount.value);
       const a = auctions[bidProduct.id];
-      if(isNaN(amount) || amount <= a.highest){
-        toast('Bid must be higher than the current highest');
+      if(isNaN(amount) || amount < a.highest + 2000){
+        toast('Bid must be at least KSh 2,000 higher than current highest');
         return;
       }
-      a.highest = amount; a.bidder = 'You';
-      saveAuctions();
-      toast(`Bid of ${KES(amount)} placed!`);
+      pendingBid = amount;
+      confirmText.textContent = `You’re bidding ${KES(amount)} on “${bidProduct.title}” — are you sure?`;
       closeBid();
+      confirmOverlay.style.display = 'grid';
+    });
+
+    function closeConfirm(){confirmOverlay.style.display='none';}
+    confirmCancel.addEventListener('click',closeConfirm);
+    confirmOverlay.addEventListener('click',e=>{if(e.target===confirmOverlay)closeConfirm();});
+
+    confirmSubmit.addEventListener('click',()=>{
+      const a = auctions[bidProduct.id];
+      if(pendingBid > a.highest){
+        a.highest = pendingBid;
+        a.bidder = 'You';
+        saveAuctions();
+        toast(`Bid of ${KES(pendingBid)} placed! You are the highest bidder.`);
+      } else {
+        toast('You’ve been outbid. Try a higher amount.');
+      }
+      closeConfirm();
       renderProducts(products);
     });
 
     // ──────────────────────────────────────
-    // M-PESA SANDBOX (unchanged)
+    // M-PESA SANDBOX
     // ──────────────────────────────────────
     const mpesaPayBtn = document.getElementById('mpesaPayBtn');
     const mpesaModal = document.getElementById('mpesaModal');
@@ -751,6 +764,11 @@
         </svg> Pay with M-Pesa (Sandbox)`;
       }
     });
+
+    // ──────────────────────────────────────
+    // INITIALISE
+    // ──────────────────────────────────────
+    renderProducts(products); renderCart(); applyFilters();
   </script>
 </body>
 </html>
