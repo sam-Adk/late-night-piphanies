@@ -85,6 +85,7 @@ connectDB();
 app.use(express.static(ROOT));
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 app.get('/about', (req, res) => res.sendFile(path.join(ROOT, 'about.html')));
+app.get('/admin', (req, res) => res.sendFile(path.join(ROOT, 'admin.html')));
 
 // ================================================================
 // PAYSTACK: Initialize transaction
