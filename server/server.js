@@ -8,74 +8,115 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const {
-  CONSUMER_KEY,
-  CONSUMER_SECRET,
-  SHORTCODE,
-  PASSKEY,
-  CALLBACK_URL,
-  PORT = 10000
-} = process.env;
+const { PAYSTACK_SECRET_KEY, PORT = 10000 } = process.env;
 
-// Cache token
-let oauthToken = null;
-let tokenExpiry = 0;
-
-async function getOAuthToken() {
-  if (oauthToken && Date.now() < tokenExpiry) return oauthToken;
-
-  const auth = Buffer.from(`${CONSUMER_KEY}:${CONSUMER_SECRET}`).toString('base64');
-  const res = await axios.get(
-    'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials',
-    { headers: { Authorization: `Basic ${auth}` } }
-  );
-
-  oauthToken = res.data.access_token;
-  tokenExpiry = Date.now() + (res.data.expires_in * 1000) - 60000;
-  return oauthToken;
-}
-
-app.post('/api/pay', async (req, res) => {
-  const { phone, amount } = req.body;
-  if (!phone || !amount) return res.status(400).json({ error: 'Missing phone or amount' });
+// ================================================================
+// PAYSTACK: Initialize a transaction
+// POST /api/paystack/initialize
+// Body: { email, amount }  — amount in KES (we multiply by 100 here)
+// ================================================================
+app.post('/api/paystack/initialize', async (req, res) => {
+  const { email, amount } = req.body;
+  if (!email || !amount) {
+    return res.status(400).json({ error: 'Missing email or amount' });
+  }
 
   try {
-    const token = await getOAuthToken();
-    const timestamp = new Date().toISOString().replace(/[-:T.]/g, '').slice(0, 14);
-    const password = Buffer.from(`${SHORTCODE}${PASSKEY}${timestamp}`).toString('base64');
-
-    const payload = {
-      BusinessShortCode: SHORTCODE,
-      Password: password,
-      Timestamp: timestamp,
-      TransactionType: 'CustomerPayBillOnline',
-      Amount: amount,
-      PartyA: phone,
-      PartyB: SHORTCODE,
-      PhoneNumber: phone,
-      CallBackURL: CALLBACK_URL,
-      AccountReference: 'LNE' + Date.now(),
-      TransactionDesc: 'Art Purchase'
-    };
-
     const response = await axios.post(
-      'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest',
-      payload,
-      { headers: { Authorization: `Bearer ${token}` } }
+      'https://api.paystack.co/transaction/initialize',
+      {
+        email,
+        amount: Math.round(amount * 100), // Convert KES to kobo/cents
+        currency: 'KES',
+        reference: 'LNE_' + Date.now(),
+        metadata: {
+          custom_fields: [
+            {
+              display_name: 'Shop',
+              variable_name: 'shop',
+              value: 'Late Night Epiphanies'
+            }
+          ]
+        }
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
     );
 
-    res.json({ success: true, checkoutId: response.data.CheckoutRequestID });
+    res.json({
+      success: true,
+      authorization_url: response.data.data.authorization_url,
+      access_code: response.data.data.access_code,
+      reference: response.data.data.reference
+    });
   } catch (err) {
-    console.error('STK Error:', err.response?.data || err.message);
-    res.status(500).json({ error: 'Payment failed' });
+    console.error('Paystack init error:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Payment initialization failed' });
   }
 });
 
-app.post('/api/m-pesa/callback', (req, res) => {
-  console.log('Callback:', JSON.stringify(req.body, null, 2));
-  res.json({ success: true });
+// ================================================================
+// PAYSTACK: Verify a transaction
+// GET /api/paystack/verify/:reference
+// ================================================================
+app.get('/api/paystack/verify/:reference', async (req, res) => {
+  const { reference } = req.params;
+
+  try {
+    const response = await axios.get(
+      `https://api.paystack.co/transaction/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`
+        }
+      }
+    );
+
+    const data = response.data.data;
+
+    if (data.status === 'success') {
+      res.json({
+        success: true,
+        amount: data.amount / 100, // Convert back to KES
+        email: data.customer.email,
+        reference: data.reference,
+        paid_at: data.paid_at
+      });
+    } else {
+      res.json({ success: false, message: 'Payment not completed', status: data.status });
+    }
+  } catch (err) {
+    console.error('Paystack verify error:', err.response?.data || err.message);
+    res.status(500).json({ error: 'Verification failed' });
+  }
+});
+
+// ================================================================
+// PAYSTACK: Webhook (Paystack calls this after payment)
+// POST /api/paystack/webhook
+// ================================================================
+app.post('/api/paystack/webhook', (req, res) => {
+  // In production, verify the Paystack-Signature header here
+  const event = req.body;
+
+  if (event.event === 'charge.success') {
+    const data = event.data;
+    console.log('✅ Payment received:', {
+      reference: data.reference,
+      amount: data.amount / 100,
+      email: data.customer.email,
+      paid_at: data.paid_at
+    });
+    // TODO: Mark order as paid in your database here
+  }
+
+  res.sendStatus(200);
 });
 
 app.listen(PORT, () => {
-  console.log(`Backend running on port ${PORT}`);
+  console.log(`✅ Paystack backend running on port ${PORT}`);
 });
