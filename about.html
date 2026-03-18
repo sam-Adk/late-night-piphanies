@@ -1,462 +1,352 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>About – Late Night Epiphanies</title>
   <link rel="icon" type="image/x-icon" href="assets/favicon-16x16.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&display=swap" rel="stylesheet">
   <style>
+    /* ─── TOKENS (matches index.html exactly) ───────────────── */
     :root {
-      --ink: #0a0806;
-      --deep: #111009;
-      --surface: #181610;
-      --panel: #1e1c14;
-      --border: rgba(255,245,220,0.08);
-      --border-bright: rgba(255,245,220,0.18);
-      --gold: #c9a84c;
-      --gold-light: #e8c97b;
-      --gold-pale: rgba(201,168,76,0.12);
-      --cream: #f5ede0;
-      --muted: #8a836f;
-      --text: #e8dcc8;
-      --white: #faf6ef;
-      --shadow: 0 20px 60px rgba(0,0,0,0.7);
+      --void:    #05020f;
+      --deep:    #0b0520;
+      --surface: #110930;
+      --glass:   rgba(255,255,255,0.055);
+      --glass-h: rgba(255,255,255,0.10);
+      --rim:     rgba(255,255,255,0.10);
+      --rim-h:   rgba(0,229,255,0.45);
+      --cyan:    #00e5ff;
+      --cyan-d:  #00b8cc;
+      --cyan-g:  rgba(0,229,255,0.12);
+      --violet:  #7c3aed;
+      --violet-d:#5b21b6;
+      --violet-g:rgba(124,58,237,0.18);
+      --rose:    #f43f5e;
+      --text:    #e2d9f3;
+      --muted:   #7a6e9a;
+      --white:   #f8f5ff;
+      --r:       14px;
+      --r-lg:    22px;
+      --blur:    blur(18px) saturate(180%);
     }
+
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
-    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
-
+    html, body { overflow-x: hidden; }
     body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--ink);
+      font-family: 'Figtree', sans-serif;
+      background: var(--void);
       color: var(--text);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* GRAIN */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.035;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      background-size: 180px 180px;
+    /* ─── AURORA ─────────────────────────────────────────────── */
+    .aurora {
+      position: fixed; inset: 0;
+      z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .aurora-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(90px); opacity: 0.28;
+      animation: auroraFloat 20s ease-in-out infinite alternate;
+    }
+    .aurora-blob:nth-child(1) { width:700px; height:600px; background:radial-gradient(circle,#7c3aed,transparent 70%); top:-200px; left:-150px; animation-duration:18s; }
+    .aurora-blob:nth-child(2) { width:500px; height:500px; background:radial-gradient(circle,#00e5ff,transparent 70%); top:30%; right:-100px; opacity:0.20; animation-duration:22s; animation-delay:-6s; }
+    .aurora-blob:nth-child(3) { width:600px; height:400px; background:radial-gradient(circle,#5b21b6,transparent 70%); bottom:-150px; left:30%; animation-duration:25s; animation-delay:-12s; }
+    .aurora-blob:nth-child(4) { width:300px; height:300px; background:radial-gradient(circle,#00e5ff,transparent 70%); bottom:20%; left:-80px; opacity:0.15; animation-duration:16s; animation-delay:-3s; }
+    @keyframes auroraFloat {
+      0%   { transform: translate(0,0) scale(1); }
+      33%  { transform: translate(40px,-60px) scale(1.08); }
+      66%  { transform: translate(-30px,40px) scale(0.95); }
+      100% { transform: translate(20px,-20px) scale(1.04); }
+    }
+    .dot-grid {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 36px 36px;
     }
 
-    /* BG GLOW */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px; right: -200px;
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, rgba(201,168,76,0.1), transparent 65%);
-      pointer-events: none;
-      z-index: 0;
-    }
+    /* ─── LAYOUT ─────────────────────────────────────────────── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 36px; position: relative; z-index: 1; }
+    @media(max-width:640px){ .container{ padding: 0 18px; } }
 
-    .container { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
-    @media (max-width: 640px) { .container { padding: 0 20px; } }
-
-    /* ===== NAVBAR ===== */
+    /* ─── NAV ────────────────────────────────────────────────── */
     .nav {
-      position: sticky;
-      top: 0; z-index: 100;
-      height: 72px;
-      display: flex;
-      align-items: center;
-      padding: 0 40px;
-      background: rgba(10,8,6,0.88);
-      backdrop-filter: blur(20px) saturate(150%);
-      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      height: 68px; display: flex; align-items: center; padding: 0 36px;
+      background: rgba(5,2,15,0.75);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border-bottom: 1px solid rgba(0,229,255,0.1);
     }
-    .nav-inner {
-      width: 100%; max-width: 1100px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 20px;
-    }
-    .brand { text-decoration: none; display: flex; flex-direction: column; gap: 2px; }
-    .brand-logo {
-      font-family: 'Cinzel', serif;
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      color: var(--gold-light);
-    }
-    .brand-sub {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 20px;
-      border: 1px solid var(--border-bright);
-      background: transparent;
-      color: var(--muted);
-      border-radius: 2px;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      text-decoration: none;
-      transition: all 0.2s;
-    }
-    .back-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .nav-inner { width:100%; max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { text-decoration:none; display:flex; align-items:center; gap:14px; }
+    .brand-icon { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,var(--violet),var(--cyan)); display:flex; align-items:center; justify-content:center; font-size:18px; box-shadow:0 0 20px rgba(0,229,255,0.3); flex-shrink:0; }
+    .brand-text { display:flex; flex-direction:column; gap:1px; }
+    .brand-name { font-family:'Syne',sans-serif; font-weight:800; font-size:15px; letter-spacing:0.04em; color:var(--white); white-space:nowrap; }
+    .brand-sub { font-size:10px; color:var(--muted); letter-spacing:0.18em; text-transform:uppercase; }
 
-    /* ===== HERO BANNER ===== */
-    .about-hero {
-      position: relative;
-      z-index: 1;
-      padding: 100px 0 80px;
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
+    .back-btn {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 20px; border-radius:10px;
+      border:1px solid var(--rim);
+      background:var(--glass); backdrop-filter:blur(12px);
+      color:var(--muted); font-size:12px; font-weight:600;
+      letter-spacing:0.1em; text-transform:uppercase;
+      text-decoration:none; transition:all 0.25s;
     }
-    .about-hero-lines {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(255,245,200,0.02) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,245,200,0.02) 1px, transparent 1px);
+    .back-btn:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 16px rgba(0,229,255,0.2); }
+
+    /* ─── HERO ───────────────────────────────────────────────── */
+    .hero {
+      padding: 100px 0 80px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      position: relative; overflow: hidden;
+    }
+    /* subtle grid lines in hero */
+    .hero::before {
+      content:''; position:absolute; inset:0; pointer-events:none;
+      background-image: linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
       background-size: 80px 80px;
     }
-    .about-hero-inner {
-      position: relative;
-      z-index: 1;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: end;
-      gap: 40px;
-    }
-    @media (max-width: 640px) { .about-hero-inner { grid-template-columns: 1fr; } }
-    .about-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 10px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 20px;
-    }
-    .about-eyebrow::before {
-      content: '';
-      width: 32px; height: 1px;
-      background: var(--gold);
-    }
-    .about-hero h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(52px, 8vw, 100px);
-      font-weight: 300;
-      line-height: 0.92;
-      letter-spacing: -0.02em;
-      color: var(--white);
-    }
-    .about-hero h1 em {
-      font-style: italic;
-      color: var(--gold-light);
-    }
-    .about-hero-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 120px;
-      font-weight: 300;
-      color: rgba(201,168,76,0.06);
-      line-height: 1;
-      letter-spacing: -0.04em;
-      user-select: none;
-    }
-    @media (max-width: 640px) { .about-hero-num { display: none; } }
+    .hero-inner { position:relative; z-index:1; display:grid; grid-template-columns:1fr auto; align-items:end; gap:40px; }
+    @media(max-width:640px){ .hero-inner{grid-template-columns:1fr;} }
 
-    /* ===== INTRO TEXT ===== */
-    .intro-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 0;
-      border-bottom: 1px solid var(--border);
+    .hero-tag {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 14px; border-radius:999px;
+      border:1px solid rgba(0,229,255,0.3);
+      background:rgba(0,229,255,0.07);
+      font-size:11px; letter-spacing:0.2em; text-transform:uppercase;
+      color:var(--cyan); margin-bottom:24px;
     }
-    .intro-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
+    .hero-tag::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 2s ease infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(1.5)} }
+
+    .hero h1 {
+      font-family:'Syne',sans-serif; font-weight:800;
+      font-size:clamp(52px,9vw,110px);
+      line-height:0.92; letter-spacing:-0.03em;
+      color:var(--white);
     }
-    @media (max-width: 768px) { .intro-grid { grid-template-columns: 1fr; gap: 40px; } }
+    .hero h1 .accent {
+      background:linear-gradient(90deg,var(--cyan),#a78bfa);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    .hero-deco {
+      font-family:'Syne',sans-serif;
+      font-size:clamp(80px,14vw,160px);
+      font-weight:800; letter-spacing:-0.04em;
+      color:rgba(0,229,255,0.04);
+      line-height:1; user-select:none;
+    }
+    @media(max-width:640px){ .hero-deco{display:none;} }
+
+    /* ─── SECTION LABEL ──────────────────────────────────────── */
+    .section-label {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:11px; letter-spacing:0.28em; text-transform:uppercase;
+      color:var(--cyan); margin-bottom:12px;
+    }
+    .section-label::before { content:''; width:28px; height:1px; background:var(--cyan); }
+
+    /* ─── INTRO ──────────────────────────────────────────────── */
+    .intro { padding:80px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .intro-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; }
+    @media(max-width:768px){ .intro-grid{grid-template-columns:1fr;gap:36px;} }
     .intro-lead {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 300;
-      line-height: 1.5;
-      color: var(--cream);
-      font-style: italic;
+      font-family:'Syne',sans-serif; font-weight:600;
+      font-size:clamp(20px,2.8vw,28px); line-height:1.45;
+      color:var(--white); font-style:italic;
     }
-    .intro-body {
-      font-size: 15px;
-      line-height: 1.85;
-      color: var(--muted);
-    }
-    .intro-body strong { color: var(--text); font-weight: 500; }
-    .intro-body p + p { margin-top: 16px; }
+    .intro-lead span { color:var(--cyan); font-style:normal; }
+    .intro-body { font-size:15px; line-height:1.85; color:var(--muted); }
+    .intro-body strong { color:var(--text); font-weight:600; }
+    .intro-body p+p { margin-top:16px; }
 
-    /* ===== CARDS GRID ===== */
-    .cards-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .cards-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    @media (max-width: 768px) { .cards-grid { grid-template-columns: 1fr; } }
+    /* ─── CARDS ──────────────────────────────────────────────── */
+    .cards { padding:80px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .cards-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+    @media(max-width:860px){ .cards-grid{grid-template-columns:1fr;} }
+
     .info-card {
-      background: var(--surface);
-      padding: 40px 36px;
-      transition: background 0.3s;
+      padding:36px 30px;
+      border-radius:18px;
+      background:var(--glass);
+      backdrop-filter:var(--blur);
+      -webkit-backdrop-filter:var(--blur);
+      border:1px solid var(--rim);
+      transition:all 0.35s ease;
+      position:relative; overflow:hidden;
     }
-    .info-card:hover { background: var(--panel); }
+    .info-card::before {
+      content:''; position:absolute;
+      top:0; left:0; right:0; height:2px;
+      background:linear-gradient(90deg,transparent,var(--cyan),transparent);
+      opacity:0; transition:opacity 0.35s;
+    }
+    .info-card:hover { border-color:rgba(0,229,255,0.3); transform:translateY(-4px); box-shadow:0 20px 50px rgba(0,0,0,0.4), 0 0 30px rgba(0,229,255,0.08); }
+    .info-card:hover::before { opacity:1; }
+
     .card-num {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 56px;
-      font-weight: 300;
-      color: var(--gold);
-      line-height: 1;
-      margin-bottom: 16px;
-      opacity: 0.7;
+      font-family:'Syne',sans-serif; font-size:56px; font-weight:800;
+      line-height:1; margin-bottom:20px;
+      background:linear-gradient(135deg,var(--violet),var(--cyan));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      opacity:0.6;
     }
     .card-title {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      margin-bottom: 16px;
+      font-family:'Syne',sans-serif; font-size:13px; font-weight:700;
+      letter-spacing:0.18em; text-transform:uppercase;
+      color:var(--cyan); margin-bottom:16px;
     }
-    .card-body {
-      font-size: 14px;
-      line-height: 1.75;
-      color: var(--muted);
-    }
-    .card-body strong { color: var(--text); font-weight: 500; }
+    .card-body { font-size:14px; line-height:1.75; color:var(--muted); }
+    .card-body strong { color:var(--text); font-weight:600; }
 
-    /* ===== DETAILS SECTION ===== */
-    .details-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 0;
-      border-bottom: 1px solid var(--border);
+    /* ─── DETAILS ────────────────────────────────────────────── */
+    .details { padding:80px 0; border-bottom:1px solid rgba(255,255,255,0.06); }
+    .details-grid { display:grid; grid-template-columns:1fr 1fr; gap:56px; }
+    @media(max-width:768px){ .details-grid{grid-template-columns:1fr;gap:36px;} }
+
+    .detail-block {
+      padding:32px;
+      border-radius:16px;
+      background:var(--glass);
+      backdrop-filter:var(--blur);
+      -webkit-backdrop-filter:var(--blur);
+      border:1px solid var(--rim);
     }
-    .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-    }
-    @media (max-width: 768px) { .details-grid { grid-template-columns: 1fr; gap: 40px; } }
     .detail-block h3 {
-      font-family: 'Cinzel', serif;
-      font-size: 11px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 24px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--border-bright);
+      font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
+      letter-spacing:0.25em; text-transform:uppercase;
+      color:var(--cyan); margin-bottom:24px;
+      padding-bottom:14px;
+      border-bottom:1px solid rgba(0,229,255,0.15);
+      display:flex; align-items:center; gap:10px;
     }
-    .detail-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
+    .detail-block h3::before { content:''; display:block; width:20px; height:1px; background:var(--cyan); }
+    .detail-list { list-style:none; display:flex; flex-direction:column; gap:14px; }
     .detail-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      font-size: 14px;
-      line-height: 1.6;
-      color: var(--muted);
+      display:flex; align-items:flex-start; gap:12px;
+      font-size:14px; line-height:1.6; color:var(--muted);
     }
-    .detail-list li::before {
-      content: '✦';
-      color: var(--gold);
-      font-size: 8px;
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
-    .detail-list li strong { color: var(--text); font-weight: 500; }
+    .detail-list li::before { content:'✦'; color:var(--cyan); font-size:8px; margin-top:5px; flex-shrink:0; opacity:0.7; }
+    .detail-list li strong { color:var(--text); font-weight:600; }
 
-    /* ===== QUOTE ===== */
-    .quote-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 0;
-      border-bottom: 1px solid var(--border);
-      text-align: center;
+    /* ─── QUOTE ──────────────────────────────────────────────── */
+    .quote-section { padding:90px 0; border-bottom:1px solid rgba(255,255,255,0.06); text-align:center; }
+    .quote-wrap {
+      max-width:780px; margin:0 auto;
+      padding:48px;
+      border-radius:20px;
+      background:var(--glass);
+      backdrop-filter:var(--blur);
+      -webkit-backdrop-filter:var(--blur);
+      border:1px solid rgba(0,229,255,0.15);
+      box-shadow:0 0 60px rgba(0,229,255,0.06), 0 0 120px rgba(124,58,237,0.08);
+      position:relative;
     }
     .quote-mark {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 120px;
-      line-height: 0.5;
-      color: var(--gold);
-      opacity: 0.2;
-      display: block;
-      margin-bottom: 20px;
+      font-family:'Syne',sans-serif; font-size:100px; font-weight:800;
+      line-height:0.6;
+      background:linear-gradient(135deg,var(--violet),var(--cyan));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      opacity:0.25; display:block; margin-bottom:16px;
     }
     .quote-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(24px, 4vw, 42px);
-      font-weight: 300;
-      font-style: italic;
-      color: var(--cream);
-      line-height: 1.4;
-      max-width: 750px;
-      margin: 0 auto 24px;
+      font-family:'Syne',sans-serif; font-size:clamp(20px,3.2vw,30px);
+      font-weight:600; line-height:1.45;
+      color:var(--white); font-style:italic; margin-bottom:24px;
     }
+    .quote-text span { color:var(--cyan); font-style:normal; }
     .quote-attr {
-      font-size: 11px;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gold);
+      font-size:11px; letter-spacing:0.3em; text-transform:uppercase; color:var(--cyan);
     }
 
-    /* ===== SOCIAL ===== */
-    .social-section {
-      position: relative;
-      z-index: 1;
-      padding: 80px 0;
+    /* ─── SOCIAL ─────────────────────────────────────────────── */
+    .social { padding:80px 0; }
+    .social-inner { display:flex; flex-direction:column; align-items:center; gap:32px; text-align:center; }
+    .social-title {
+      font-family:'Syne',sans-serif; font-size:clamp(32px,5vw,56px);
+      font-weight:800; line-height:1; letter-spacing:-0.02em;
+      color:var(--white);
     }
-    .social-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 32px;
-      text-align: center;
-    }
-    .social-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      font-weight: 300;
-      color: var(--white);
-    }
-    .social-heading em { font-style: italic; color: var(--gold-light); }
-    .social-links {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-    }
+    .social-title span { background:linear-gradient(90deg,var(--cyan),#a78bfa); -webkit-background-clip:text; background-clip:text; color:transparent; }
+    .social-links { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+
     .social-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 28px;
-      border: 1px solid var(--border-bright);
-      background: var(--surface);
-      color: var(--muted);
-      border-radius: 2px;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      transition: all 0.25s;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:12px 24px; border-radius:12px;
+      border:1px solid var(--rim);
+      background:var(--glass); backdrop-filter:blur(12px);
+      color:var(--muted); text-decoration:none;
+      font-size:13px; font-weight:600;
+      letter-spacing:0.08em; text-transform:uppercase;
+      transition:all 0.25s;
     }
-    .social-btn:hover {
-      border-color: var(--gold);
-      color: var(--gold);
-      background: var(--gold-pale);
-      transform: translateY(-2px);
-    }
-    .social-btn svg { width: 18px; height: 18px; fill: currentColor; flex-shrink: 0; }
+    .social-btn:hover { border-color:var(--cyan); color:var(--cyan); box-shadow:0 0 24px rgba(0,229,255,0.18); transform:translateY(-2px); }
+    .social-btn svg { width:18px; height:18px; fill:currentColor; flex-shrink:0; }
+
     .commission-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 32px;
-      background: var(--gold);
-      color: var(--ink);
-      border: none;
-      border-radius: 2px;
-      font-size: 12px;
-      font-weight: 600;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      cursor: pointer;
-      text-decoration: none;
-      transition: all 0.25s;
-      margin-top: 8px;
+      display:inline-flex; align-items:center; gap:10px;
+      padding:14px 32px; border-radius:12px;
+      background:linear-gradient(135deg,var(--cyan-d),var(--cyan));
+      border:none; color:var(--void);
+      font-family:'Figtree',sans-serif; font-size:14px; font-weight:700;
+      letter-spacing:0.08em; text-transform:uppercase;
+      cursor:pointer; transition:all 0.25s;
+      box-shadow:0 0 30px rgba(0,229,255,0.25);
     }
-    .commission-cta:hover {
-      background: var(--gold-light);
-      transform: translateY(-2px);
-      box-shadow: 0 12px 40px rgba(201,168,76,0.3);
-    }
+    .commission-cta:hover { transform:translateY(-2px); box-shadow:0 0 50px rgba(0,229,255,0.45); }
 
-    /* ===== FOOTER ===== */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 36px 0;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      position: relative;
-      z-index: 1;
+    /* ─── FOOTER ─────────────────────────────────────────────── */
+    .footer {
+      border-top:1px solid rgba(255,255,255,0.06);
+      padding:36px 0; position:relative; z-index:1;
+      display:flex; align-items:center; justify-content:space-between;
+      gap:16px; flex-wrap:wrap;
     }
-    .footer-logo {
-      font-family: 'Cinzel', serif;
-      font-size: 13px;
-      letter-spacing: 0.15em;
-      color: var(--gold);
-    }
-    .footer-copy {
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
+    .footer-brand { font-family:'Syne',sans-serif; font-size:15px; font-weight:800; color:var(--cyan); letter-spacing:0.04em; }
+    .footer-copy { font-size:12px; color:var(--muted); }
 
-    /* SCROLLBAR */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--ink); }
-    ::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.3); border-radius: 2px; }
+    /* ─── ANIMATIONS ─────────────────────────────────────────── */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+    .fu { opacity:0; animation:fadeUp 0.75s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+    .d1{animation-delay:.08s} .d2{animation-delay:.2s} .d3{animation-delay:.34s} .d4{animation-delay:.48s}
 
-    /* ANIMATIONS */
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-up { opacity: 0; animation: fadeUp 0.7s ease forwards; }
-    .d1 { animation-delay: 0.1s; }
-    .d2 { animation-delay: 0.25s; }
-    .d3 { animation-delay: 0.4s; }
-    .d4 { animation-delay: 0.55s; }
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:var(--void)}
+    ::-webkit-scrollbar-thumb{background:rgba(0,229,255,0.25);border-radius:2px}
+    ::-webkit-scrollbar-thumb:hover{background:rgba(0,229,255,0.5)}
   </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
+<!-- Aurora -->
+<div class="aurora">
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+  <div class="aurora-blob"></div>
+</div>
+<div class="dot-grid"></div>
+
+<!-- ══════════ NAV ══════════ -->
 <nav class="nav">
   <div class="nav-inner">
     <a href="index.html" class="brand">
-      <div class="brand-logo">Late Night Epiphanies</div>
-      <div class="brand-sub">Midnight Art by Samuel Adikah</div>
+      <div class="brand-icon">🌙</div>
+      <div class="brand-text">
+        <div class="brand-name">Late Night Epiphanies</div>
+        <div class="brand-sub">Art by Samuel Adikah</div>
+      </div>
     </a>
     <a href="index.html" class="back-btn">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l7-7M5 12l7 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -465,114 +355,133 @@
   </div>
 </nav>
 
-<!-- HERO -->
-<section class="about-hero container">
-  <div class="about-hero-lines"></div>
-  <div class="about-hero-inner">
-    <div>
-      <div class="about-eyebrow fade-up d1">The Artist</div>
-      <h1 class="fade-up d2">Samuel<br><em>Adikah.</em></h1>
-    </div>
-    <div class="about-hero-num fade-up d3">SA</div>
-  </div>
-</section>
-
-<!-- INTRO -->
-<section class="intro-section container">
-  <div class="intro-grid">
-    <div class="intro-lead fade-up d1">
-      "Each piece is born in the quiet of late night — graphite on archival paper, no digital editing."
-    </div>
-    <div class="intro-body fade-up d2">
-      <p><strong>Late Night Epiphanies</strong> is a collection of midnight-born pencil sketches and dreamy art by Samuel Adikah. Each piece is hand-drawn in the quiet of 3 AM, capturing raw emotions, surreal thoughts, and poetic stillness.</p>
-      <p>The late-night silence lets ideas flow freely, often turning a fleeting thought into a finished drawing before sunrise. What you see here is unfiltered — just a pencil, paper, and the strange clarity that only comes at 3 AM.</p>
+<!-- ══════════ HERO ══════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-inner">
+      <div>
+        <div class="hero-tag fu d1">The Artist</div>
+        <h1 class="fu d2">Samuel<br><span class="accent">Adikah.</span></h1>
+      </div>
+      <div class="hero-deco fu d3">SA</div>
     </div>
   </div>
 </section>
 
-<!-- THREE CARDS -->
-<section class="cards-section container">
-  <div class="cards-grid">
-    <div class="info-card">
-      <div class="card-num">01</div>
-      <div class="card-title">The Process</div>
-      <div class="card-body">
-        I work exclusively with 2B–8B graphite pencils on 300 gsm acid-free cotton paper. <strong>No digital editing</strong> — just the honest texture of lead on paper. Each piece is signed, dated, and sealed with archival fixative spray.
+<!-- ══════════ INTRO ══════════ -->
+<section class="intro">
+  <div class="container">
+    <div class="intro-grid">
+      <div class="intro-lead fu d1">
+        "Each piece is born in the quiet of late night — graphite on archival paper, <span>no digital editing.</span>"
       </div>
-    </div>
-    <div class="info-card">
-      <div class="card-num">02</div>
-      <div class="card-title">Limited Editions</div>
-      <div class="card-body">
-        Every artwork is produced in a maximum run of <strong>10 signed prints</strong>. Once sold out, the piece is retired forever. Each print ships with a Certificate of Authenticity and hand-numbered signature.
-      </div>
-    </div>
-    <div class="info-card">
-      <div class="card-num">03</div>
-      <div class="card-title">Commissions</div>
-      <div class="card-body">
-        Want something uniquely yours? I accept custom portrait and concept commissions. Whether it's a portrait, a memory, or a surreal dream — I'll bring your vision to life in the same midnight style.
+      <div class="intro-body fu d2">
+        <p><strong>Late Night Epiphanies</strong> is a collection of midnight-born pencil sketches and dreamy art by Samuel Adikah. Each piece is hand-drawn in the quiet of 3 AM, capturing raw emotions, surreal thoughts, and poetic stillness.</p>
+        <p>The late-night silence lets ideas flow freely, often turning a fleeting thought into a finished drawing before sunrise. What you see here is unfiltered — just a pencil, paper, and the strange clarity that only comes at 3 AM.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- DETAIL LISTS -->
-<section class="details-section container">
-  <div class="details-grid">
-    <div class="detail-block">
-      <h3>Materials & Craft</h3>
-      <ul class="detail-list">
-        <li>100% hand-drawn with <strong>2B–8B graphite pencils</strong></li>
-        <li>Some ideas are inspired from Pinterest — reimagined and redrawn entirely by hand</li>
-        <li>Drawn on <strong>300 gsm acid-free cotton paper</strong></li>
-        <li>Signed and dated on the back by the artist</li>
-        <li>Protected with archival <strong>fixative spray</strong> for longevity</li>
-      </ul>
-    </div>
-    <div class="detail-block">
-      <h3>What's Included</h3>
-      <ul class="detail-list">
-        <li><strong>Certificate of Authenticity</strong> with each print</li>
-        <li>Hand-signed & numbered by Samuel Adikah</li>
-        <li>Archival pigment print on matte fine art paper</li>
-        <li>Free shipping in <strong>reinforced, protective packaging</strong></li>
-        <li>Optional framing available at checkout</li>
-      </ul>
+<!-- ══════════ THREE CARDS ══════════ -->
+<section class="cards">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <div class="cards-grid">
+      <div class="info-card">
+        <div class="card-num">01</div>
+        <div class="card-title">The Process</div>
+        <div class="card-body">
+          I work exclusively with 2B–8B graphite pencils on 300 gsm acid-free cotton paper. <strong>No digital editing</strong> — just the honest texture of lead on paper. Each piece is signed, dated, and sealed with archival fixative spray.
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="card-num">02</div>
+        <div class="card-title">Limited Editions</div>
+        <div class="card-body">
+          Every artwork is produced in a maximum run of <strong>10 signed prints</strong>. Once sold out, the piece is retired forever. Each print ships with a Certificate of Authenticity and hand-numbered signature.
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="card-num">03</div>
+        <div class="card-title">Commissions</div>
+        <div class="card-body">
+          Want something uniquely yours? I accept custom portrait and concept commissions. Whether it's a portrait, a memory, or a surreal dream — I'll bring your vision to life in the same midnight style.
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- QUOTE -->
-<section class="quote-section container">
-  <span class="quote-mark">"</span>
-  <p class="quote-text">Thank you for stepping into my nocturnal world. I hope one of these pieces sparks a 3 AM epiphany for you.</p>
-  <div class="quote-attr">— Samuel Adikah</div>
-</section>
-
-<!-- SOCIAL + CTA -->
-<section class="social-section container">
-  <div class="social-inner">
-    <h2 class="social-heading">Find me <em>online</em></h2>
-    <div class="social-links">
-      <a href="https://www.instagram.com/sam__smollett2.0/" target="_blank" class="social-btn" aria-label="Instagram">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
-        Instagram
-      </a>
-      <a href="https://www.linkedin.com/in/samuel-adikah-50a3a132a/" target="_blank" class="social-btn" aria-label="LinkedIn">
-        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-        LinkedIn
-      </a>
+<!-- ══════════ DETAILS ══════════ -->
+<section class="details">
+  <div class="container">
+    <div class="section-label" style="margin-bottom:32px">Materials &amp; Craft</div>
+    <div class="details-grid">
+      <div class="detail-block">
+        <h3>Materials &amp; Craft</h3>
+        <ul class="detail-list">
+          <li>100% hand-drawn with <strong>2B–8B graphite pencils</strong></li>
+          <li>Some ideas are inspired from Pinterest — reimagined and redrawn entirely by hand</li>
+          <li>Drawn on <strong>300 gsm acid-free cotton paper</strong></li>
+          <li>Signed and dated on the back by the artist</li>
+          <li>Protected with archival <strong>fixative spray</strong> for longevity</li>
+        </ul>
+      </div>
+      <div class="detail-block">
+        <h3>What's Included</h3>
+        <ul class="detail-list">
+          <li><strong>Certificate of Authenticity</strong> with each print</li>
+          <li>Hand-signed &amp; numbered by Samuel Adikah</li>
+          <li>Archival pigment print on matte fine art paper</li>
+          <li>Free shipping in <strong>reinforced, protective packaging</strong></li>
+          <li>Optional framing available at checkout</li>
+        </ul>
+      </div>
     </div>
-    <button class="commission-cta" id="commissionBtn">Commission a Piece →</button>
   </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="container">
-  <div class="footer-logo">Late Night Epiphanies</div>
-  <div class="footer-copy">© <span id="year"></span> Samuel Adikah. All rights reserved.</div>
-</footer>
+<!-- ══════════ QUOTE ══════════ -->
+<section class="quote-section">
+  <div class="container">
+    <div class="quote-wrap">
+      <span class="quote-mark">"</span>
+      <p class="quote-text">
+        Thank you for stepping into my nocturnal world. I hope one of these pieces sparks a <span>3 AM epiphany</span> for you.
+      </p>
+      <div class="quote-attr">— Samuel Adikah</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ SOCIAL ══════════ -->
+<section class="social">
+  <div class="container">
+    <div class="social-inner">
+      <h2 class="social-title">Find me <span>online</span></h2>
+      <div class="social-links">
+        <a href="https://www.instagram.com/sam__smollett2.0/" target="_blank" class="social-btn" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zm0 10.162a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg>
+          Instagram
+        </a>
+        <a href="https://www.linkedin.com/in/samuel-adikah-50a3a132a/" target="_blank" class="social-btn" aria-label="LinkedIn">
+          <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          LinkedIn
+        </a>
+      </div>
+      <button class="commission-cta" id="commissionBtn">Commission a Piece →</button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════ FOOTER ══════════ -->
+<div class="container">
+  <footer class="footer">
+    <div class="footer-brand">Late Night Epiphanies</div>
+    <div class="footer-copy">© <span id="year"></span> Samuel Adikah. All rights reserved.</div>
+  </footer>
+</div>
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
