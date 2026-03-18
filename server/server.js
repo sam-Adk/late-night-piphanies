@@ -10,23 +10,26 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// ✅ ROOT of the repo (one level UP from the server/ folder)
+const ROOT = path.join(__dirname, '..');
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 
 const { PAYSTACK_SECRET_KEY, PORT = 10000 } = process.env;
 
-// ✅ Serve HTML, CSS, images, and all static files
-app.use(express.static(__dirname));
+// ✅ Serve all static files from the repo root
+app.use(express.static(ROOT));
 
-// ✅ Home route — serves index.html
+// ✅ Home route
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(ROOT, 'index.html'));
 });
 
-// ✅ About route — serves about.html
+// ✅ About route
 app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, 'about.html'));
+  res.sendFile(path.join(ROOT, 'about.html'));
 });
 
 // ================================================================
@@ -106,12 +109,10 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 app.post('/api/paystack/webhook', (req, res) => {
   const event = req.body;
   if (event.event === 'charge.success') {
-    const data = event.data;
     console.log('✅ Payment received:', {
-      reference: data.reference,
-      amount: data.amount / 100,
-      email: data.customer.email,
-      paid_at: data.paid_at
+      reference: event.data.reference,
+      amount: event.data.amount / 100,
+      email: event.data.customer.email
     });
   }
   res.sendStatus(200);
@@ -119,4 +120,5 @@ app.post('/api/paystack/webhook', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
+  console.log(`✅ Serving files from: ${ROOT}`);
 });
