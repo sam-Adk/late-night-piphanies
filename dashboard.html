@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>My Dashboard — Late Night Epiphanies</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Figtree:ital,wght@0,300;0,400;0,500;0,600&display=swap" rel="stylesheet">
+  <style>
+    :root{--void:#05020f;--glass:rgba(255,255,255,0.055);--rim:rgba(255,255,255,0.10);--cyan:#00e5ff;--cyan-d:#00b8cc;--violet:#7c3aed;--rose:#f43f5e;--green:#00d44d;--amber:#f59e0b;--text:#e2d9f3;--muted:#7a6e9a;--white:#f8f5ff;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html,body{overflow-x:hidden;}
+    body{font-family:'Figtree',sans-serif;background:var(--void);color:var(--text);min-height:100vh;}
+    .aurora{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+    .ab{position:absolute;border-radius:50%;filter:blur(90px);opacity:0.2;animation:af 18s ease-in-out infinite alternate;}
+    .ab:nth-child(1){width:600px;height:500px;background:radial-gradient(circle,#7c3aed,transparent 70%);top:-150px;left:-100px;}
+    .ab:nth-child(2){width:400px;height:400px;background:radial-gradient(circle,#00e5ff,transparent 70%);bottom:-100px;right:-80px;opacity:0.12;animation-delay:-8s;}
+    @keyframes af{0%{transform:translate(0,0)}100%{transform:translate(30px,-40px)}}
+    .dot-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,0.05) 1px,transparent 1px);background-size:36px 36px;}
+    .nav{position:sticky;top:0;z-index:50;height:64px;display:flex;align-items:center;padding:0 28px;background:rgba(5,2,15,0.85);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,229,255,0.1);}
+    .nav-inner{width:100%;max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;}
+    .brand{display:flex;align-items:center;gap:10px;text-decoration:none;}
+    .brand-icon{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--violet),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:16px;}
+    .brand-name{font-family:'Syne',sans-serif;font-weight:800;font-size:14px;color:var(--white);}
+    .nav-right{display:flex;align-items:center;gap:10px;}
+    .shop-link{display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid var(--rim);background:var(--glass);color:var(--muted);font-size:12px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;transition:all 0.2s;}
+    .shop-link:hover{border-color:var(--cyan);color:var(--cyan);}
+    .logout-btn{padding:8px 14px;border-radius:10px;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.08);color:var(--rose);font-size:12px;font-weight:600;text-transform:uppercase;cursor:pointer;letter-spacing:0.06em;}
+    .page{max-width:1200px;margin:0 auto;padding:28px;position:relative;z-index:1;display:grid;grid-template-columns:250px 1fr;gap:20px;align-items:start;}
+    @media(max-width:768px){.page{grid-template-columns:1fr;}}
+    .sidebar{position:sticky;top:76px;}
+    .profile-card{background:linear-gradient(135deg,rgba(17,9,48,0.9),rgba(11,5,32,0.95));border:1px solid rgba(0,229,255,0.15);border-radius:18px;padding:22px;text-align:center;margin-bottom:10px;}
+    .profile-avatar{width:76px;height:76px;border-radius:50%;border:3px solid var(--cyan);box-shadow:0 0 20px rgba(0,229,255,0.3);margin:0 auto 10px;overflow:hidden;display:flex;align-items:center;justify-content:center;}
+    .profile-avatar svg{width:100%;height:100%;}
+    .profile-name{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--white);margin-bottom:3px;}
+    .profile-email{font-size:12px;color:var(--muted);margin-bottom:14px;}
+    .pstats{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+    .pstat{background:rgba(255,255,255,0.04);border-radius:8px;padding:10px;border:1px solid rgba(255,255,255,0.06);}
+    .pstat-n{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--cyan);}
+    .pstat-l{font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:2px;}
+    .nav-menu{background:rgba(11,5,32,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;}
+    .mi{display:flex;align-items:center;gap:11px;padding:12px 16px;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s;border:none;background:none;width:100%;text-align:left;border-bottom:1px solid rgba(255,255,255,0.04);}
+    .mi:last-child{border-bottom:none;}
+    .mi:hover{background:rgba(255,255,255,0.03);color:var(--text);}
+    .mi.active{background:rgba(0,229,255,0.07);color:var(--cyan);border-left:3px solid var(--cyan);}
+    .sec{display:none;} .sec.active{display:block;}
+    .sec-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);margin-bottom:4px;}
+    .sec-sub{font-size:13px;color:var(--muted);margin-bottom:22px;}
+    .panel{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:14px;overflow:hidden;margin-bottom:14px;}
+    .ph{padding:14px 18px;border-bottom:1px solid rgba(255,255,255,0.06);font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);}
+    .pb{padding:18px;}
+    .order-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;margin-bottom:10px;transition:border-color 0.2s;}
+    .order-card:hover{border-color:rgba(0,229,255,0.2);}
+    .order-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;flex-wrap:wrap;gap:6px;}
+    .order-ref{font-family:'Syne',sans-serif;font-size:11px;color:var(--cyan);letter-spacing:0.1em;}
+    .order-date{font-size:12px;color:var(--muted);}
+    .order-items{font-size:13px;color:var(--text);margin-bottom:8px;line-height:1.5;}
+    .order-bot{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+    .order-amt{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--green);}
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:600;}
+    .bg{background:rgba(0,212,77,0.12);color:var(--green);border:1px solid rgba(0,212,77,0.2);}
+    .bc{background:rgba(0,229,255,0.10);color:var(--cyan);border:1px solid rgba(0,229,255,0.2);}
+    .deliv{font-size:12px;color:var(--muted);margin-top:6px;}
+    .wish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;}
+    .wc{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;overflow:hidden;transition:all 0.2s;}
+    .wc:hover{border-color:rgba(0,229,255,0.2);transform:translateY(-2px);}
+    .wi{aspect-ratio:1;overflow:hidden;}
+    .wi img{width:100%;height:100%;object-fit:cover;display:block;}
+    .wb{padding:10px;}
+    .wn{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--white);margin-bottom:3px;}
+    .wp{font-size:12px;color:var(--cyan);margin-bottom:6px;}
+    .wr{width:100%;padding:6px;border-radius:7px;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.08);color:var(--rose);font-size:11px;cursor:pointer;}
+    .addr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:14px;}
+    .ac{padding:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;position:relative;transition:border-color 0.2s;}
+    .ac.def{border-color:rgba(0,229,255,0.3);background:rgba(0,229,255,0.04);}
+    .al{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+    .ad{font-size:13px;color:var(--muted);line-height:1.6;}
+    .adx{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:6px;border:1px solid rgba(244,63,94,0.3);background:rgba(244,63,94,0.08);color:var(--rose);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+    .add-addr{display:flex;align-items:center;gap:7px;padding:11px 18px;border-radius:10px;border:1px dashed rgba(0,229,255,0.3);background:rgba(0,229,255,0.04);color:var(--cyan);font-size:13px;font-weight:600;cursor:pointer;}
+    .af{background:rgba(255,255,255,0.04);border:1px solid rgba(0,229,255,0.2);border-radius:12px;padding:18px;margin-top:14px;display:none;}
+    .af.open{display:block;}
+    .fr{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    @media(max-width:600px){.fr{grid-template-columns:1fr;}}
+    .field{margin-bottom:10px;}
+    .field label{display:block;font-size:11px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:6px;}
+    .field input,.field select,.field textarea{width:100%;padding:11px 13px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:var(--text);font-family:'Figtree',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s;}
+    .field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(0,229,255,0.45);}
+    .field select option{background:#110930;color:var(--text);}
+    .field textarea{resize:vertical;min-height:60px;}
+    .bid-card{display:grid;grid-template-columns:1fr auto;gap:14px;align-items:center;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;margin-bottom:8px;}
+    .bt{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);margin-bottom:3px;}
+    .bm{font-size:12px;color:var(--muted);}
+    .ba{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:#a78bfa;text-align:right;}
+    .bab{font-size:11px;color:var(--green);text-align:right;}
+    .ap-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px;}
+    .av-btn{aspect-ratio:1;border-radius:10px;border:2px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);cursor:pointer;padding:5px;transition:all 0.2s;}
+    .av-btn:hover{border-color:rgba(0,229,255,0.3);}
+    .av-btn.selected{border-color:var(--cyan);background:rgba(0,229,255,0.1);}
+    .av-btn svg{width:100%;height:100%;display:block;}
+    .btn-p{display:inline-flex;align-items:center;gap:7px;padding:11px 22px;border-radius:10px;background:linear-gradient(135deg,var(--cyan-d),var(--cyan));border:none;color:var(--void);font-family:'Figtree',sans-serif;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;box-shadow:0 0 20px rgba(0,229,255,0.2);}
+    .btn-p:hover{box-shadow:0 0 40px rgba(0,229,255,0.4);transform:translateY(-1px);}
+    .btn-g{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:10px;border:1px solid var(--rim);background:var(--glass);color:var(--text);font-size:13px;cursor:pointer;transition:all 0.2s;}
+    .btn-g:hover{border-color:var(--cyan);color:var(--cyan);}
+    .empty{text-align:center;padding:44px 20px;color:var(--muted);}
+    .ei{font-size:38px;margin-bottom:10px;opacity:0.4;}
+    .empty p{font-size:14px;margin-bottom:14px;}
+    .loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:40px;color:var(--muted);font-size:14px;}
+    .spin{width:18px;height:18px;border:2px solid rgba(0,229,255,0.2);border-top-color:var(--cyan);border-radius:50%;animation:sp 0.8s linear infinite;}
+    @keyframes sp{to{transform:rotate(360deg)}}
+    ::-webkit-scrollbar{width:4px}
+    ::-webkit-scrollbar-track{background:var(--void)}
+    ::-webkit-scrollbar-thumb{background:rgba(0,229,255,0.2);border-radius:2px}
+  </style>
+</head>
+<body>
+<div class="aurora"><div class="ab"></div><div class="ab"></div></div>
+<div class="dot-grid"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="brand"><div class="brand-icon">🌙</div><div class="brand-name">Late Night Epiphanies</div></a>
+    <div class="nav-right">
+      <a href="index.html" class="shop-link">← Shop</a>
+      <button class="logout-btn" id="logoutBtn">Log Out</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <aside class="sidebar">
+    <div class="profile-card">
+      <div class="profile-avatar" id="sidebarAvatar"></div>
+      <div class="profile-name" id="sidebarName">Loading…</div>
+      <div class="profile-email" id="sidebarEmail"></div>
+      <div class="pstats">
+        <div class="pstat"><div class="pstat-n" id="statOrders">0</div><div class="pstat-l">Orders</div></div>
+        <div class="pstat"><div class="pstat-n" id="statWish">0</div><div class="pstat-l">Wishlist</div></div>
+      </div>
+    </div>
+    <div class="nav-menu">
+      <button class="mi active" data-s="orders">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Order History
+      </button>
+      <button class="mi" data-s="wishlist">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 21C12 21 3 13.5 3 8a5 5 0 019-3 5 5 0 019 3c0 5.5-9 13-9 13z" stroke="currentColor" stroke-width="1.5"/></svg>
+        Wishlist
+      </button>
+      <button class="mi" data-s="addresses">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="9" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+        Delivery Addresses
+      </button>
+      <button class="mi" data-s="bids">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Bid History
+      </button>
+      <button class="mi" data-s="profile">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Profile Settings
+      </button>
+    </div>
+  </aside>
+
+  <div>
+    <!-- ORDERS -->
+    <div class="sec active" id="sec-orders">
+      <div class="sec-title">Order History</div>
+      <div class="sec-sub">All your confirmed purchases</div>
+      <div id="ordersEl"><div class="loading"><div class="spin"></div>Loading orders…</div></div>
+    </div>
+
+    <!-- WISHLIST -->
+    <div class="sec" id="sec-wishlist">
+      <div class="sec-title">My Wishlist</div>
+      <div class="sec-sub">Artworks you've saved</div>
+      <div id="wishEl"><div class="loading"><div class="spin"></div>Loading…</div></div>
+    </div>
+
+    <!-- ADDRESSES -->
+    <div class="sec" id="sec-addresses">
+      <div class="sec-title">Delivery Addresses</div>
+      <div class="sec-sub">Your Nairobi delivery locations</div>
+      <div id="addrEl"><div class="loading"><div class="spin"></div>Loading…</div></div>
+    </div>
+
+    <!-- BIDS -->
+    <div class="sec" id="sec-bids">
+      <div class="sec-title">Bid History</div>
+      <div class="sec-sub">Artworks you've bid on</div>
+      <div id="bidsEl"><div class="loading"><div class="spin"></div>Loading…</div></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="sec" id="sec-profile">
+      <div class="sec-title">Profile Settings</div>
+      <div class="sec-sub">Update your name, phone &amp; avatar</div>
+      <div class="panel">
+        <div class="ph">Your Details</div>
+        <div class="pb">
+          <div class="field"><label>Full Name</label><input type="text" id="pName"/></div>
+          <div class="field"><label>Phone</label><input type="tel" id="pPhone" placeholder="0712345678"/></div>
+          <div class="field"><label>Avatar <span style="opacity:0.5;font-size:10px;">(optional)</span></label>
+            <div class="ap-grid" id="apGrid"></div>
+          </div>
+          <div id="pMsg" style="font-size:13px;margin-bottom:10px;display:none;"></div>
+          <button class="btn-p" id="saveProfile">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const AVATARS=[`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#1a0a3d"/><circle cx="40" cy="36" r="22" fill="#7c3aed"/><circle cx="32" cy="32" r="7" fill="white"/><circle cx="48" cy="32" r="7" fill="white"/><circle cx="33" cy="33" r="4" fill="#1a0a3d"/><circle cx="49" cy="33" r="4" fill="#1a0a3d"/><circle cx="34" cy="32" r="1.5" fill="white"/><circle cx="50" cy="32" r="1.5" fill="white"/><ellipse cx="40" cy="44" rx="6" ry="3" fill="#ff9f43"/><path d="M34 50 Q40 56 46 50" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#0b1a3d"/><circle cx="40" cy="38" r="24" fill="#1e40af"/><ellipse cx="40" cy="34" rx="16" ry="14" fill="#3b82f6"/><circle cx="33" cy="31" r="5" fill="white"/><circle cx="47" cy="31" r="5" fill="white"/><circle cx="34" cy="32" r="3" fill="#0b1a3d"/><circle cx="48" cy="32" r="3" fill="#0b1a3d"/><path d="M33 40 Q40 46 47 40" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#05020f"/><circle cx="40" cy="38" r="24" fill="#c9a84c"/><circle cx="40" cy="35" r="18" fill="#e8c97b"/><circle cx="33" cy="31" r="5" fill="#4a3000"/><circle cx="47" cy="31" r="5" fill="#4a3000"/><circle cx="34" cy="32" r="2" fill="#05020f"/><circle cx="48" cy="32" r="2" fill="#05020f"/><path d="M34 42 Q40 48 46 42" stroke="#4a3000" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#0f0f1a"/><circle cx="40" cy="38" r="24" fill="#2d1b69"/><ellipse cx="40" cy="36" rx="18" ry="16" fill="#4c1d95"/><circle cx="33" cy="32" r="6" fill="white"/><circle cx="47" cy="32" r="6" fill="white"/><circle cx="34" cy="33" r="3.5" fill="#7c3aed"/><circle cx="48" cy="33" r="3.5" fill="#7c3aed"/><path d="M34 42 Q40 47 46 42" stroke="#00e5ff" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#0a0806"/><circle cx="40" cy="40" r="24" fill="#444"/><polygon points="26,20 22,8 32,16" fill="#2d2d2d"/><polygon points="54,20 58,8 48,16" fill="#2d2d2d"/><ellipse cx="33" cy="33" rx="6" ry="4" fill="#00e5ff" opacity="0.9"/><ellipse cx="47" cy="33" rx="6" ry="4" fill="#00e5ff" opacity="0.9"/><ellipse cx="33" cy="34" rx="2" ry="3.5" fill="#0a0806"/><ellipse cx="47" cy="34" rx="2" ry="3.5" fill="#0a0806"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#050b1f"/><circle cx="40" cy="38" r="22" fill="#2563eb"/><rect x="24" y="26" width="32" height="22" rx="11" fill="none" stroke="white" stroke-width="2.5"/><circle cx="33" cy="34" r="4" fill="white"/><circle cx="47" cy="34" r="4" fill="white"/><circle cx="34" cy="35" r="2.5" fill="#050b1f"/><circle cx="48" cy="35" r="2.5" fill="#050b1f"/><path d="M34 42 Q40 47 46 42" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#1a0a00"/><ellipse cx="40" cy="34" rx="15" ry="13" fill="#fb923c"/><circle cx="33" cy="31" r="5" fill="white"/><circle cx="47" cy="31" r="5" fill="white"/><circle cx="34" cy="32" r="3" fill="#431407"/><circle cx="48" cy="32" r="3" fill="#431407"/><path d="M33 42 Q40 49 47 42" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#052005"/><ellipse cx="40" cy="34" rx="15" ry="13" fill="#22c55e"/><circle cx="33" cy="30" r="5" fill="white"/><circle cx="47" cy="30" r="5" fill="white"/><circle cx="34" cy="31" r="3" fill="#052005"/><circle cx="48" cy="31" r="3" fill="#052005"/><path d="M34 40 Q40 47 46 40" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#000"/><rect x="18" y="26" width="44" height="28" rx="4" fill="#27272a"/><ellipse cx="31.5" cy="33.5" rx="5" ry="3.5" fill="#00e5ff" opacity="0.8"/><ellipse cx="48.5" cy="33.5" rx="5" ry="3.5" fill="#f43f5e" opacity="0.8"/><path d="M32 42 L38 44 L40 42 L42 44 L48 42" stroke="#a3e635" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,`<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"><circle cx="40" cy="40" r="38" fill="#03001c"/><circle cx="40" cy="36" r="20" fill="#2d1b69"/><circle cx="33" cy="31" r="6" fill="white"/><circle cx="47" cy="31" r="6" fill="white"/><circle cx="34" cy="32" r="4" fill="#4c1d95"/><circle cx="48" cy="32" r="4" fill="#4c1d95"/><circle cx="35" cy="31" r="2" fill="white"/><circle cx="49" cy="31" r="2" fill="white"/><path d="M33 42 Q40 50 47 42" stroke="#a78bfa" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`];
+
+  const KES=v=>`KSh ${Number(v).toLocaleString('en-KE')}`;
+  const fmtD=d=>d?new Date(d).toLocaleDateString('en-KE',{day:'numeric',month:'short',year:'numeric'}):'—';
+  const token=localStorage.getItem('lne_token');
+  const uStr=localStorage.getItem('lne_user');
+  if(!token||!uStr){window.location.href='/auth?redirect=/dashboard';}
+  let user=JSON.parse(uStr||'{}');
+  let selAv=user.avatar||1;
+  let zones={};
+  const H={'Content-Type':'application/json','Authorization':'Bearer '+token};
+
+  function renderSidebar(){
+    document.getElementById('sidebarAvatar').innerHTML=AVATARS[(user.avatar||1)-1];
+    document.getElementById('sidebarName').textContent=user.name||'';
+    document.getElementById('sidebarEmail').textContent=user.email||'';
+  }
+  renderSidebar();
+
+  document.querySelectorAll('.mi').forEach(b=>{
+    b.addEventListener('click',()=>{
+      document.querySelectorAll('.mi').forEach(x=>x.classList.remove('active'));
+      document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById('sec-'+b.dataset.s).classList.add('active');
+      if(b.dataset.s==='orders')loadOrders();
+      if(b.dataset.s==='wishlist')loadWishlist();
+      if(b.dataset.s==='addresses')loadAddresses();
+      if(b.dataset.s==='bids')loadBids();
+      if(b.dataset.s==='profile')setupProfile();
+    });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click',()=>{
+    localStorage.removeItem('lne_token');localStorage.removeItem('lne_user');window.location.href='/';
+  });
+
+  async function loadOrders(){
+    const el=document.getElementById('ordersEl');
+    el.innerHTML='<div class="loading"><div class="spin"></div>Loading orders…</div>';
+    try{
+      const r=await fetch('/api/user/orders',{headers:H});
+      const d=await r.json();
+      document.getElementById('statOrders').textContent=d.orders?.length||0;
+      if(!d.orders?.length){el.innerHTML=`<div class="empty"><div class="ei">📦</div><p>No orders yet</p><a href="/" class="btn-p" style="text-decoration:none;">Shop Now →</a></div>`;return;}
+      el.innerHTML=d.orders.map(o=>`<div class="order-card"><div class="order-top"><span class="order-ref">${o.reference}</span><span class="order-date">${fmtD(o.paid_at||o.created_at)}</span></div><div class="order-items">${o.items||'Art purchase'}</div>${o.delivery?.zone?`<div class="deliv">📍 ${o.delivery.area}, ${o.delivery.zone} — Fee: ${KES(o.delivery.fee||0)}</div>`:''}<div class="order-bot"><div class="order-amt">${KES(o.amount)}</div><span class="badge bg">✓ Paid</span></div></div>`).join('');
+    }catch{el.innerHTML='<div class="empty"><div class="ei">⚠️</div><p>Could not load orders</p></div>';}
+  }
+
+  async function loadWishlist(){
+    const el=document.getElementById('wishEl');
+    el.innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+    try{
+      const r=await fetch('/api/user/wishlist',{headers:H});
+      const d=await r.json();
+      document.getElementById('statWish').textContent=d.wishlist?.length||0;
+      if(!d.wishlist?.length){el.innerHTML=`<div class="empty"><div class="ei">❤️</div><p>Your wishlist is empty</p><a href="/" class="btn-p" style="text-decoration:none;">Browse Artworks →</a></div>`;return;}
+      el.innerHTML=`<div class="wish-grid">${d.wishlist.map(w=>`<div class="wc"><div class="wi"><img src="${w.img}" alt="${w.title}" loading="lazy"/></div><div class="wb"><div class="wn">${w.title}</div><div class="wp">${KES(w.price)}</div><button class="wr" onclick="removeWish('${w.productId}')">Remove</button></div></div>`).join('')}</div>`;
+    }catch{el.innerHTML='<div class="empty"><div class="ei">⚠️</div><p>Could not load wishlist</p></div>';}
+  }
+
+  async function removeWish(productId){
+    try{await fetch('/api/user/wishlist',{method:'POST',headers:H,body:JSON.stringify({productId,title:'',img:'',price:0})});loadWishlist();}catch{}
+  }
+
+  async function loadAddresses(){
+    const el=document.getElementById('addrEl');
+    el.innerHTML='<div class="loading"><div class="spin"></div>Loading…</div>';
+    try{
+      const[uRes,zRes]=await Promise.all([fetch('/api/auth/me',{headers:H}),fetch('/api/delivery/zones')]);
+      const uData=await uRes.json();const zData=await zRes.json();
+      user={...user,...uData.user};
+      localStorage.setItem('lne_user',JSON.stringify(user));
+      zones=zData.zones||{};
+      renderAddresses(user.addresses||[]);
+    }catch{el.innerHTML='<div class="empty"><div class="ei">⚠️</div><p>Could not load addresses</p></div>';}
+  }
+
+  function renderAddresses(addrs){
+    const el=document.getElementById('addrEl');
+    el.innerHTML=`<div class="addr-grid">${addrs.map((a,i)=>`<div class="ac ${a.isDefault?'def':''}"><div class="al">🏠 ${a.label||'Home'} ${a.isDefault?'<span class="badge bc">Default</span>':''}</div><div class="ad"><strong style="color:var(--text)">${a.area}</strong><br>${a.zone}<br>${a.street?a.street+'<br>':''}${a.notes?'<em>'+a.notes+'</em>':''}</div><button class="adx" onclick="delAddr(${i})">✕</button></div>`).join('')||'<div style="color:var(--muted);font-size:13px;">No addresses saved yet.</div>'}</div>
+    <button class="add-addr" id="addAddrBtn">+ Add New Address</button>
+    <div class="af" id="addrForm">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:14px;">New Delivery Address</div>
+      <div class="fr">
+        <div class="field"><label>Label</label><input type="text" id="aLabel" placeholder="Home, Office…"/></div>
+        <div class="field"><label>Zone</label><select id="aZone"><option value="">Select zone…</option>${Object.keys(zones).map(z=>`<option value="${z}">${z} — ${KES(zones[z].fee)}</option>`).join('')}</select></div>
+      </div>
+      <div class="field"><label>Area</label><select id="aArea"><option value="">Select zone first…</option></select></div>
+      <div class="field"><label>Street / Estate</label><input type="text" id="aStreet" placeholder="e.g. Kimathi Street"/></div>
+      <div class="field"><label>Notes <span style="opacity:0.5;font-size:10px;">(optional)</span></label><textarea id="aNotes" placeholder="e.g. Blue gate, 3rd floor…"></textarea></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><input type="checkbox" id="aDef" style="accent-color:var(--cyan);"/><label for="aDef" style="font-size:13px;color:var(--muted);cursor:pointer;">Set as default</label></div>
+      <div id="addrErr" style="font-size:13px;color:var(--rose);margin-bottom:8px;display:none;"></div>
+      <div style="display:flex;gap:8px;"><button class="btn-p" id="saveAddr">Save Address</button><button class="btn-g" id="cancelAddr">Cancel</button></div>
+    </div>`;
+    document.getElementById('addAddrBtn').addEventListener('click',()=>document.getElementById('addrForm').classList.toggle('open'));
+    document.getElementById('cancelAddr').addEventListener('click',()=>document.getElementById('addrForm').classList.remove('open'));
+    document.getElementById('aZone').addEventListener('change',e=>{
+      const z=e.target.value;
+      const s=document.getElementById('aArea');
+      s.innerHTML=z?zones[z].areas.map(a=>`<option value="${a}">${a}</option>`).join(''):'<option value="">Select zone first…</option>';
+    });
+    document.getElementById('saveAddr').addEventListener('click',saveAddress);
+  }
+
+  async function saveAddress(){
+    const label=document.getElementById('aLabel').value.trim()||'Home';
+    const zone=document.getElementById('aZone').value;
+    const area=document.getElementById('aArea').value;
+    const street=document.getElementById('aStreet').value.trim();
+    const notes=document.getElementById('aNotes').value.trim();
+    const isDefault=document.getElementById('aDef').checked;
+    const errEl=document.getElementById('addrErr');
+    errEl.style.display='none';
+    if(!zone||!area){errEl.textContent='Please select a zone and area';errEl.style.display='block';return;}
+    try{
+      const r=await fetch('/api/user/addresses',{method:'POST',headers:H,body:JSON.stringify({label,zone,area,street,notes,isDefault})});
+      const d=await r.json();
+      if(d.success){user.addresses=d.addresses;localStorage.setItem('lne_user',JSON.stringify(user));renderAddresses(d.addresses);}
+      else{errEl.textContent=d.error||'Failed';errEl.style.display='block';}
+    }catch{errEl.textContent='Network error';errEl.style.display='block';}
+  }
+
+  async function delAddr(i){
+    if(!confirm('Delete this address?'))return;
+    try{const r=await fetch(`/api/user/addresses/${i}`,{method:'DELETE',headers:H});const d=await r.json();if(d.success){user.addresses=d.addresses;localStorage.setItem('lne_user',JSON.stringify(user));renderAddresses(d.addresses);}}catch{}
+  }
+
+  function loadBids(){
+    const el=document.getElementById('bidsEl');
+    const bids=JSON.parse(localStorage.getItem('lne_bids')||'[]');
+    if(!bids.length){el.innerHTML=`<div class="empty"><div class="ei">⚡</div><p>No bids placed yet</p><a href="/" class="btn-p" style="text-decoration:none;">Browse Artworks →</a></div>`;return;}
+    el.innerHTML=bids.map(b=>{const ab=b.amount-b.listedPrice;const pct=Math.round((ab/b.listedPrice)*100);return`<div class="bid-card"><div><div class="bt">${b.title}</div><div class="bm">Listed at ${KES(b.listedPrice)} · ${fmtD(b.time)}</div></div><div><div class="ba">${KES(b.amount)}</div><div class="bab">+${KES(ab)} (+${pct}%)</div></div></div>`;}).join('');
+  }
+
+  function setupProfile(){
+    document.getElementById('pName').value=user.name||'';
+    document.getElementById('pPhone').value=user.phone||'';
+    const picker=document.getElementById('apGrid');picker.innerHTML='';
+    AVATARS.forEach((svg,i)=>{
+      const b=document.createElement('button');b.type='button';b.className='av-btn'+((user.avatar||1)===i+1?' selected':'');b.innerHTML=svg;
+      b.addEventListener('click',()=>{picker.querySelectorAll('.av-btn').forEach(x=>x.classList.remove('selected'));b.classList.add('selected');selAv=i+1;});
+      picker.appendChild(b);
+    });
+  }
+
+  document.getElementById('saveProfile').addEventListener('click',async()=>{
+    const name=document.getElementById('pName').value.trim();
+    const phone=document.getElementById('pPhone').value.trim();
+    const msgEl=document.getElementById('pMsg');
+    try{
+      const r=await fetch('/api/user/profile',{method:'PUT',headers:H,body:JSON.stringify({name,phone,avatar:selAv})});
+      const d=await r.json();
+      if(d.success){user={...user,name:d.user.name,phone:d.user.phone,avatar:d.user.avatar};localStorage.setItem('lne_user',JSON.stringify(user));renderSidebar();msgEl.textContent='✅ Saved!';msgEl.style.color='var(--green)';msgEl.style.display='block';setTimeout(()=>msgEl.style.display='none',2000);}
+      else{msgEl.textContent=d.error||'Update failed';msgEl.style.color='var(--rose)';msgEl.style.display='block';}
+    }catch{msgEl.textContent='Network error';msgEl.style.color='var(--rose)';msgEl.style.display='block';}
+  });
+
+  loadOrders();
+  fetch('/api/delivery/zones').then(r=>r.json()).then(d=>{zones=d.zones||{};});
+</script>
+</body>
+</html>
