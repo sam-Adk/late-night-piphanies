@@ -14,3 +14,16 @@
     "mongoose": "^8.0.0"
   }
 }
+```
+
+6. Click **Commit changes**
+
+---
+
+**Step 2 — Render will auto-redeploy**
+
+Your logs should then show:
+```
+✅ Server running on port 10000
+✅ Connected to MongoDB!
+✅ Stock ready!
