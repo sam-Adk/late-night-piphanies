@@ -4,7 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { MongoClient, ServerApiVersion } from 'mongodb';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
@@ -19,49 +19,53 @@ app.use(express.json());
 const { PAYSTACK_SECRET_KEY, MONGODB_URI, PORT = 10000 } = process.env;
 
 // ================================================================
-// MONGODB — tlsInsecure fixes SSL alert 80 on Render
+// MONGOOSE SCHEMAS
 // ================================================================
-let db;
+const orderSchema = new mongoose.Schema({
+  reference:  { type: String, unique: true },
+  email:      String,
+  amount:     Number,
+  currency:   String,
+  status:     String,
+  paid_at:    String,
+  channel:    String,
+  items:      String,
+  created_at: { type: Date, default: Date.now }
+});
 
+const stockSchema = new mongoose.Schema({
+  productId: { type: String, unique: true },
+  sold:      { type: Number, default: 0 },
+  maxPrints: { type: Number, default: 10 }
+});
+
+const Order = mongoose.model('Order', orderSchema);
+const Stock = mongoose.model('Stock', stockSchema);
+
+// ================================================================
+// MONGOOSE CONNECTION
+// ================================================================
 async function connectDB() {
   try {
-    // Append tlsInsecure to the URI directly
-    const uri = MONGODB_URI.includes('?')
-      ? MONGODB_URI + '&tlsInsecure=true'
-      : MONGODB_URI + '?tlsInsecure=true';
-
-    const client = new MongoClient(uri, {
-      serverApi: {
-        version: ServerApiVersion.v1,
-        strict: false,
-        deprecationErrors: false,
-      },
-      tlsInsecure: true,
+    await mongoose.connect(MONGODB_URI, {
+      dbName: 'late-night-epiphanies',
+      ssl: true,
+      tls: true,
+      tlsAllowInvalidCertificates: true,
+      tlsAllowInvalidHostnames: true,
+      serverSelectionTimeoutMS: 30000,
       connectTimeoutMS: 30000,
       socketTimeoutMS: 60000,
-      serverSelectionTimeoutMS: 30000,
+      family: 4, // Force IPv4 — fixes many Render SSL issues
     });
-
-    await client.connect();
-    db = client.db('late-night-epiphanies');
-    await db.command({ ping: 1 });
     console.log('✅ Connected to MongoDB!');
 
-    // Indexes
-    await db.collection('orders').createIndex({ reference: 1 }, { unique: true });
-    await db.collection('orders').createIndex({ email: 1 });
-    await db.collection('stock').createIndex({ productId: 1 }, { unique: true });
-
-    // Initialize stock (39 products, max 10 prints each)
-    const products = Array.from({ length: 39 }, (_, i) => ({
-      productId: `p${i + 1}`,
-      sold: 0,
-      maxPrints: 10
-    }));
-    for (const p of products) {
-      await db.collection('stock').updateOne(
-        { productId: p.productId },
-        { $setOnInsert: p },
+    // Initialize stock for all 39 products
+    const products = Array.from({ length: 39 }, (_, i) => `p${i + 1}`);
+    for (const productId of products) {
+      await Stock.updateOne(
+        { productId },
+        { $setOnInsert: { productId, sold: 0, maxPrints: 10 } },
         { upsert: true }
       );
     }
@@ -69,8 +73,7 @@ async function connectDB() {
 
   } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);
-    // Retry after 5 seconds
-    console.log('🔄 Retrying MongoDB connection in 5s...');
+    console.log('🔄 Retrying in 5s...');
     setTimeout(connectDB, 5000);
   }
 }
@@ -88,9 +91,7 @@ app.get('/about', (req, res) => res.sendFile(path.join(ROOT, 'about.html')));
 // ================================================================
 app.post('/api/paystack/initialize', async (req, res) => {
   const { email, amount } = req.body;
-  if (!email || !amount) {
-    return res.status(400).json({ error: 'Missing email or amount' });
-  }
+  if (!email || !amount) return res.status(400).json({ error: 'Missing email or amount' });
   try {
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
@@ -107,12 +108,7 @@ app.post('/api/paystack/initialize', async (req, res) => {
           }]
         }
       },
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
-          'Content-Type': 'application/json'
-        }
-      }
+      { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`, 'Content-Type': 'application/json' } }
     );
     res.json({
       success: true,
@@ -127,54 +123,41 @@ app.post('/api/paystack/initialize', async (req, res) => {
 });
 
 // ================================================================
-// PAYSTACK: Verify + Save to MongoDB
+// PAYSTACK: Verify + Save order
 // ================================================================
 app.get('/api/paystack/verify/:reference', async (req, res) => {
-  const { reference } = req.params;
   try {
     const response = await axios.get(
-      `https://api.paystack.co/transaction/verify/${reference}`,
+      `https://api.paystack.co/transaction/verify/${req.params.reference}`,
       { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } }
     );
     const data = response.data.data;
-
     if (data.status === 'success') {
-      if (db) {
-        try {
-          await db.collection('orders').updateOne(
-            { reference: data.reference },
-            {
-              $set: {
-                reference:  data.reference,
-                email:      data.customer.email,
-                amount:     data.amount / 100,
-                currency:   data.currency,
-                status:     'paid',
-                paid_at:    data.paid_at,
-                channel:    data.channel,
-                items:      data.metadata?.custom_fields?.[0]?.value || '',
-                created_at: new Date()
-              }
-            },
-            { upsert: true }
-          );
-          console.log(`✅ Order saved: ${data.reference}`);
-        } catch (dbErr) {
-          console.error('DB save error:', dbErr.message);
-        }
+      try {
+        await Order.findOneAndUpdate(
+          { reference: data.reference },
+          {
+            reference: data.reference,
+            email:     data.customer.email,
+            amount:    data.amount / 100,
+            currency:  data.currency,
+            status:    'paid',
+            paid_at:   data.paid_at,
+            channel:   data.channel,
+            items:     data.metadata?.custom_fields?.[0]?.value || ''
+          },
+          { upsert: true, new: true }
+        );
+        console.log(`✅ Order saved: ${data.reference}`);
+      } catch (dbErr) {
+        console.error('DB save error:', dbErr.message);
       }
-      res.json({
-        success:   true,
-        amount:    data.amount / 100,
-        email:     data.customer.email,
-        reference: data.reference,
-        paid_at:   data.paid_at
-      });
+      res.json({ success: true, amount: data.amount / 100, email: data.customer.email, reference: data.reference });
     } else {
       res.json({ success: false, status: data.status });
     }
   } catch (err) {
-    console.error('Paystack verify error:', err.response?.data || err.message);
+    console.error('Verify error:', err.response?.data || err.message);
     res.status(500).json({ error: 'Verification failed' });
   }
 });
@@ -186,30 +169,24 @@ app.post('/api/paystack/webhook', async (req, res) => {
   const event = req.body;
   if (event.event === 'charge.success') {
     const data = event.data;
-    console.log('✅ Webhook received:', data.reference);
-    if (db) {
-      try {
-        await db.collection('orders').updateOne(
-          { reference: data.reference },
-          {
-            $set: {
-              reference:  data.reference,
-              email:      data.customer.email,
-              amount:     data.amount / 100,
-              currency:   data.currency,
-              status:     'paid',
-              paid_at:    data.paid_at,
-              channel:    data.channel,
-              items:      data.metadata?.custom_fields?.[0]?.value || '',
-              created_at: new Date()
-            }
-          },
-          { upsert: true }
-        );
-        console.log(`✅ Order saved via webhook: ${data.reference}`);
-      } catch (dbErr) {
-        console.error('Webhook DB error:', dbErr.message);
-      }
+    try {
+      await Order.findOneAndUpdate(
+        { reference: data.reference },
+        {
+          reference: data.reference,
+          email:     data.customer.email,
+          amount:    data.amount / 100,
+          currency:  data.currency,
+          status:    'paid',
+          paid_at:   data.paid_at,
+          channel:   data.channel,
+          items:     data.metadata?.custom_fields?.[0]?.value || ''
+        },
+        { upsert: true, new: true }
+      );
+      console.log(`✅ Webhook order saved: ${data.reference}`);
+    } catch (err) {
+      console.error('Webhook DB error:', err.message);
     }
   }
   res.sendStatus(200);
@@ -219,9 +196,8 @@ app.post('/api/paystack/webhook', async (req, res) => {
 // STOCK API
 // ================================================================
 app.get('/api/stock', async (req, res) => {
-  if (!db) return res.status(500).json({ error: 'DB not connected' });
   try {
-    const stock = await db.collection('stock').find({}).toArray();
+    const stock = await Stock.find({});
     res.json({ success: true, stock });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -229,9 +205,8 @@ app.get('/api/stock', async (req, res) => {
 });
 
 app.get('/api/stock/:productId', async (req, res) => {
-  if (!db) return res.status(500).json({ error: 'DB not connected' });
   try {
-    const item = await db.collection('stock').findOne({ productId: req.params.productId });
+    const item = await Stock.findOne({ productId: req.params.productId });
     if (!item) return res.status(404).json({ error: 'Product not found' });
     res.json({
       success:   true,
@@ -250,12 +225,8 @@ app.get('/api/stock/:productId', async (req, res) => {
 // ORDERS API
 // ================================================================
 app.get('/api/orders', async (req, res) => {
-  if (!db) return res.status(500).json({ error: 'DB not connected' });
   try {
-    const orders = await db.collection('orders')
-      .find({})
-      .sort({ created_at: -1 })
-      .toArray();
+    const orders = await Order.find({}).sort({ created_at: -1 });
     res.json({ success: true, count: orders.length, orders });
   } catch (err) {
     res.status(500).json({ error: err.message });
