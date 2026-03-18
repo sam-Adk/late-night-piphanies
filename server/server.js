@@ -2,7 +2,13 @@ import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(cors());
@@ -10,33 +16,41 @@ app.use(express.json());
 
 const { PAYSTACK_SECRET_KEY, PORT = 10000 } = process.env;
 
+// ✅ Serve HTML, CSS, images, and all static files
+app.use(express.static(__dirname));
+
+// ✅ Home route — serves index.html
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// ✅ About route — serves about.html
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, 'about.html'));
+});
+
 // ================================================================
 // PAYSTACK: Initialize a transaction
-// POST /api/paystack/initialize
-// Body: { email, amount }  — amount in KES (we multiply by 100 here)
 // ================================================================
 app.post('/api/paystack/initialize', async (req, res) => {
   const { email, amount } = req.body;
   if (!email || !amount) {
     return res.status(400).json({ error: 'Missing email or amount' });
   }
-
   try {
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
       {
         email,
-        amount: Math.round(amount * 100), // Convert KES to kobo/cents
+        amount: Math.round(amount * 100),
         currency: 'KES',
         reference: 'LNE_' + Date.now(),
         metadata: {
-          custom_fields: [
-            {
-              display_name: 'Shop',
-              variable_name: 'shop',
-              value: 'Late Night Epiphanies'
-            }
-          ]
+          custom_fields: [{
+            display_name: 'Shop',
+            variable_name: 'shop',
+            value: 'Late Night Epiphanies'
+          }]
         }
       },
       {
@@ -46,7 +60,6 @@ app.post('/api/paystack/initialize', async (req, res) => {
         }
       }
     );
-
     res.json({
       success: true,
       authorization_url: response.data.data.authorization_url,
@@ -61,27 +74,19 @@ app.post('/api/paystack/initialize', async (req, res) => {
 
 // ================================================================
 // PAYSTACK: Verify a transaction
-// GET /api/paystack/verify/:reference
 // ================================================================
 app.get('/api/paystack/verify/:reference', async (req, res) => {
   const { reference } = req.params;
-
   try {
     const response = await axios.get(
       `https://api.paystack.co/transaction/verify/${reference}`,
-      {
-        headers: {
-          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`
-        }
-      }
+      { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } }
     );
-
     const data = response.data.data;
-
     if (data.status === 'success') {
       res.json({
         success: true,
-        amount: data.amount / 100, // Convert back to KES
+        amount: data.amount / 100,
         email: data.customer.email,
         reference: data.reference,
         paid_at: data.paid_at
@@ -96,13 +101,10 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 });
 
 // ================================================================
-// PAYSTACK: Webhook (Paystack calls this after payment)
-// POST /api/paystack/webhook
+// PAYSTACK: Webhook
 // ================================================================
 app.post('/api/paystack/webhook', (req, res) => {
-  // In production, verify the Paystack-Signature header here
   const event = req.body;
-
   if (event.event === 'charge.success') {
     const data = event.data;
     console.log('✅ Payment received:', {
@@ -111,12 +113,10 @@ app.post('/api/paystack/webhook', (req, res) => {
       email: data.customer.email,
       paid_at: data.paid_at
     });
-    // TODO: Mark order as paid in your database here
   }
-
   res.sendStatus(200);
 });
 
 app.listen(PORT, () => {
-  console.log(`✅ Paystack backend running on port ${PORT}`);
+  console.log(`✅ Server running on port ${PORT}`);
 });
