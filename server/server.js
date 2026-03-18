@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
@@ -16,107 +18,326 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const { PAYSTACK_SECRET_KEY, MONGODB_URI, PORT = 10000 } = process.env;
+const {
+  PAYSTACK_SECRET_KEY,
+  MONGODB_URI,
+  JWT_SECRET = 'lne_jwt_secret_2026',
+  PORT = 10000
+} = process.env;
 
 // ================================================================
-// MONGOOSE SCHEMAS
+// SCHEMAS
 // ================================================================
+const userSchema = new mongoose.Schema({
+  name:       { type: String, required: true, trim: true },
+  email:      { type: String, required: true, unique: true, lowercase: true, trim: true },
+  password:   { type: String, required: true },
+  avatar:     { type: Number, default: 1 }, // 1-10 cartoon avatar index
+  phone:      { type: String, default: '' },
+  addresses:  [{ label: String, zone: String, area: String, street: String, notes: String, isDefault: Boolean }],
+  wishlist:   [{ productId: String, title: String, img: String, price: Number, addedAt: { type: Date, default: Date.now } }],
+  bids:       [{ productId: String, title: String, amount: Number, listedPrice: Number, placedAt: { type: Date, default: Date.now } }],
+  created_at: { type: Date, default: Date.now }
+});
+
 const orderSchema = new mongoose.Schema({
   reference:  { type: String, unique: true },
+  userId:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   email:      String,
+  phone:      String,
   amount:     Number,
   currency:   String,
   status:     String,
   paid_at:    String,
   channel:    String,
   items:      String,
+  delivery: {
+    zone:    String,
+    area:    String,
+    street:  String,
+    notes:   String,
+    fee:     Number
+  },
   created_at: { type: Date, default: Date.now }
 });
 
 const stockSchema = new mongoose.Schema({
-  productId: { type: String, unique: true },
-  sold:      { type: Number, default: 0 },
-  maxPrints: { type: Number, default: 10 }
+  productId:  { type: String, unique: true },
+  sold:       { type: Number, default: 0 },
+  maxPrints:  { type: Number, default: 10 }
 });
 
+const User  = mongoose.model('User',  userSchema);
 const Order = mongoose.model('Order', orderSchema);
 const Stock = mongoose.model('Stock', stockSchema);
 
 // ================================================================
-// MONGOOSE CONNECTION
+// MONGODB
 // ================================================================
 async function connectDB() {
   try {
     await mongoose.connect(MONGODB_URI, {
       dbName: 'late-night-epiphanies',
-      ssl: true,
       tls: true,
       tlsAllowInvalidCertificates: true,
       tlsAllowInvalidHostnames: true,
       serverSelectionTimeoutMS: 30000,
       connectTimeoutMS: 30000,
       socketTimeoutMS: 60000,
-      family: 4, // Force IPv4 — fixes many Render SSL issues
+      family: 4,
     });
     console.log('✅ Connected to MongoDB!');
-
-    // Initialize stock for all 39 products
+    // Init stock
     const products = Array.from({ length: 39 }, (_, i) => `p${i + 1}`);
     for (const productId of products) {
-      await Stock.updateOne(
-        { productId },
-        { $setOnInsert: { productId, sold: 0, maxPrints: 10 } },
-        { upsert: true }
-      );
+      await Stock.updateOne({ productId }, { $setOnInsert: { productId, sold: 0, maxPrints: 10 } }, { upsert: true });
     }
-    console.log('✅ Stock collection ready!');
-
+    console.log('✅ Stock ready!');
   } catch (err) {
-    console.error('❌ MongoDB connection failed:', err.message);
-    console.log('🔄 Retrying in 5s...');
+    console.error('❌ MongoDB failed:', err.message);
     setTimeout(connectDB, 5000);
   }
 }
 connectDB();
 
 // ================================================================
-// SERVE STATIC FILES
+// AUTH MIDDLEWARE
 // ================================================================
-app.use(express.static(ROOT));
-app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
-app.get('/about', (req, res) => res.sendFile(path.join(ROOT, 'about.html')));
-app.get('/admin', (req, res) => res.sendFile(path.join(ROOT, 'admin.html')));
+function authMiddleware(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ error: 'No token' });
+  try {
+    req.user = jwt.verify(token, JWT_SECRET);
+    next();
+  } catch {
+    res.status(401).json({ error: 'Invalid token' });
+  }
+}
+
+// Optional auth — attaches user if token present but doesn't block
+function optionalAuth(req, res, next) {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (token) {
+    try { req.user = jwt.verify(token, JWT_SECRET); } catch {}
+  }
+  next();
+}
 
 // ================================================================
-// PAYSTACK: Initialize transaction
+// STATIC FILES
 // ================================================================
-app.post('/api/paystack/initialize', async (req, res) => {
+app.use(express.static(ROOT));
+app.get('/',          (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
+app.get('/about',     (req, res) => res.sendFile(path.join(ROOT, 'about.html')));
+app.get('/admin',     (req, res) => res.sendFile(path.join(ROOT, 'admin.html')));
+app.get('/auth',      (req, res) => res.sendFile(path.join(ROOT, 'auth.html')));
+app.get('/dashboard', (req, res) => res.sendFile(path.join(ROOT, 'dashboard.html')));
+
+// ================================================================
+// AUTH: REGISTER
+// ================================================================
+app.post('/api/auth/register', async (req, res) => {
+  const { name, email, password, phone, avatar } = req.body;
+  if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password are required' });
+  if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
+  try {
+    const exists = await User.findOne({ email: email.toLowerCase() });
+    if (exists) return res.status(409).json({ error: 'Email already registered' });
+    const hashed = await bcrypt.hash(password, 12);
+    const user = await User.create({ name, email, password: hashed, phone: phone || '', avatar: avatar || 1 });
+    const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
+    res.status(201).json({
+      success: true, token,
+      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, phone: user.phone, addresses: user.addresses }
+    });
+  } catch (err) {
+    console.error('Register error:', err.message);
+    res.status(500).json({ error: 'Registration failed' });
+  }
+});
+
+// ================================================================
+// AUTH: LOGIN
+// ================================================================
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+  try {
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(401).json({ error: 'No account found with this email' });
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(401).json({ error: 'Wrong password' });
+    const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
+    res.json({
+      success: true, token,
+      user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, phone: user.phone, addresses: user.addresses }
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Login failed' });
+  }
+});
+
+// ================================================================
+// AUTH: GET ME
+// ================================================================
+app.get('/api/auth/me', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// USER: UPDATE PROFILE
+// ================================================================
+app.put('/api/user/profile', authMiddleware, async (req, res) => {
+  const { name, phone, avatar } = req.body;
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.user.id,
+      { $set: { ...(name && { name }), ...(phone !== undefined && { phone }), ...(avatar && { avatar }) } },
+      { new: true }
+    ).select('-password');
+    res.json({ success: true, user });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// USER: ADDRESSES
+// ================================================================
+app.post('/api/user/addresses', authMiddleware, async (req, res) => {
+  const { label, zone, area, street, notes, isDefault } = req.body;
+  if (!zone || !area) return res.status(400).json({ error: 'Zone and area are required' });
+  try {
+    const user = await User.findById(req.user.id);
+    if (isDefault) user.addresses.forEach(a => a.isDefault = false);
+    user.addresses.push({ label: label || 'Home', zone, area, street: street || '', notes: notes || '', isDefault: isDefault || user.addresses.length === 0 });
+    await user.save();
+    res.json({ success: true, addresses: user.addresses });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/user/addresses/:index', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    user.addresses.splice(parseInt(req.params.index), 1);
+    await user.save();
+    res.json({ success: true, addresses: user.addresses });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// USER: WISHLIST
+// ================================================================
+app.get('/api/user/wishlist', authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('wishlist');
+    res.json({ success: true, wishlist: user.wishlist });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.post('/api/user/wishlist', authMiddleware, async (req, res) => {
+  const { productId, title, img, price } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    const exists = user.wishlist.find(w => w.productId === productId);
+    if (exists) {
+      user.wishlist = user.wishlist.filter(w => w.productId !== productId);
+    } else {
+      user.wishlist.push({ productId, title, img, price });
+    }
+    await user.save();
+    res.json({ success: true, wishlist: user.wishlist, added: !exists });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// USER: BIDS
+// ================================================================
+app.post('/api/user/bids', authMiddleware, async (req, res) => {
+  const { productId, title, amount, listedPrice } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    user.bids.unshift({ productId, title, amount, listedPrice });
+    await user.save();
+    res.json({ success: true, bids: user.bids });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// USER: MY ORDERS
+// ================================================================
+app.get('/api/user/orders', authMiddleware, async (req, res) => {
+  try {
+    const orders = await Order.find({ $or: [{ userId: req.user.id }, { email: req.user.email }] }).sort({ created_at: -1 });
+    res.json({ success: true, orders });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ================================================================
+// DELIVERY ZONES
+// ================================================================
+const deliveryZones = {
+  'CBD & Westlands': {
+    fee: 200,
+    areas: ['CBD', 'Westlands', 'Parklands', 'Upperhill', 'Kilimani', 'Lavington', 'Hurlingham', 'Ngara', 'Pangani', 'Milimani']
+  },
+  'Eastlands': {
+    fee: 300,
+    areas: ['Umoja', 'Kayole', 'Embakasi', 'Donholm', 'Komarock', 'Tena', 'Fedha', 'Buruburu', 'Jogoo Road', 'Pipeline', 'Utawala', 'Ruai']
+  },
+  'Southlands': {
+    fee: 350,
+    areas: ["Lang'ata", 'Karen', 'Ngong Road', 'South B', 'South C', 'Nairobi West', 'Rongai', 'Kiserian', 'Athi River']
+  },
+  'Northlands': {
+    fee: 300,
+    areas: ['Kasarani', 'Ruiru', 'Thika Road', 'Roysambu', 'Garden Estate', 'Kahawa', 'Githurai', 'Zimmerman', 'Mirema', 'Clay City', 'Mwiki']
+  },
+  'Satellite Towns': {
+    fee: 500,
+    areas: ['Kikuyu', 'Limuru', 'Machakos', 'Kitengela', 'Ongata Rongai', 'Ngong Town', 'Thika Town', 'Juja', 'Ruiru Town']
+  }
+};
+
+app.get('/api/delivery/zones', (req, res) => {
+  res.json({ success: true, zones: deliveryZones });
+});
+
+// ================================================================
+// PAYSTACK: Initialize
+// ================================================================
+app.post('/api/paystack/initialize', optionalAuth, async (req, res) => {
   const { email, amount } = req.body;
   if (!email || !amount) return res.status(400).json({ error: 'Missing email or amount' });
   try {
     const response = await axios.post(
       'https://api.paystack.co/transaction/initialize',
       {
-        email,
-        amount: Math.round(amount * 100),
-        currency: 'KES',
+        email, amount: Math.round(amount * 100), currency: 'KES',
         reference: 'LNE_' + Date.now(),
-        metadata: {
-          custom_fields: [{
-            display_name: 'Shop',
-            variable_name: 'shop',
-            value: 'Late Night Epiphanies'
-          }]
-        }
+        metadata: { custom_fields: [{ display_name: 'Shop', variable_name: 'shop', value: 'Late Night Epiphanies' }] }
       },
       { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`, 'Content-Type': 'application/json' } }
     );
-    res.json({
-      success: true,
-      authorization_url: response.data.data.authorization_url,
-      access_code: response.data.data.access_code,
-      reference: response.data.data.reference
-    });
+    res.json({ success: true, authorization_url: response.data.data.authorization_url, access_code: response.data.data.access_code, reference: response.data.data.reference });
   } catch (err) {
     console.error('Paystack init error:', err.response?.data || err.message);
     res.status(500).json({ error: 'Payment initialization failed' });
@@ -124,12 +345,13 @@ app.post('/api/paystack/initialize', async (req, res) => {
 });
 
 // ================================================================
-// PAYSTACK: Verify + Save order
+// PAYSTACK: Verify + Save Order
 // ================================================================
-app.get('/api/paystack/verify/:reference', async (req, res) => {
+app.post('/api/paystack/verify', optionalAuth, async (req, res) => {
+  const { reference, delivery, items, phone } = req.body;
   try {
     const response = await axios.get(
-      `https://api.paystack.co/transaction/verify/${req.params.reference}`,
+      `https://api.paystack.co/transaction/verify/${reference}`,
       { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } }
     );
     const data = response.data.data;
@@ -139,20 +361,21 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
           { reference: data.reference },
           {
             reference: data.reference,
-            email:     data.customer.email,
-            amount:    data.amount / 100,
-            currency:  data.currency,
-            status:    'paid',
-            paid_at:   data.paid_at,
-            channel:   data.channel,
-            items:     data.metadata?.custom_fields?.[0]?.value || ''
+            userId: req.user?.id || null,
+            email: data.customer.email,
+            phone: phone || '',
+            amount: data.amount / 100,
+            currency: data.currency,
+            status: 'paid',
+            paid_at: data.paid_at,
+            channel: data.channel,
+            items: items || data.metadata?.custom_fields?.[0]?.value || '',
+            delivery: delivery || {}
           },
           { upsert: true, new: true }
         );
         console.log(`✅ Order saved: ${data.reference}`);
-      } catch (dbErr) {
-        console.error('DB save error:', dbErr.message);
-      }
+      } catch (dbErr) { console.error('DB save error:', dbErr.message); }
       res.json({ success: true, amount: data.amount / 100, email: data.customer.email, reference: data.reference });
     } else {
       res.json({ success: false, status: data.status });
@@ -173,22 +396,11 @@ app.post('/api/paystack/webhook', async (req, res) => {
     try {
       await Order.findOneAndUpdate(
         { reference: data.reference },
-        {
-          reference: data.reference,
-          email:     data.customer.email,
-          amount:    data.amount / 100,
-          currency:  data.currency,
-          status:    'paid',
-          paid_at:   data.paid_at,
-          channel:   data.channel,
-          items:     data.metadata?.custom_fields?.[0]?.value || ''
-        },
+        { reference: data.reference, email: data.customer.email, amount: data.amount / 100, currency: data.currency, status: 'paid', paid_at: data.paid_at, channel: data.channel },
         { upsert: true, new: true }
       );
-      console.log(`✅ Webhook order saved: ${data.reference}`);
-    } catch (err) {
-      console.error('Webhook DB error:', err.message);
-    }
+      console.log(`✅ Webhook saved: ${data.reference}`);
+    } catch (err) { console.error('Webhook DB error:', err.message); }
   }
   res.sendStatus(200);
 });
@@ -200,38 +412,25 @@ app.get('/api/stock', async (req, res) => {
   try {
     const stock = await Stock.find({});
     res.json({ success: true, stock });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 app.get('/api/stock/:productId', async (req, res) => {
   try {
     const item = await Stock.findOne({ productId: req.params.productId });
-    if (!item) return res.status(404).json({ error: 'Product not found' });
-    res.json({
-      success:   true,
-      productId: item.productId,
-      sold:      item.sold,
-      maxPrints: item.maxPrints,
-      remaining: item.maxPrints - item.sold,
-      soldOut:   item.sold >= item.maxPrints
-    });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+    if (!item) return res.status(404).json({ error: 'Not found' });
+    res.json({ success: true, productId: item.productId, sold: item.sold, maxPrints: item.maxPrints, remaining: item.maxPrints - item.sold, soldOut: item.sold >= item.maxPrints });
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // ================================================================
-// ORDERS API
+// ORDERS API (admin)
 // ================================================================
 app.get('/api/orders', async (req, res) => {
   try {
     const orders = await Order.find({}).sort({ created_at: -1 });
     res.json({ success: true, count: orders.length, orders });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
 // ================================================================
