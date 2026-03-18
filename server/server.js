@@ -19,24 +19,29 @@ app.use(express.json());
 const { PAYSTACK_SECRET_KEY, MONGODB_URI, PORT = 10000 } = process.env;
 
 // ================================================================
-// MONGODB CONNECTION — SSL fix for Node.js 22
+// MONGODB — tlsInsecure fixes SSL alert 80 on Render
 // ================================================================
 let db;
-const client = new MongoClient(MONGODB_URI, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  },
-  tls: true,
-  tlsAllowInvalidCertificates: false,
-  tlsAllowInvalidHostnames: false,
-  connectTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
-});
 
 async function connectDB() {
   try {
+    // Append tlsInsecure to the URI directly
+    const uri = MONGODB_URI.includes('?')
+      ? MONGODB_URI + '&tlsInsecure=true'
+      : MONGODB_URI + '?tlsInsecure=true';
+
+    const client = new MongoClient(uri, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: false,
+        deprecationErrors: false,
+      },
+      tlsInsecure: true,
+      connectTimeoutMS: 30000,
+      socketTimeoutMS: 60000,
+      serverSelectionTimeoutMS: 30000,
+    });
+
     await client.connect();
     db = client.db('late-night-epiphanies');
     await db.command({ ping: 1 });
@@ -61,8 +66,12 @@ async function connectDB() {
       );
     }
     console.log('✅ Stock collection ready!');
+
   } catch (err) {
     console.error('❌ MongoDB connection failed:', err.message);
+    // Retry after 5 seconds
+    console.log('🔄 Retrying MongoDB connection in 5s...');
+    setTimeout(connectDB, 5000);
   }
 }
 connectDB();
