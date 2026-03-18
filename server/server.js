@@ -19,30 +19,35 @@ app.use(express.json());
 const { PAYSTACK_SECRET_KEY, MONGODB_URI, PORT = 10000 } = process.env;
 
 // ================================================================
-// MONGODB CONNECTION
+// MONGODB CONNECTION — SSL fix for Node.js 22
 // ================================================================
 let db;
 const client = new MongoClient(MONGODB_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
-    deprecationErrors: true
-  }
+    deprecationErrors: true,
+  },
+  tls: true,
+  tlsAllowInvalidCertificates: false,
+  tlsAllowInvalidHostnames: false,
+  connectTimeoutMS: 10000,
+  socketTimeoutMS: 45000,
 });
 
 async function connectDB() {
   try {
     await client.connect();
     db = client.db('late-night-epiphanies');
+    await db.command({ ping: 1 });
     console.log('✅ Connected to MongoDB!');
 
-    // Create indexes for fast lookups
+    // Indexes
     await db.collection('orders').createIndex({ reference: 1 }, { unique: true });
     await db.collection('orders').createIndex({ email: 1 });
     await db.collection('stock').createIndex({ productId: 1 }, { unique: true });
 
-    // Initialize stock for all 39 products (max 10 prints each)
-    // Only inserts if the product doesn't exist yet
+    // Initialize stock (39 products, max 10 prints each)
     const products = Array.from({ length: 39 }, (_, i) => ({
       productId: `p${i + 1}`,
       sold: 0,
@@ -66,13 +71,11 @@ connectDB();
 // SERVE STATIC FILES
 // ================================================================
 app.use(express.static(ROOT));
-
 app.get('/', (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
 app.get('/about', (req, res) => res.sendFile(path.join(ROOT, 'about.html')));
 
 // ================================================================
 // PAYSTACK: Initialize transaction
-// POST /api/paystack/initialize
 // ================================================================
 app.post('/api/paystack/initialize', async (req, res) => {
   const { email, amount } = req.body;
@@ -115,8 +118,7 @@ app.post('/api/paystack/initialize', async (req, res) => {
 });
 
 // ================================================================
-// PAYSTACK: Verify transaction + Save to MongoDB
-// GET /api/paystack/verify/:reference
+// PAYSTACK: Verify + Save to MongoDB
 // ================================================================
 app.get('/api/paystack/verify/:reference', async (req, res) => {
   const { reference } = req.params;
@@ -128,7 +130,6 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
     const data = response.data.data;
 
     if (data.status === 'success') {
-      // Save order to MongoDB
       if (db) {
         try {
           await db.collection('orders').updateOne(
@@ -153,7 +154,6 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
           console.error('DB save error:', dbErr.message);
         }
       }
-
       res.json({
         success:   true,
         amount:    data.amount / 100,
@@ -162,7 +162,7 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
         paid_at:   data.paid_at
       });
     } else {
-      res.json({ success: false, message: 'Payment not completed', status: data.status });
+      res.json({ success: false, status: data.status });
     }
   } catch (err) {
     console.error('Paystack verify error:', err.response?.data || err.message);
@@ -171,32 +171,28 @@ app.get('/api/paystack/verify/:reference', async (req, res) => {
 });
 
 // ================================================================
-// PAYSTACK: Webhook — auto-saves payment when Paystack confirms
-// POST /api/paystack/webhook
+// PAYSTACK: Webhook
 // ================================================================
 app.post('/api/paystack/webhook', async (req, res) => {
   const event = req.body;
-
   if (event.event === 'charge.success') {
     const data = event.data;
-    console.log('✅ Webhook payment received:', data.reference);
-
+    console.log('✅ Webhook received:', data.reference);
     if (db) {
       try {
-        // Save/update order
         await db.collection('orders').updateOne(
           { reference: data.reference },
           {
             $set: {
-              reference:   data.reference,
-              email:       data.customer.email,
-              amount:      data.amount / 100,
-              currency:    data.currency,
-              status:      'paid',
-              paid_at:     data.paid_at,
-              channel:     data.channel,
-              items:       data.metadata?.custom_fields?.[0]?.value || '',
-              created_at:  new Date()
+              reference:  data.reference,
+              email:      data.customer.email,
+              amount:     data.amount / 100,
+              currency:   data.currency,
+              status:     'paid',
+              paid_at:    data.paid_at,
+              channel:    data.channel,
+              items:      data.metadata?.custom_fields?.[0]?.value || '',
+              created_at: new Date()
             }
           },
           { upsert: true }
@@ -211,8 +207,7 @@ app.post('/api/paystack/webhook', async (req, res) => {
 });
 
 // ================================================================
-// STOCK: Get stock for all products
-// GET /api/stock
+// STOCK API
 // ================================================================
 app.get('/api/stock', async (req, res) => {
   if (!db) return res.status(500).json({ error: 'DB not connected' });
@@ -224,22 +219,18 @@ app.get('/api/stock', async (req, res) => {
   }
 });
 
-// ================================================================
-// STOCK: Get stock for one product
-// GET /api/stock/:productId
-// ================================================================
 app.get('/api/stock/:productId', async (req, res) => {
   if (!db) return res.status(500).json({ error: 'DB not connected' });
   try {
     const item = await db.collection('stock').findOne({ productId: req.params.productId });
     if (!item) return res.status(404).json({ error: 'Product not found' });
     res.json({
-      success:    true,
-      productId:  item.productId,
-      sold:       item.sold,
-      maxPrints:  item.maxPrints,
-      remaining:  item.maxPrints - item.sold,
-      soldOut:    item.sold >= item.maxPrints
+      success:   true,
+      productId: item.productId,
+      sold:      item.sold,
+      maxPrints: item.maxPrints,
+      remaining: item.maxPrints - item.sold,
+      soldOut:   item.sold >= item.maxPrints
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -247,8 +238,7 @@ app.get('/api/stock/:productId', async (req, res) => {
 });
 
 // ================================================================
-// ORDERS: Get all orders (admin view)
-// GET /api/orders
+// ORDERS API
 // ================================================================
 app.get('/api/orders', async (req, res) => {
   if (!db) return res.status(500).json({ error: 'DB not connected' });
@@ -264,7 +254,7 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // ================================================================
-// START SERVER
+// START
 // ================================================================
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
