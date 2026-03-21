@@ -1,33 +1,25 @@
-import express from 'express';
-import axios from 'axios';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
+const express = require('express');
+const axios = require('axios');
+const cors = require('cors');
+const path = require('path');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
-dotenv.config();
+require('dotenv').config();
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname  = path.dirname(__filename);
-const ROOT       = path.join(__dirname, '..');
-
+const ROOT = path.join(__dirname, '..');
 const app = express();
+
 app.use(cors({ origin: '*' }));
 app.use(express.json());
 
-const {
-  PAYSTACK_SECRET_KEY,
-  MONGODB_URI,
-  JWT_SECRET = 'lne_jwt_secret_2026',
-  PORT = 10000
-} = process.env;
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+const MONGODB_URI = process.env.MONGODB_URI;
+const JWT_SECRET = process.env.JWT_SECRET || 'lne_jwt_secret_2026';
+const PORT = process.env.PORT || 10000;
 
-// ================================================================
-// SCHEMAS
-// ================================================================
+// ── SCHEMAS ──
 const userSchema = new mongoose.Schema({
   name:      { type: String, required: true, trim: true },
   email:     { type: String, required: true, unique: true, lowercase: true, trim: true },
@@ -41,8 +33,8 @@ const userSchema = new mongoose.Schema({
 });
 
 const orderSchema = new mongoose.Schema({
-  reference:  { type: String, unique: true },
-  userId:     { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+  reference: { type: String, unique: true },
+  userId:    { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   email: String, phone: String, amount: Number,
   currency: String, status: String, paid_at: String,
   channel: String, items: String,
@@ -60,9 +52,7 @@ const User  = mongoose.model('User',  userSchema);
 const Order = mongoose.model('Order', orderSchema);
 const Stock = mongoose.model('Stock', stockSchema);
 
-// ================================================================
-// MONGODB
-// ================================================================
+// ── MONGODB ──
 async function connectDB() {
   try {
     await mongoose.connect(MONGODB_URI, {
@@ -88,9 +78,7 @@ async function connectDB() {
 }
 connectDB();
 
-// ================================================================
-// AUTH MIDDLEWARE
-// ================================================================
+// ── AUTH MIDDLEWARE ──
 function authMiddleware(req, res, next) {
   try {
     const token = req.headers.authorization?.split(' ')[1];
@@ -98,7 +86,7 @@ function authMiddleware(req, res, next) {
     req.user = jwt.verify(token, JWT_SECRET);
     next();
   } catch {
-    return res.status(401).json({ error: 'Invalid or expired token' });
+    return res.status(401).json({ error: 'Invalid token' });
   }
 }
 
@@ -111,36 +99,34 @@ function optionalAuth(req, res, next) {
 }
 
 // ================================================================
-// ✅ ALL API ROUTES FIRST — before express.static
+// API ROUTES — must be before express.static
 // ================================================================
 
-// Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected', time: new Date().toISOString() });
+  res.json({ status: 'ok', db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' });
 });
 
-// ── AUTH ──
 app.post('/api/auth/register', async (req, res) => {
-  console.log('📝 Register attempt:', req.body?.email);
+  console.log('📝 Register:', req.body?.email);
   try {
     const { name, email, password, phone, avatar } = req.body || {};
     if (!name || !email || !password) return res.status(400).json({ error: 'Name, email and password are required' });
     if (password.length < 6) return res.status(400).json({ error: 'Password must be at least 6 characters' });
     const exists = await User.findOne({ email: email.toLowerCase().trim() });
-    if (exists) return res.status(409).json({ error: 'An account with this email already exists' });
+    if (exists) return res.status(409).json({ error: 'Email already registered' });
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({ name: name.trim(), email: email.toLowerCase().trim(), password: hashed, phone: phone||'', avatar: avatar||1 });
-    console.log('✅ User created:', user._id);
     const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
+    console.log('✅ User created:', user.email);
     return res.status(201).json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, phone: user.phone, addresses: [] } });
   } catch (err) {
     console.error('❌ Register error:', err.message);
-    return res.status(500).json({ error: 'Registration failed: ' + err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
 app.post('/api/auth/login', async (req, res) => {
-  console.log('🔑 Login attempt:', req.body?.email);
+  console.log('🔑 Login:', req.body?.email);
   try {
     const { email, password } = req.body || {};
     if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
@@ -149,11 +135,11 @@ app.post('/api/auth/login', async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
     if (!match) return res.status(401).json({ error: 'Wrong password' });
     const token = jwt.sign({ id: user._id, email: user.email, name: user.name }, JWT_SECRET, { expiresIn: '30d' });
-    console.log('✅ Login successful:', user.email);
+    console.log('✅ Login:', user.email);
     return res.json({ success: true, token, user: { id: user._id, name: user.name, email: user.email, avatar: user.avatar, phone: user.phone, addresses: user.addresses } });
   } catch (err) {
     console.error('❌ Login error:', err.message);
-    return res.status(500).json({ error: 'Login failed: ' + err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
@@ -165,7 +151,6 @@ app.get('/api/auth/me', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ── USER ──
 app.put('/api/user/profile', authMiddleware, async (req, res) => {
   try {
     const { name, phone, avatar } = req.body;
@@ -235,24 +220,19 @@ app.get('/api/user/orders', authMiddleware, async (req, res) => {
   } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// ── DELIVERY ──
 const deliveryZones = {
-  'CBD & Westlands': { fee: 200, areas: ['CBD','Westlands','Parklands','Upperhill','Kilimani','Lavington','Hurlingham','Ngara','Pangani'] },
-  'Eastlands':       { fee: 300, areas: ['Umoja','Kayole','Embakasi','Donholm','Komarock','Tena','Fedha','Buruburu','Pipeline','Utawala','Ruai'] },
+  'CBD & Westlands': { fee: 200, areas: ['CBD','Westlands','Parklands','Upperhill','Kilimani','Lavington','Hurlingham','Ngara'] },
+  'Eastlands':       { fee: 300, areas: ['Umoja','Kayole','Embakasi','Donholm','Komarock','Fedha','Buruburu','Pipeline','Utawala'] },
   'Southlands':      { fee: 350, areas: ["Lang'ata",'Karen','Ngong Road','South B','South C','Nairobi West','Rongai','Athi River'] },
-  'Northlands':      { fee: 300, areas: ['Kasarani','Ruiru','Thika Road','Roysambu','Garden Estate','Kahawa','Githurai','Zimmerman','Clay City','Mwiki'] },
+  'Northlands':      { fee: 300, areas: ['Kasarani','Ruiru','Thika Road','Roysambu','Kahawa','Githurai','Zimmerman','Clay City'] },
   'Satellite Towns': { fee: 500, areas: ['Kikuyu','Limuru','Machakos','Kitengela','Ongata Rongai','Ngong Town','Thika Town','Juja'] }
 };
 app.get('/api/delivery/zones', (req, res) => res.json({ success: true, zones: deliveryZones }));
 
-// ── PAYSTACK ──
 app.post('/api/paystack/verify', optionalAuth, async (req, res) => {
   const { reference, delivery, items, phone } = req.body;
   try {
-    const response = await axios.get(
-      `https://api.paystack.co/transaction/verify/${reference}`,
-      { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } }
-    );
+    const response = await axios.get(`https://api.paystack.co/transaction/verify/${reference}`, { headers: { Authorization: `Bearer ${PAYSTACK_SECRET_KEY}` } });
     const data = response.data.data;
     if (data.status === 'success') {
       try {
@@ -261,34 +241,22 @@ app.post('/api/paystack/verify', optionalAuth, async (req, res) => {
           { reference: data.reference, userId: req.user?.id||null, email: data.customer.email, phone: phone||'', amount: data.amount/100, currency: data.currency, status: 'paid', paid_at: data.paid_at, channel: data.channel, items: items||'', delivery: delivery||{} },
           { upsert: true, new: true }
         );
-        console.log(`✅ Order saved: ${data.reference}`);
       } catch (dbErr) { console.error('DB save error:', dbErr.message); }
       res.json({ success: true, amount: data.amount/100, email: data.customer.email, reference: data.reference });
-    } else {
-      res.json({ success: false, status: data.status });
-    }
-  } catch (err) {
-    console.error('Verify error:', err.response?.data || err.message);
-    res.status(500).json({ error: 'Verification failed' });
-  }
+    } else { res.json({ success: false, status: data.status }); }
+  } catch (err) { res.status(500).json({ error: 'Verification failed' }); }
 });
 
 app.post('/api/paystack/webhook', async (req, res) => {
   const event = req.body;
   if (event.event === 'charge.success') {
-    const data = event.data;
     try {
-      await Order.findOneAndUpdate(
-        { reference: data.reference },
-        { reference: data.reference, email: data.customer.email, amount: data.amount/100, currency: data.currency, status: 'paid', paid_at: data.paid_at, channel: data.channel },
-        { upsert: true, new: true }
-      );
-    } catch (err) { console.error('Webhook DB error:', err.message); }
+      await Order.findOneAndUpdate({ reference: event.data.reference }, { reference: event.data.reference, email: event.data.customer.email, amount: event.data.amount/100, status: 'paid', paid_at: event.data.paid_at, channel: event.data.channel }, { upsert: true, new: true });
+    } catch (err) { console.error('Webhook error:', err.message); }
   }
   res.sendStatus(200);
 });
 
-// ── STOCK & ORDERS (admin) ──
 app.get('/api/stock', async (req, res) => {
   try { res.json({ success: true, stock: await Stock.find({}) }); }
   catch (err) { res.status(500).json({ error: err.message }); }
@@ -300,7 +268,7 @@ app.get('/api/orders', async (req, res) => {
 });
 
 // ================================================================
-// ✅ STATIC FILES — AFTER all API routes
+// STATIC FILES — after all API routes
 // ================================================================
 app.use(express.static(ROOT));
 app.get('/',          (req, res) => res.sendFile(path.join(ROOT, 'index.html')));
@@ -309,10 +277,7 @@ app.get('/admin',     (req, res) => res.sendFile(path.join(ROOT, 'admin.html')))
 app.get('/auth',      (req, res) => res.sendFile(path.join(ROOT, 'auth.html')));
 app.get('/dashboard', (req, res) => res.sendFile(path.join(ROOT, 'dashboard.html')));
 
-// ================================================================
-// START
-// ================================================================
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
-  console.log(`✅ Serving files from: ${ROOT}`);
+  console.log(`✅ Root: ${ROOT}`);
 });
