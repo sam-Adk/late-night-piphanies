@@ -16,7 +16,15 @@ const ROOT       = path.join(__dirname, '..');
 
 const app = express();
 app.use(cors({ origin: '*' }));
-app.use(express.json());
+app.use((req, res, next) => {
+  express.json()(req, res, (err) => {
+    if (err) {
+      console.error('JSON parse error:', err.message);
+      return res.status(400).json({ error: 'Invalid JSON in request body' });
+    }
+    next();
+  });
+});
 
 const {
   PAYSTACK_SECRET_KEY,
