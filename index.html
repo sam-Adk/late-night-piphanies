@@ -916,11 +916,10 @@
 
     try{
       const handler=PaystackPop.setup({
-        key:PAYSTACK_PUBLIC_KEY,
-        email,
-        amount:totalWithDelivery*100,
-        currency:'KES',
-        ref:orderRef,
+       key:PAYSTACK_PUBLIC_KEY,
+       email,
+       amount:totalWithDelivery*100,
+       ref:orderRef,
         label:'Late Night Epiphanies',
         channels:['card','bank_transfer','ussd','mobile_money'],
         metadata:{
