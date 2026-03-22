@@ -958,7 +958,7 @@
       });
       handler.openIframe();
     }catch(err){
-      errEl.textContent='Could not open payment. Check your Paystack key.';errEl.style.display='block';
+      errEl.textContent='Error: '+err.message;errEl.style.display='block';console.error('PAYSTACK ERR:',err);
       btn.innerHTML='<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7v10c0 5.55 4.48 8.78 10 12 5.52-3.22 10-6.45 10-12V7l-10-5z" fill="white"/></svg> Pay Now';
       btn.disabled=false;
     }
