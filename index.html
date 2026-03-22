@@ -930,7 +930,7 @@
             {display_name:'Order Items',variable_name:'order_items',value:cart.map(i=>`${i.qty}× ${i.title} (${i.size},${i.finish})`).join(', ')}
           ]
         },
-        async callback(response){
+        callback(response){
           checkoutBg.classList.remove('open');
           // Save order to DB
           try{
