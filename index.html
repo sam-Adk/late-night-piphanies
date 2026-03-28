@@ -53,14 +53,14 @@
     .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;}
     .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
     @media(max-width:768px){
-      .hamburger{display:flex;}
       .nav{padding:0 16px;}
       .brand-sub{display:none;}
-      .brand-name{font-size:13px;}
+      .brand-name{font-size:14px;}
+      .hamburger{display:flex;}
+      /* hide everything except cart and hamburger on mobile */
       .nav-actions .nav-link{display:none !important;}
-      .login-btn{font-size:11px;padding:7px 12px;letter-spacing:0.06em;}
-      .account-name{display:none;}
-      .account-btn{padding:5px 8px 5px 5px;}
+      .nav-actions .login-btn{display:none !important;}
+      .nav-actions .account-wrap{display:none !important;}
       .icon-btn{width:36px;height:36px;}
     }
     .mobile-menu{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(5,2,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,229,255,0.15);padding:16px 20px;display:none;flex-direction:column;gap:4px;}
@@ -389,12 +389,18 @@
 
 <!-- MOBILE MENU -->
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#gallery" class="mob-link" id="mobGallery">Collection</a>
-  <a href="about.html" class="mob-link">About</a>
-  <button class="mob-link" id="mobCommission">Commission</button>
-  <a href="/auth" class="mob-link" id="mobLogin" style="color:var(--cyan);">Sign In</a>
-  <a href="/dashboard" class="mob-link" id="mobDashboard" style="display:none;color:var(--cyan);">My Dashboard</a>
-  <button class="mob-link" id="mobLogout" style="display:none;color:var(--rose);">Log Out</button>
+  <a href="/auth" class="mob-link" id="mobLogin" style="color:var(--cyan);font-weight:700;border:1px solid rgba(0,229,255,0.3);border-radius:10px;margin-bottom:6px;">
+    🔑 Sign In / Create Account
+  </a>
+  <a href="/dashboard" class="mob-link" id="mobDashboard" style="display:none;color:var(--cyan);font-weight:700;">
+    👤 My Dashboard
+  </a>
+  <div style="height:1px;background:rgba(255,255,255,0.08);margin:4px 0;"></div>
+  <a href="#gallery" class="mob-link" id="mobGallery">🎨 Collection</a>
+  <a href="about.html" class="mob-link">📖 About</a>
+  <button class="mob-link" id="mobCommission">✉️ Commission a Piece</button>
+  <div style="height:1px;background:rgba(255,255,255,0.08);margin:4px 0;"></div>
+  <button class="mob-link" id="mobLogout" style="display:none;color:var(--rose);">🚪 Log Out</button>
 </div>
 
 <!-- ══ HERO ══ -->
