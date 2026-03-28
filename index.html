@@ -932,20 +932,17 @@
         },
         callback(response){
           checkoutBg.classList.remove('open');
-          // Save order to DB
-          try{
-            const token=localStorage.getItem('lne_token');
-            await fetch('/api/paystack/verify',{
-              method:'POST',
-              headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},
-              body:JSON.stringify({
-                reference:response.reference,
-                phone,
-                items:cart.map(i=>`${i.qty}× ${i.title} (${i.size},${i.finish})`).join(', '),
-                delivery:{zone:deliveryZoneName,area:deliveryArea,street:deliveryStreet,fee:deliveryFee}
-              })
-            });
-          }catch(e){console.error('Order save error:',e);}
+          const token=localStorage.getItem('lne_token');
+          fetch('/api/paystack/verify',{
+            method:'POST',
+            headers:{'Content-Type':'application/json',...(token?{'Authorization':'Bearer '+token}:{})},
+            body:JSON.stringify({
+              reference:response.reference,
+              phone,
+              items:cart.map(i=>`${i.qty}x ${i.title} (${i.size},${i.finish})`).join(', '),
+              delivery:{zone:deliveryZoneName,area:deliveryArea,street:deliveryStreet,fee:deliveryFee}
+            })
+          }).catch(e=>console.error('Order save:',e));
           showToast('✅ Payment confirmed! Ref: '+response.reference);
           cart.length=0;saveCart();renderCart();updateBadge();closeCart();
           if(currentUser) window.location.href='/dashboard';
