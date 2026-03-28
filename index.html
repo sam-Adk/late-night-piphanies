@@ -48,7 +48,24 @@
     @media(max-width:768px){.nav-links{display:none;}}
     .nav-link{font-size:12px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;border:none;background:none;transition:color 0.2s;cursor:pointer;}
     .nav-link:hover{color:var(--cyan);}
-    .nav-actions{display:flex;align-items:center;gap:10px;}
+    .nav-actions{display:flex;align-items:center;gap:8px;}
+    /* ── MOBILE NAV ── */
+    .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:6px;}
+    .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
+    @media(max-width:768px){
+      .hamburger{display:flex;}
+      .nav{padding:0 18px;}
+      .brand-sub{display:none;}
+      .brand-name{font-size:13px;}
+      .nav-actions .nav-link{display:none;}
+      .login-btn{font-size:11px;padding:7px 12px;}
+      .account-name{display:none;}
+      .account-btn{padding:5px 8px 5px 5px;}
+    }
+    .mobile-menu{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(5,2,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,229,255,0.15);padding:16px 20px;display:none;flex-direction:column;gap:4px;}
+    .mobile-menu.open{display:flex;}
+    .mob-link{padding:13px 14px;border-radius:10px;color:var(--muted);font-size:13px;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;border:none;background:none;cursor:pointer;text-align:left;transition:all 0.2s;width:100%;}
+    .mob-link:hover{background:rgba(0,229,255,0.07);color:var(--cyan);}
 
     /* ── LOGIN / ACCOUNT BTN ── */
     .login-btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:10px;border:1px solid rgba(0,229,255,0.3);background:rgba(0,229,255,0.07);color:var(--cyan);font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.25s;text-decoration:none;white-space:nowrap;}
@@ -358,6 +375,9 @@
         </div>
       </div>
 
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
       <button class="icon-btn" id="cartBtn" aria-label="Cart">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M6 6h13l-1.3 8.4a2 2 0 01-2 1.6H9.1a2 2 0 01-2-1.6L6 6zm0 0L5 3H3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9" cy="20" r="1.5" fill="currentColor"/><circle cx="17" cy="20" r="1.5" fill="currentColor"/></svg>
         <span class="cart-badge" id="cartBadge">0</span>
@@ -365,6 +385,16 @@
     </div>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#gallery" class="mob-link" id="mobGallery">Collection</a>
+  <a href="about.html" class="mob-link">About</a>
+  <button class="mob-link" id="mobCommission">Commission</button>
+  <a href="/auth" class="mob-link" id="mobLogin" style="color:var(--cyan);">Sign In</a>
+  <a href="/dashboard" class="mob-link" id="mobDashboard" style="display:none;color:var(--cyan);">My Dashboard</a>
+  <button class="mob-link" id="mobLogout" style="display:none;color:var(--rose);">Log Out</button>
+</div>
 
 <!-- ══ HERO ══ -->
 <section class="hero">
@@ -995,6 +1025,41 @@
   // Toast
   const toastEl=document.getElementById('toast');let toastT;
   function showToast(msg){toastEl.textContent=msg;toastEl.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>toastEl.classList.remove('show'),2800);}
+
+  // ── HAMBURGER MENU ──
+  const mobileMenu = document.getElementById('mobileMenu');
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  hamburgerBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    mobileMenu.classList.toggle('open');
+  });
+  document.addEventListener('click', e => {
+    if (!mobileMenu.contains(e.target) && e.target !== hamburgerBtn) {
+      mobileMenu.classList.remove('open');
+    }
+  });
+  document.getElementById('mobGallery').addEventListener('click', () => mobileMenu.classList.remove('open'));
+  document.getElementById('mobCommission').addEventListener('click', () => { openCommission(); mobileMenu.classList.remove('open'); });
+  document.getElementById('mobLogout')?.addEventListener('click', () => {
+    localStorage.removeItem('lne_token'); localStorage.removeItem('lne_user');
+    currentUser = null; updateNavAuth(); mobileMenu.classList.remove('open'); showToast('Signed out');
+  });
+
+  // Update mobile menu based on auth state
+  const origUpdateNavAuth = updateNavAuth;
+  function updateNavAuth() {
+    origUpdateNavAuth();
+    if (currentUser) {
+      document.getElementById('mobLogin').style.display = 'none';
+      document.getElementById('mobDashboard').style.display = 'block';
+      document.getElementById('mobLogout').style.display = 'block';
+    } else {
+      document.getElementById('mobLogin').style.display = 'block';
+      document.getElementById('mobDashboard').style.display = 'none';
+      document.getElementById('mobLogout').style.display = 'none';
+    }
+  }
+  updateNavAuth();
 
   window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);});
   document.getElementById('year').textContent=new Date().getFullYear();
