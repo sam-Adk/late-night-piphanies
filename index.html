@@ -54,13 +54,14 @@
     .hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
     @media(max-width:768px){
       .hamburger{display:flex;}
-      .nav{padding:0 18px;}
+      .nav{padding:0 16px;}
       .brand-sub{display:none;}
       .brand-name{font-size:13px;}
-      .nav-actions .nav-link{display:none;}
-      .login-btn{font-size:11px;padding:7px 12px;}
+      .nav-actions .nav-link{display:none !important;}
+      .login-btn{font-size:11px;padding:7px 12px;letter-spacing:0.06em;}
       .account-name{display:none;}
       .account-btn{padding:5px 8px 5px 5px;}
+      .icon-btn{width:36px;height:36px;}
     }
     .mobile-menu{position:fixed;top:68px;left:0;right:0;z-index:99;background:rgba(5,2,15,0.97);backdrop-filter:blur(20px);border-bottom:1px solid rgba(0,229,255,0.15);padding:16px 20px;display:none;flex-direction:column;gap:4px;}
     .mobile-menu.open{display:flex;}
@@ -1045,10 +1046,8 @@
     currentUser = null; updateNavAuth(); mobileMenu.classList.remove('open'); showToast('Signed out');
   });
 
-  // Update mobile menu based on auth state
-  const origUpdateNavAuth = updateNavAuth;
-  function updateNavAuth() {
-    origUpdateNavAuth();
+  // Update mobile menu auth state
+  function updateMobileAuth() {
     if (currentUser) {
       document.getElementById('mobLogin').style.display = 'none';
       document.getElementById('mobDashboard').style.display = 'block';
@@ -1059,7 +1058,7 @@
       document.getElementById('mobLogout').style.display = 'none';
     }
   }
-  updateNavAuth();
+  updateMobileAuth();
 
   window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);});
   document.getElementById('year').textContent=new Date().getFullYear();
