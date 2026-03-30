@@ -176,6 +176,44 @@
     .art-price-sub{font-size:11px;color:var(--muted);margin-top:1px;}
     .quick-add{width:36px;height:36px;border-radius:9px;background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all 0.2s;}
     .quick-add:hover{background:rgba(0,229,255,0.2);}
+    .prints-left{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;margin-top:4px;}
+    .prints-high{color:#00d44d;}
+    .prints-mid{color:#f59e0b;}
+    .prints-low{color:#f43f5e;animation:urgentPulse 2s ease infinite;}
+    @keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:0.6}}
+    /* SOCIAL PROOF */
+    .proof{padding:60px 0 0;position:relative;z-index:1;}
+    .proof-inner{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;border-radius:20px;overflow:hidden;border:1px solid rgba(0,229,255,0.1);}
+    @media(max-width:640px){.proof-inner{grid-template-columns:repeat(2,1fr);}}
+    .proof-stat{padding:28px 20px;background:rgba(255,255,255,0.03);text-align:center;transition:background 0.3s;}
+    .proof-stat:hover{background:rgba(0,229,255,0.06);}
+    .proof-num{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;color:var(--cyan);line-height:1;margin-bottom:6px;}
+    .proof-lbl{font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);}
+    /* TESTIMONIALS */
+    .testimonials{padding:70px 0;position:relative;z-index:1;}
+    .testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+    @media(max-width:768px){.testi-grid{grid-template-columns:1fr;}}
+    .testi-card{padding:28px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:18px;transition:all 0.3s;}
+    .testi-card:hover{border-color:rgba(0,229,255,0.2);transform:translateY(-4px);}
+    .testi-quote{font-size:15px;line-height:1.7;color:var(--text);font-style:italic;margin-bottom:20px;}
+    .testi-quote::before{content:'C';font-size:40px;color:var(--cyan);line-height:0;vertical-align:-16px;margin-right:4px;font-family:'Syne',sans-serif;}
+    .testi-author{display:flex;align-items:center;gap:10px;}
+    .testi-dot{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--violet),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:white;font-family:'Syne',sans-serif;}
+    .testi-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--white);}
+    .testi-loc{font-size:11px;color:var(--muted);}
+    .testi-stars{color:var(--amber);font-size:12px;margin-bottom:4px;}
+    /* COMMISSION SECTION */
+    .commission{padding:80px 0;position:relative;z-index:1;}
+    .commission-wrap{background:linear-gradient(135deg,rgba(124,58,237,0.15),rgba(0,229,255,0.08));border:1px solid rgba(0,229,255,0.2);border-radius:24px;padding:56px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;}
+    @media(max-width:768px){.commission-wrap{grid-template-columns:1fr;padding:36px 24px;gap:28px;}}
+    .comm-title{font-family:'Syne',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:800;color:var(--white);line-height:1.1;margin-bottom:16px;}
+    .comm-title span{color:var(--cyan);}
+    .comm-desc{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:28px;}
+    .comm-steps{display:flex;flex-direction:column;gap:14px;}
+    .comm-step{display:flex;align-items:flex-start;gap:14px;}
+    .comm-step-num{width:32px;height:32px;border-radius:8px;background:rgba(0,229,255,0.12);border:1px solid rgba(0,229,255,0.3);color:var(--cyan);font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .comm-step-text{font-size:13px;color:var(--muted);padding-top:6px;line-height:1.6;}
+    .comm-step-text strong{color:var(--text);}
 
     /* ── QUICK VIEW MODAL ── */
     .modal-bg{position:fixed;inset:0;background:rgba(3,1,12,0.88);backdrop-filter:blur(12px) saturate(60%);z-index:200;display:none;align-items:center;justify-content:center;padding:20px;}
@@ -463,6 +501,57 @@
   <div class="art-grid" id="artGrid"></div>
 </section>
 
+<!-- ══ SOCIAL PROOF ══ -->
+<section class="proof container">
+  <div class="proof-inner">
+    <div class="proof-stat"><div class="proof-num">39</div><div class="proof-lbl">Original Works</div></div>
+    <div class="proof-stat"><div class="proof-num">10</div><div class="proof-lbl">Max Prints Each</div></div>
+    <div class="proof-stat"><div class="proof-num">3AM</div><div class="proof-lbl">Creative Hour</div></div>
+    <div class="proof-stat"><div class="proof-num">100%</div><div class="proof-lbl">Hand Drawn</div></div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testimonials container">
+  <div class="section-label">Collectors Say</div>
+  <div class="section-title" style="margin-bottom:32px;">Words from those<br>who <span>own the work</span></div>
+  <div class="testi-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">I bought The Girl Who Stayed for my office. Every client who walks in asks about it. It commands the room like nothing else I own.</div>
+      <div class="testi-author"><div class="testi-dot">A</div><div><div class="testi-name">Amina K.</div><div class="testi-loc">Nairobi, Kenya</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">Samuel drew my mother as a commission. I cried when I saw it. It was her — not just her face, but her whole spirit captured in graphite.</div>
+      <div class="testi-author"><div class="testi-dot">D</div><div><div class="testi-name">David M.</div><div class="testi-loc">Mombasa, Kenya</div></div></div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-quote">This is the most alive art I have ever bought. I keep discovering new things in it months later. Worth every shilling and more.</div>
+      <div class="testi-author"><div class="testi-dot">F</div><div><div class="testi-name">Fatima O.</div><div class="testi-loc">Kampala, Uganda</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ COMMISSION ══ -->
+<section class="commission container">
+  <div class="commission-wrap">
+    <div>
+      <div class="section-label">Custom Work</div>
+      <div class="comm-title">Own a piece<br>made <span>only for you</span></div>
+      <div class="comm-desc">A commission is more than a portrait. It is a conversation between you and the artist — your story translated into graphite that will outlast both of you.</div>
+      <a href="mailto:samsmollett50@gmail.com?subject=Commission — Late Night Epiphanies&body=Hello Samuel,%0A%0AWhat I would like drawn:%0A%0ASize preference:%0A%0ADeadline:%0A%0ABudget (KSh):%0A%0AReference images: (attach to email)" class="btn-primary">Start a Commission →</a>
+    </div>
+    <div class="comm-steps">
+      <div class="comm-step"><div class="comm-step-num">1</div><div class="comm-step-text"><strong>Tell Samuel your vision.</strong> Who or what should be drawn. Any references, mood, or feeling you want captured.</div></div>
+      <div class="comm-step"><div class="comm-step-num">2</div><div class="comm-step-text"><strong>Receive a quote within 24 hours.</strong> Pricing based on size and complexity. Deposit to begin.</div></div>
+      <div class="comm-step"><div class="comm-step-num">3</div><div class="comm-step-text"><strong>Watch it come alive.</strong> Progress updates as the piece is drawn. Final approval before delivery.</div></div>
+      <div class="comm-step"><div class="comm-step-num">4</div><div class="comm-step-text"><strong>Delivered to your door.</strong> Nairobi hand delivery or insured courier anywhere in Kenya.</div></div>
+    </div>
+  </div>
+</section>
+
 <!-- ══ ABOUT ══ -->
 <section class="about container" id="about">
   <div class="about-wrap">
@@ -659,55 +748,74 @@
 
   // ── PRODUCTS ──
   const products=[
-    {id:'p1',title:'Love Dream I',category:'Portrait',tags:['romance','bw'],priceBase:42000,img:'assets/images/love5.jpg',desc:'Romantic midnight sketch in pencil.'},
-    {id:'p2',title:'Dark Forest',category:'Sketch',tags:['dreamy','soft'],priceBase:25000,img:'assets/images/NATURE ART6.jpg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p3',title:'Ocean Wave',category:'Abstract',tags:['surreal','thoughts'],priceBase:52000,img:'assets/images/NATURE ART4.jpg',desc:'Surreal abstraction.'},
-    {id:'p4',title:'Floating Girl',category:'Sketch',tags:['raw','expressive'],priceBase:50000,img:'assets/images/NATURE ART5.jpg',desc:'Expressive raw strokes.',sold:true},
-    {id:'p5',title:'The Bridge',category:'Portrait',tags:['romance','bw'],priceBase:42000,img:'assets/images/NATURE ART2.jpg',desc:'Romantic midnight sketch.',sold:true},
-    {id:'p6',title:'Birds on the Ocean',category:'Sketch',tags:['dreamy','soft'],priceBase:50000,img:'assets/images/NATURE ART3.jpg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p7',title:'Blue Night',category:'Sketch',tags:['dreamy','soft'],priceBase:50000,img:'assets/images/new1.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p8',title:'Moon Night',category:'Sketch',tags:['dreamy','soft'],priceBase:50000,img:'assets/images/new2.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p9',title:'Starry Night',category:'Sketch',tags:['dreamy','soft'],priceBase:50000,img:'assets/images/new3.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p10',title:'The Woods',category:'Sketch',tags:['dreamy','soft'],priceBase:50000,img:'assets/images/new4.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p11',title:'Two Kittens',category:'Sketch',tags:['dreamy','soft'],priceBase:60000,img:'assets/images/new6.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p12',title:'Star Gaze',category:'Sketch',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/new7.jpeg',desc:'A dreamy late-night drawing.',sold:true},
-    {id:'p13',title:'Update 1',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update 1.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p14',title:'Update 2',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update 2.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p15',title:'Update 3',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update3.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p16',title:'Update 4',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update4.jpeg',desc:'A dreamy late-night drawing.'},
-    {id:'p17',title:'Update 5',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update5.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p18',title:'Update 6',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update6.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p19',title:'Update 7',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update7.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p20',title:'Update 8',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update8.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p21',title:'Update 9',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update9.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p22',title:'Update 10',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update10.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p23',title:'Update 11',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update11.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p24',title:'Update 12',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/update12.webp',desc:'A dreamy late-night drawing.'},
-    {id:'p25',title:'Update 13',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a1.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p26',title:'Update 14',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a2.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p27',title:'Update 15',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a3.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p28',title:'Update 16',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a4.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p29',title:'Update 17',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a5.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p30',title:'Update 18',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a6.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p31',title:'Update 19',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a7.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p32',title:'Update 20',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a8.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p33',title:'Update 21',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a9.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p34',title:'Update 22',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a10.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p35',title:'Update 23',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a11.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p36',title:'Update 24',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a12.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p37',title:'Update 25',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a13.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p38',title:'Update 26',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a14.jpg',desc:'A dreamy late-night drawing.'},
-    {id:'p39',title:'Update 27',category:'Portrait',tags:['dreamy','soft'],priceBase:70000,img:'assets/images/a15.jpg',desc:'A dreamy late-night drawing.'}
+    {id:'p1',title:'Love Dream I',category:'Portrait',tags:['romance','intimate'],priceBase:42000,img:'assets/images/love5.jpg',desc:'Drawn at 2AM after a night of too many thoughts. The subject sits quietly in graphite — soft, unhurried, permanent. One of the most personal pieces in the collection.'},
+    {id:'p2',title:'Dark Forest',category:'Sketch',tags:['nature','mystery'],priceBase:25000,img:'assets/images/NATURE ART6.jpg',desc:'A forest that exists only at night. Every tree drawn from memory, every shadow placed with intention. The kind of place you can only find when you stop looking.',sold:true},
+    {id:'p3',title:'Ocean Wave',category:'Abstract',tags:['motion','power'],priceBase:52000,img:'assets/images/NATURE ART4.jpg',desc:'Not a wave you swim in — a wave you feel before it arrives. Graphite layered until the paper almost moves. Abstract but unmistakably alive.'},
+    {id:'p4',title:'Floating Girl',category:'Sketch',tags:['surreal','freedom'],priceBase:50000,img:'assets/images/NATURE ART5.jpg',desc:'She is not falling. She chose this. A study in weightlessness — what it looks like when someone finally lets go of the ground.',sold:true},
+    {id:'p5',title:'The Bridge',category:'Portrait',tags:['solitude','journey'],priceBase:42000,img:'assets/images/NATURE ART2.jpg',desc:'Every bridge is a decision. This one was drawn in a single sitting, no erasing — whatever mark was made stayed. Raw, honest, unretouched.',sold:true},
+    {id:'p6',title:'Birds on the Ocean',category:'Sketch',tags:['freedom','horizon'],priceBase:50000,img:'assets/images/NATURE ART3.jpg',desc:'Three birds, infinite ocean, no destination. Drawn at the edge of sleep when the mind stops editing and just sees.',sold:true},
+    {id:'p7',title:'Blue Night',category:'Sketch',tags:['night','calm'],priceBase:50000,img:'assets/images/new1.jpeg',desc:'The colour blue does not exist in graphite — and yet here it is. A night piece that somehow radiates cold light.',sold:true},
+    {id:'p8',title:'Moon Night',category:'Sketch',tags:['lunar','silence'],priceBase:50000,img:'assets/images/new2.jpeg',desc:'The moon as a witness. Everything beneath it small, everything bathed in its indifferent light. Quiet and enormous at once.',sold:true},
+    {id:'p9',title:'Starry Night',category:'Sketch',tags:['cosmos','wonder'],priceBase:50000,img:'assets/images/new3.jpeg',desc:'Not Van Gogh's night — this one belongs to Nairobi. Drawn looking upward from a rooftop at 1AM when the city finally went quiet.',sold:true},
+    {id:'p10',title:'The Woods',category:'Sketch',tags:['nature','depth'],priceBase:50000,img:'assets/images/new4.jpeg',desc:'You do not find your way through these woods. You lose it. Then you find something better.',sold:true},
+    {id:'p11',title:'Two Kittens',category:'Sketch',tags:['tender','life'],priceBase:60000,img:'assets/images/new6.jpeg',desc:'Drawn after watching two kittens sleep for an hour. Sometimes the most profound subject is the smallest one.',sold:true},
+    {id:'p12',title:'Star Gaze',category:'Sketch',tags:['longing','cosmos'],priceBase:70000,img:'assets/images/new7.jpeg',desc:'A figure looking up at something we cannot see. The original sold in 48 hours. This is a limited print of that moment.',sold:true},
+    {id:'p13',title:'The Girl Who Stayed',category:'Portrait',tags:['strength','presence'],priceBase:70000,img:'assets/images/update 1.webp',desc:'Portrait of a woman who decided the room needed her energy more than she needed to leave it. Commanding in stillness.'},
+    {id:'p14',title:'Before She Spoke',category:'Portrait',tags:['anticipation','feminine'],priceBase:70000,img:'assets/images/update 2.webp',desc:'That exact moment before words form — when a thought becomes a decision. Caught in graphite before it could escape.'},
+    {id:'p15',title:'Heavy Crown',category:'Portrait',tags:['power','weight'],priceBase:70000,img:'assets/images/update3.webp',desc:'Every crown has a weight most people never see. This portrait is about what it costs to carry something beautiful.'},
+    {id:'p16',title:'Midnight Gaze',category:'Portrait',tags:['intensity','soul'],priceBase:70000,img:'assets/images/update4.jpeg',desc:'Eyes that have seen 3AM more than once. Drawn in a single unbroken session. No reference — pure memory and instinct.'},
+    {id:'p17',title:'The Soft Revolution',category:'Portrait',tags:['quiet power','feminine'],priceBase:70000,img:'assets/images/update5.webp',desc:'Revolutions do not always announce themselves. Sometimes they arrive quietly, in the posture of a woman who has made up her mind.'},
+    {id:'p18',title:'She Carries Oceans',category:'Portrait',tags:['depth','emotion'],priceBase:70000,img:'assets/images/update6.webp',desc:'An exploration of emotional depth — what people carry invisibly. The texture of the hair holds more emotion than the face.'},
+    {id:'p19',title:'Gold and Graphite',category:'Portrait',tags:['luxury','contrast'],priceBase:70000,img:'assets/images/update7.webp',desc:'Black and white as a luxury. Some people do not need colour to command a room. Neither does this piece.'},
+    {id:'p20',title:'The Unbothered',category:'Portrait',tags:['confidence','peace'],priceBase:70000,img:'assets/images/update8.webp',desc:'Drawn after a conversation about what it truly means to be at peace. The expression says everything the conversation tried to.'},
+    {id:'p21',title:'Tender Epoch',category:'Portrait',tags:['nostalgia','softness'],priceBase:70000,img:'assets/images/update9.webp',desc:'A portrait that feels like it already existed somewhere and was simply remembered onto paper. Familiar, intimate, timeless.'},
+    {id:'p22',title:'The Architects Dream',category:'Portrait',tags:['vision','intelligence'],priceBase:70000,img:'assets/images/update10.webp',desc:'For the person who builds futures in their mind long before they build them in the world. Eyes that see what is not yet there.'},
+    {id:'p23',title:'Velvet Silence',category:'Portrait',tags:['texture','elegance'],priceBase:70000,img:'assets/images/update11.webp',desc:'Graphite pressed so densely it becomes velvet. The silence in this portrait is not empty — it is full of things unsaid.'},
+    {id:'p24',title:'Homecoming',category:'Portrait',tags:['belonging','warmth'],priceBase:70000,img:'assets/images/update12.webp',desc:'The expression of someone who has finally arrived somewhere they belong. Drawn from memory of a moment too good to photograph.'},
+    {id:'p25',title:'The Witness',category:'Portrait',tags:['wisdom','age'],priceBase:70000,img:'assets/images/a1.jpg',desc:'Some faces have seen enough to stop needing to prove it. This is one of those faces. Drawn with deliberate, unhurried strokes.'},
+    {id:'p26',title:'Between Storms',category:'Portrait',tags:['resilience','calm'],priceBase:70000,img:'assets/images/a2.jpg',desc:'The calm that exists between difficult things. Not peace — something harder and more honest than peace.'},
+    {id:'p27',title:'First Light',category:'Portrait',tags:['hope','dawn'],priceBase:70000,img:'assets/images/a3.jpg',desc:'Drawn at 5AM watching the light change. The subject does not know they are being drawn. That unknowing is the whole point.'},
+    {id:'p28',title:'The Curator',category:'Portrait',tags:['intellect','poise'],priceBase:70000,img:'assets/images/a4.jpg',desc:'A person who collects not things but moments. The kind of presence that makes every room a gallery just by entering it.'},
+    {id:'p29',title:'Still Water',category:'Portrait',tags:['depth','mystery'],priceBase:70000,img:'assets/images/a5.jpg',desc:'Still water runs deep — this portrait runs deeper. The more time you spend with it the more it reveals.'},
+    {id:'p30',title:'The Inheritance',category:'Portrait',tags:['legacy','strength'],priceBase:70000,img:'assets/images/a6.jpg',desc:'About what we carry from those who came before us. The posture, the jaw, the particular way of holding the world.'},
+    {id:'p31',title:'Sunday Morning',category:'Portrait',tags:['peace','intimacy'],priceBase:70000,img:'assets/images/a7.jpg',desc:'Not every great moment is dramatic. Some of the best ones happen on Sunday mornings when nothing is required of anyone.'},
+    {id:'p32',title:'The Long Walk',category:'Portrait',tags:['journey','solitude'],priceBase:70000,img:'assets/images/a8.jpg',desc:'Everyone who has ever had to figure something out alone knows this posture. Drawn in recognition and in solidarity.'},
+    {id:'p33',title:'Ember',category:'Portrait',tags:['passion','intensity'],priceBase:70000,img:'assets/images/a9.jpg',desc:'Not fire — ember. Hotter, quieter, longer-lasting. The kind of energy that does not announce itself but cannot be ignored.'},
+    {id:'p34',title:'The Cartographer',category:'Portrait',tags:['vision','mapping'],priceBase:70000,img:'assets/images/a10.jpg',desc:'For the people who map territories that do not yet exist on any official chart. Dreamers who build real things.'},
+    {id:'p35',title:'Unwritten',category:'Portrait',tags:['potential','youth'],priceBase:70000,img:'assets/images/a11.jpg',desc:'A face that has not yet decided what it will become. The most exciting kind of portrait to draw and to own.'},
+    {id:'p36',title:'The Knowing',category:'Portrait',tags:['wisdom','certainty'],priceBase:70000,img:'assets/images/a12.jpg',desc:'There is a particular expression people get when they know something others do not. This portrait captures that exact moment.'},
+    {id:'p37',title:'After Rain',category:'Portrait',tags:['renewal','peace'],priceBase:70000,img:'assets/images/a13.jpg',desc:'Drawn after a long Nairobi downpour. The subject and the weather share the same quality — heavy, then suddenly clear.'},
+    {id:'p38',title:'The Quiet Ones',category:'Portrait',tags:['introversion','depth'],priceBase:70000,img:'assets/images/a14.jpg',desc:'A love letter to everyone who thinks deeply and speaks carefully. The world runs on the energy of the quiet ones.'},
+    {id:'p39',title:'Last Epiphany',category:'Portrait',tags:['revelation','finality'],priceBase:70000,img:'assets/images/a15.jpg',desc:'The final piece in this collection. Drawn the night before the series was complete. It knows something the others do not.'}
   ];
 
   // ── GALLERY ──
   const grid=document.getElementById('artGrid');
+  let stockData = {};
+
+  // Load stock from API
+  fetch('/api/stock').then(r=>r.json()).then(d=>{
+    if(d.stock) d.stock.forEach(s=>{ stockData[s.productId] = s; });
+    applyFilters();
+  }).catch(()=>applyFilters());
+
+  function getPrintsLabel(p) {
+    if(p.sold) return '';
+    const s = stockData[p.id];
+    if(!s) return '<div class="prints-left prints-high">Limited Edition · 10 prints</div>';
+    const remaining = s.maxPrints - s.sold;
+    if(remaining <= 0) return '<div class="prints-left prints-low">Sold Out</div>';
+    if(remaining <= 3) return '<div class="prints-left prints-low">⚠ Only '+remaining+' prints left</div>';
+    if(remaining <= 6) return '<div class="prints-left prints-mid">'+remaining+' of 10 prints remaining</div>';
+    return '<div class="prints-left prints-high">'+remaining+' of 10 prints available</div>';
+  }
+
   function renderGallery(list){
     grid.innerHTML='';
     list.forEach(p=>{
       const c=document.createElement('article');
       c.className='art-card'+(p.sold?' sold':'');
-      c.innerHTML=`<div class="art-img"><img src="${p.img}" alt="${p.title}" loading="lazy"/><div class="art-hover"><div class="hover-btns"><button class="hbtn hbtn-primary" data-action="add" data-id="${p.id}">Add to Cart</button><button class="hbtn hbtn-secondary" data-action="view" data-id="${p.id}">Quick View</button><button class="hbtn hbtn-bid" data-action="bid" data-id="${p.id}">⚡</button></div></div><div class="art-cat">${p.category}</div>${p.sold?'<div class="sold-tag">Sold</div>':''}</div><div class="art-body"><div class="art-name">${p.title}</div><div class="art-tags">${p.tags.map(t=>'#'+t).join(' ')}</div><div class="art-footer"><div><div class="art-price">${KES(p.priceBase)}</div><div class="art-price-sub">Starting price</div></div><button class="quick-add" data-action="add" data-id="${p.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></div>`;
+      c.innerHTML=`<div class="art-img"><img src="${p.img}" alt="${p.title}" loading="lazy"/><div class="art-hover"><div class="hover-btns"><button class="hbtn hbtn-primary" data-action="add" data-id="${p.id}">Add to Cart</button><button class="hbtn hbtn-secondary" data-action="view" data-id="${p.id}">Quick View</button><button class="hbtn hbtn-bid" data-action="bid" data-id="${p.id}">⚡</button></div></div><div class="art-cat">${p.category}</div>${p.sold?'<div class="sold-tag">Sold Out</div>':''}</div><div class="art-body"><div class="art-name">${p.title}</div><div class="art-tags">${p.tags.map(t=>'#'+t).join(' ')}</div>${getPrintsLabel(p)}<div class="art-footer"><div><div class="art-price">${KES(p.priceBase)}</div><div class="art-price-sub">Starting price · free delivery</div></div><button class="quick-add" data-action="add" data-id="${p.id}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div></div>`;
       grid.appendChild(c);
     });
     const f=list.find(p=>!p.sold);
@@ -1071,7 +1179,8 @@
 
   window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);});
   document.getElementById('year').textContent=new Date().getFullYear();
-  renderGallery(products);renderCart();updateBadge();
+  // renderGallery called after stock loads (or immediately if stock fails)
+  renderCart();updateBadge();
 </script>
 </body>
 </html>
