@@ -381,6 +381,7 @@
     </a>
     <div class="nav-links">
       <a href="#gallery" class="nav-link">Collection</a>
+      <a href="about.html" class="nav-link">About</a>
       <button class="nav-link" id="commissionNavBtn">Commission</button>
     </div>
     <div class="nav-actions">
@@ -790,12 +791,7 @@
   const grid=document.getElementById('artGrid');
   let stockData = {};
 
-  // Show images immediately
-  applyFilters();
-  // Then load stock data in background
-  fetch('/api/stock').then(r=>r.json()).then(d=>{
-    if(d.success && d.stock) { d.stock.forEach(s=>{ stockData[s.productId]=s; }); applyFilters(); }
-  }).catch(()=>{});
+  // stock and gallery init happens at bottom after all functions defined
 
   function getPrintsLabel(p) {
     if(p.sold) return '';
@@ -1172,3 +1168,16 @@
       document.getElementById('mobDashboard').style.display = 'none';
       document.getElementById('mobLogout').style.display = 'none';
     }
+   }
+  updateMobileAuth();
+
+  // ── INIT ──
+  applyFilters();
+  renderCart();
+  updateBadge();
+  fetch("/api/stock").then(r=>r.json()).then(d=>{
+    if(d.success&&d.stock){d.stock.forEach(s=>{stockData[s.productId]=s;});applyFilters();}
+  }).catch(()=>{});
+</script>
+</body>
+</html>
