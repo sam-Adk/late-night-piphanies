@@ -381,12 +381,9 @@
     </a>
     <div class="nav-links">
       <a href="#gallery" class="nav-link">Collection</a>
-      <a href="#about" class="nav-link">About</a>
       <button class="nav-link" id="commissionNavBtn">Commission</button>
     </div>
     <div class="nav-actions">
-      <a href="about.html" class="nav-link" style="text-decoration:none;">About</a>
-
       <!-- ✅ LOGIN BUTTON (shown when logged out) -->
       <a href="/auth" class="login-btn" id="loginNavBtn">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
@@ -793,11 +790,11 @@
   const grid=document.getElementById('artGrid');
   let stockData = {};
 
-  // Show images immediately, then update with stock data
+  // Show images immediately
   applyFilters();
+  // Then load stock data in background
   fetch('/api/stock').then(r=>r.json()).then(d=>{
-    if(d.stock) d.stock.forEach(s=>{ stockData[s.productId] = s; });
-    applyFilters();
+    if(d.success && d.stock) { d.stock.forEach(s=>{ stockData[s.productId]=s; }); applyFilters(); }
   }).catch(()=>{});
 
   function getPrintsLabel(p) {
