@@ -541,7 +541,7 @@
       <div class="section-label">Custom Work</div>
       <div class="comm-title">Own a piece<br>made <span>only for you</span></div>
       <div class="comm-desc">A commission is more than a portrait. It is a conversation between you and the artist — your story translated into graphite that will outlast both of you.</div>
-      <a href="mailto:samsmollett50@gmail.com?subject=Commission — Late Night Epiphanies&body=Hello Samuel,%0A%0AWhat I would like drawn:%0A%0ASize preference:%0A%0ADeadline:%0A%0ABudget (KSh):%0A%0AReference images: (attach to email)" class="btn-primary">Start a Commission →</a>
+      <a href="/cdn-cgi/l/email-protection#4a392b2739272526262f3e3e7f7a0a2d272b23266429252775393f28202f293e77092527272339392325246aa8cade6a062b3e2f6a04232d223e6a0f3a233a222b24232f396c28252e3377022f2626256a192b273f2f26666f7a0b6f7a0b1d222b3e6a036a3d253f262e6a2623212f6a2e382b3d24706f7a0b6f7a0b1923302f6a3a382f2c2f382f24292f706f7a0b6f7a0b0e2f2b2e2623242f706f7a0b6f7a0b083f2e2d2f3e6a6201192263706f7a0b6f7a0b182f2c2f382f24292f6a23272b2d2f39706a622b3e3e2b29226a3e256a2f272b232663" class="btn-primary">Start a Commission →</a>
     </div>
     <div class="comm-steps">
       <div class="comm-step"><div class="comm-step-num">1</div><div class="comm-step-text"><strong>Tell Samuel your vision.</strong> Who or what should be drawn. Any references, mood, or feeling you want captured.</div></div>
@@ -696,7 +696,7 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // ================================================================
   // ✅ PAYSTACK PUBLIC KEY — replace with your pk_test_... key
   // ================================================================
@@ -793,11 +793,12 @@
   const grid=document.getElementById('artGrid');
   let stockData = {};
 
-  // Load stock from API
+  // Show images immediately, then update with stock data
+  applyFilters();
   fetch('/api/stock').then(r=>r.json()).then(d=>{
     if(d.stock) d.stock.forEach(s=>{ stockData[s.productId] = s; });
     applyFilters();
-  }).catch(()=>applyFilters());
+  }).catch(()=>{});
 
   function getPrintsLabel(p) {
     if(p.sold) return '';
@@ -1174,13 +1175,3 @@
       document.getElementById('mobDashboard').style.display = 'none';
       document.getElementById('mobLogout').style.display = 'none';
     }
-  }
-  updateMobileAuth();
-
-  window.addEventListener('scroll',()=>{document.getElementById('nav').classList.toggle('scrolled',scrollY>60);});
-  document.getElementById('year').textContent=new Date().getFullYear();
-  // renderGallery called after stock loads (or immediately if stock fails)
-  renderCart();updateBadge();
-</script>
-</body>
-</html>
